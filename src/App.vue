@@ -1,5 +1,5 @@
 <template>
-  <main class="w-screen h-screen bg-background">
+  <main class="h-screen w-screen bg-background">
     <RouterView v-slot="{ Component }">
       <template v-if="Component">
         <component :is="Component" />

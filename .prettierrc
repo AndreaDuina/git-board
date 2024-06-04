@@ -7,15 +7,5 @@
   "singleQuote": true,
   "trailingComma": "none",
   "printWidth": 100,
-
-  "overrides": [
-    {
-      "files": ["*.rs"],
-      "options": {
-        "tabWidth": 4,
-        "semi": true,
-        "singleQuote": false
-      }
-    }
-  ]
+  "plugins": ["prettier-plugin-tailwindcss"]
 }
