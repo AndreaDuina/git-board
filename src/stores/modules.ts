@@ -4,7 +4,9 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 export const useModulesStore = defineStore('modules', () => {
   const modules = import.meta.glob('~/**/config.ts', { eager: true })
 
-  const enabledModules = computed(() => Object.values(modules).filter((m: any) => m.config?.enabled))
+  const enabledModules = computed(() =>
+    Object.values(modules).filter((m: any) => m.config?.enabled)
+  )
 
   return {
     enabledModules
