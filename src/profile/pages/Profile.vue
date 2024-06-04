@@ -1,5 +1,10 @@
 <template>
-  <h1 class="text-4xl font-semibold tracking-wider">{{ username }}</h1>
+  <div class="flex items-center">
+    <div class="mr-6 h-32 w-32">
+      <AccountAvatar :account="username" />
+    </div>
+    <h1 class="text-4xl font-semibold tracking-wider">{{ username }}</h1>
+  </div>
   <div class="mt-4 flex justify-center" v-if="calendar">
     <div class="inline-block" v-for="week of calendar.weeks">
       <div class="flex flex-col" v-for="day of week.contributionDays">
@@ -11,12 +16,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, computed } from 'vue'
+  import { computed } from 'vue'
   import { getContributionCalendar } from '~/common/api/github'
+  import AccountAvatar from '~/common/components/AccountAvatar.vue'
 
   const props = defineProps({
     username: { type: String, required: true }
   })
+
   const calendar = computed(async () => {
     try {
       return await getContributionCalendar(props.username)
