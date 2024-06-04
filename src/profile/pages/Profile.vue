@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, watch, ref } from 'vue'
   import { getContributionCalendar } from '~/common/api/github'
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
 
@@ -24,11 +24,22 @@
     username: { type: String, required: true }
   })
 
-  const calendar = computed(async () => {
+  const calendar = ref<GitHubCalendar>()
+  const init = async () => {
     try {
-      return await getContributionCalendar(props.username)
+      const res = await getContributionCalendar(props.username)
+      calendar.value = res as GitHubCalendar
     } catch (err) {
       console.error(`Error getting calendar`, err)
     }
-  })
+  }
+
+  watch(
+    () => props.username,
+    async () => {
+      calendar.value = (await getContributionCalendar(props.username)) as GitHubCalendar
+    }
+  )
+
+  init()
 </script>
