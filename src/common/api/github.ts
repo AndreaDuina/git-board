@@ -14,7 +14,9 @@ const config = {
  * @param username GitHub username.
  * @returns Contribution calendar
  */
-export const getContributionCalendar = async (username: string): Promise<GitHubCalendar | null> => {
+export const getContributionCalendarGH = async (
+  username: string
+): Promise<GitHubCalendar | null> => {
   const body = {
     query: `query {
       user(login: "${username}") {
