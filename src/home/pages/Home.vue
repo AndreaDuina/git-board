@@ -1,5 +1,5 @@
 <template>
-  <div>Home</div>
+  <div>Homedev</div>
 </template>
 
 <script setup lang="ts">
