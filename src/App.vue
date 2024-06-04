@@ -3,7 +3,7 @@
     <main class="mx-auto my-0 block max-w-screen-xl p-1">
       <RouterView v-slot="{ Component }">
         <template v-if="Component">
-          <component :is="Component" :key="router.currentRoute.value.name" />
+          <component :is="Component" :key="router.currentRoute.value.fullPath" />
         </template>
       </RouterView>
     </main>
