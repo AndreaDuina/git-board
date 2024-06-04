@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* The design is dark first and the naming convention was made with this in mind.
+    For example you should use --color-white for text, since we are in dark mode.
+    Switching to light mode you should still keep --color-white for text. This is because
+    we mapped how each color should transform during a theme change, so you just need to
+    write your css once. */
+  .dark-theme {
+    /* Application background */
+    --color-background: 28 14 33;
+    /* Components background */
+    --color-background-light: 48 22 56;
+    /* Brighter background (e.g. selected components) */
+    --color-background-bright: 64 40 71;
+    /* Dark background (navbar) */
+    --color-background-dark: 9 4 10;
+
+    /* Primary color (e.g. buttons, selections) */
+    --color-primary: 166 22 98;
+    /* Lighter primary color (e.g. hover primary color) */
+    --color-primary-light: 192 38 107;
+    /* Darker primary color (e.g. click primary color) */
+    --color-primary-shadow: 143 22 76;
+
+    /* Secondary color */
+    --color-secondary: 77 42 137;
+
+    /* Main font */
+    --color-white: 230 230 230;
+    /* Secondary font or unselected items */
+    --color-light: 179 179 179;
+    /* Shadows */
+    --color-black: 26 26 26;
+
+    --color-green: 0 146 69;
+    --color-red: 193 39 45;
+  }
+
+  .light-theme {
+    /* Application background */
+    --color-background: 206 196 220;
+    /* Components background */
+    --color-background-light: 184 163 213;
+    /* Brighter background (e.g. selected components) */
+    --color-background-bright: 169 143 206;
+    /* Dark background (navbar) */
+    --color-background-dark: 219 216 223;
+
+    /* Primary color (e.g. buttons, selections) */
+    --color-primary: 168 58 108;
+
+    /* Main font */
+    --color-white: 20 20 20;
+    /* Secondary font or unselected items */
+    --color-light: 65 65 65;
+    /* Shadows */
+    --color-black: 230 230 230;
+
+    --color-green: 0 146 69;
+    --color-red: 193 39 45;
+  }
+
+  /* Colors that remain the same, regardless of the theme.
+  (e.g. button text should be static white) */
+  .static-colors {
+    --color-static-white: 230 230 230;
+  }
+
+  #root {
+    overflow: hidden;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    box-sizing: border-box;
+    background-color: var(--color-background);
+    color: var(--color-white);
+    font-family: inter;
+  }
+}
+
+@layer utilities {
+  /* CSS variables cannot be referenced here */
+  .scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(64 40 71) transparent; /*var(--color-background-bright) var(--color-background-dark);*/
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 7px;
+    height: 20px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(64 40 71); /*var(--color-background-bright);*/
+    border-radius: 100vh;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background: transparent; /*var(--color-background-dark);*/
+  }
+
+  @media (min-width: 640px) {
+    .scrollbar {
+      scrollbar-width: auto;
+    }
+  }
+}

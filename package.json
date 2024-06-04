@@ -1,0 +1,49 @@
+{
+  "name": "peak-vault",
+  "private": true,
+  "version": "0.1.11",
+  "description": "A cross platform wallet for the Hive blockchain.",
+  "author": "@peak.open",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open",
+    "dev:background": "tsup --watch ./src",
+    "inject-manifest": "bash ./scripts/inject_manifest.sh",
+    "inject-dialogs": "bash ./scripts/inject_dialogs.sh",
+    "dev:firefox": "web-ext run --source-dir ./dist/ --firefox-preview --devtools",
+    "dev:chrome": "web-ext run --source-dir ./dist/ -t chromium --devtools",
+    "watch": "node scripts/watch ./src ./manifests index.html",
+    "dev:ext": "pnpm run update:extension && concurrently --kill-others \"node scripts/watch ./src ./manifests index.html\" \"pnpm run dev:firefox\"",
+    "dev:ext:chrome": "pnpm run update:extension:chrome && concurrently --kill-others \"node scripts/watch ./src ./manifests index.html -t chrome\" \"pnpm run dev:chrome\"",
+    "build": "vue-tsc --noEmit && vite build && tsup && vite build -c vite.config_ext.js",
+    "build:light": "vite build && tsup && vite build -c vite.config_ext.js",
+    "update:extension": "pnpm run build:light && pnpm run inject-manifest && pnpm run inject-dialogs",
+    "update:extension:chrome": "pnpm run build:light && pnpm run inject-manifest chrome && pnpm run inject-dialogs",
+    "docs:dev": "npx vitepress dev docs --port 8080",
+    "docs:build": "npx vitepress build docs",
+    "typedefs": "tsup src/core/peakvault.ts --dts",
+    "release": "bash ./scripts/pre_release.sh && pnpm run build && pnpm run typedefs && bash ./scripts/release.sh && bash ./scripts/post_release.sh",
+    "preview": "vite preview",
+    "test": "vitest --environment jsdom",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.8",
+    "@heroicons/vue": "^2.0.14",
+    "axios": "^1.3.1",
+    "pinia": "^2.0.30",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.4",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "@vitejs/plugin-vue": "^3.2.0",
+    "autoprefixer": "^10.4.13",
+    "typescript": "^4.9.5",
+    "vite": "^3.2.5",
+    "vite-plugin-node-polyfills": "^0.7.0",
+    "vue-tsc": "^0.40.13"
+  }
+}
