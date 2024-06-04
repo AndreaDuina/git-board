@@ -3,7 +3,7 @@ interface GitDashboardCalendar {
   weeks: {
     days: GitDashboardCalendarDay[]
     firstDay: string
-  }
+  }[]
 }
 
 interface GitDashboardCalendarDay {

@@ -7,7 +7,7 @@ const ENDPOINT = 'https://gitlab.com'
  * @param username GitLab username.
  * @returns Contributions by day
  */
-export const getContributionCalendar = async (
+export const getContributionCalendarGL = async (
   username: string
 ): Promise<{ [date: string]: number }> => {
   return (await axios.get(`${ENDPOINT}/users/${username}/calendar.json`)).data

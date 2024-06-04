@@ -4,7 +4,7 @@ interface GitHubCalendar {
   weeks: {
     contributionDays: GitHubContributionDay[]
     firstDay: string
-  }
+  }[]
 }
 
 interface GitHubContributionDay {

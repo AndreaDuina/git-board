@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Octokit } from 'octokit'
 
 const ENDPOINT = 'https://api.github.com/graphql'
 

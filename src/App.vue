@@ -14,7 +14,7 @@
     <RouterLink :to="{ name: 'profile', params: { username: 'AndreaDuina' } }">
       Andrea Duina
     </RouterLink>
-    <RouterLink :to="{ name: 'profile', params: { username: 'FrancescoZonaro' } }">
+    <RouterLink :to="{ name: 'profile', params: { username: 'francescozonaro' } }">
       Francesco Zonaro
     </RouterLink>
   </div>
