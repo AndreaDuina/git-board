@@ -10,7 +10,7 @@ const config = {
 }
 
 /**
- * Get the daily contributions (grouped by week) for a given user.
+ * Get the daily contributions (grouped by week) for a given GitHub user.
  * @param username GitHub username.
  * @returns Contribution calendar
  */
