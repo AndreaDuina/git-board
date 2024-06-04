@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center">
     <div class="mr-6 h-32 w-32">
-      <AccountAvatar :account="username" />
+      <AccountAvatar :account="username" :imageSrc="''" size="large" />
     </div>
     <h1 class="text-4xl font-semibold tracking-wider">{{ username }}</h1>
   </div>

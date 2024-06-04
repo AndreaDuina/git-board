@@ -12,7 +12,9 @@
     :class="imgClass || 'h-full w-full'"
     :style="`color: ${fgColor}; background-color: ${bgColor}`"
   >
-    <span class="text-sm font-medium leading-none">{{ account.slice(0, 1).toUpperCase() }}</span>
+    <span class="text-sm font-medium leading-none" :class="[size == 'large' ? 'text-5xl' : '']">{{
+      account.slice(0, 1).toUpperCase()
+    }}</span>
   </span>
 </template>
 
@@ -33,6 +35,8 @@
   const bgColor = ref('')
 
   const onError = (event: any) => {
+    bgColor.value = colorFromString(props.account)
+    fgColor.value = invertColor(bgColor.value)
     imgError.value = true
   }
 </script>
