@@ -2,15 +2,15 @@
   <div class="flex justify-center" v-if="calendar">
     <!-- Days of the week names -->
     <div class="inline-block">
-      <div class="flex flex-col" v-for="i of 8">
-        <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm">
-          {{ weekDays[i - 1] }}
+      <div class="mr-1 flex flex-col">
+        <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm" v-for="i of 8">
+          {{ weekDaysAxis[i - 1] }}
         </div>
       </div>
     </div>
     <div class="inline-block" v-for="(week, idx) of calendar.weeks">
       <!-- Month names -->
-      <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm">
+      <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
         {{ monthTitles[week.firstDay] }}
       </div>
       <!-- Data -->
@@ -27,6 +27,17 @@
       </div>
     </div>
   </div>
+  <!-- Legend -->
+  <div class=""></div>
+  <div class="mt-2 flex w-full items-center justify-center">
+    <span class="mr-2">Low</span>
+    <div
+      class="m-[0.1rem] h-4 w-4 rounded-sm"
+      :style="{ background: color }"
+      v-for="color of colors"
+    />
+    <span class="ml-2">High</span>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -40,18 +51,9 @@
     mainColor: { type: String, default: '#30a14e' }
   })
 
-  const colors = computed(() => generateShades(props.mainColor, 5))
+  const colors = computed(() => ['#2b2f36', ...generateShades(props.mainColor, 5).slice(1)])
 
-  const weekDays = {
-    0: '',
-    1: 'M',
-    2: '',
-    3: 'W',
-    4: '',
-    5: 'F',
-    6: '',
-    7: 'S'
-  }
+  const weekDaysAxis = ['', 'M', '', 'W', '', 'F', '', 'S']
 
   const monthNames = [
     'Jan',
