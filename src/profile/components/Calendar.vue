@@ -91,7 +91,6 @@
   }
 
   const updateMonthTitles = () => {
-    console.log('OOOO')
     const result: { [firstDay: string]: string } = {}
 
     let lastMonth = ''
