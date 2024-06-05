@@ -26,3 +26,13 @@ export const invertColor = (hexColor: string) => {
   color = '#' + color // prepend #
   return color.toString()
 }
+
+/**
+ * Returns the ISO date of last year today.
+ * @returns
+ */
+export const lastYear = () => {
+  const now = new Date().toISOString()
+  const year = parseInt(now.substring(0, 4))
+  return `${year - 1}${now.substring(4)}`
+}

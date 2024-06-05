@@ -11,7 +11,7 @@
 
   <div class="absolute top-0 left-0 flex flex-col gap-4 bg-red p-2" v-if="isDev">
     <RouterLink :to="{ name: 'home' }">Home</RouterLink>
-    <RouterLink :to="{ name: 'profile', params: { username: 'AndreaDuina' } }">
+    <RouterLink :to="{ name: 'profile', params: { username: 'andreaduina' } }">
       Andrea Duina
     </RouterLink>
     <RouterLink :to="{ name: 'profile', params: { username: 'francescozonaro' } }">

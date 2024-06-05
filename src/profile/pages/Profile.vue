@@ -10,8 +10,7 @@
 
 <script setup lang="ts">
   import { computed, watch, ref } from 'vue'
-  import { getFullCalendar } from '~/profile/helpers/helpers'
-  import { emptyCalendar } from '~/profile/helpers/helpers'
+  import { emptyCalendar, getFullCalendar } from '~/profile/helpers/helpers'
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
 
@@ -22,9 +21,19 @@
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const usernames = { github: props.username, gitlab: props.username }
 
+  const userMap = {
+    andreaduina: {
+      github: 'AndreaDuina',
+      gitlab: 'muwave'
+    },
+    francescozonaro: {
+      github: 'francescozonaro'
+    }
+  }
+
   const init = async () => {
     try {
-      const res = await getFullCalendar(usernames)
+      const res = await getFullCalendar(userMap[props.username])
       calendar.value = res as GitDashboardCalendar
     } catch (err) {
       console.error(`Error getting calendar`, err)

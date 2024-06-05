@@ -2,8 +2,8 @@ import { getContributionCalendarGH } from '~/common/api/github'
 import { getContributionCalendarGL } from '~/common/api/gitlab'
 
 const calendarGetter: { [platform: string]: Function } = {
-  github: getContributionCalendarGH
-  // gitlab: getContributionCalendarGL
+  github: getContributionCalendarGH,
+  gitlab: getContributionCalendarGL
 }
 
 /**
@@ -124,14 +124,17 @@ const sumCalendars = (a: GitDashboardCalendar, b: GitDashboardCalendar): GitDash
 export const getFullCalendar = async (usernames: {
   [platform: string]: string
 }): Promise<GitDashboardCalendar> => {
-  const supportedPlatforms = Object.keys(calendarGetter)
+  const supportedPlatforms = Object.keys(usernames)
 
   // Get calendars from API
   const apiCalendars = []
   for (const platform of supportedPlatforms) {
-    apiCalendars.push(calendarGetter[platform](usernames[platform]))
+    if (calendarGetter[platform]) {
+      apiCalendars.push(calendarGetter[platform](usernames[platform]))
+    }
   }
   const resolvedApiCalendars = await Promise.all(apiCalendars)
+  console.log(resolvedApiCalendars)
 
   // Parse calendars into GitDashboardCalendar and sum them
   let calendar: GitDashboardCalendar = emptyCalendar()
