@@ -134,7 +134,6 @@ export const getFullCalendar = async (usernames: {
     }
   }
   const resolvedApiCalendars = await Promise.all(apiCalendars)
-  console.log(resolvedApiCalendars)
 
   // Parse calendars into GitDashboardCalendar and sum them
   let calendar: GitDashboardCalendar = emptyCalendar()
