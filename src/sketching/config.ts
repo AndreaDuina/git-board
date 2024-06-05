@@ -10,6 +10,6 @@ const routes: Array<RouteRecordRaw> = [
 
 export const config = {
   name: 'sketching',
-  enabled: true,
+  enabled: import.meta.env.DEV,
   routes: routes
 }

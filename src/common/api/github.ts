@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Octokit } from 'octokit'
 
 const ENDPOINT = 'https://api.github.com/graphql'
 
@@ -10,11 +9,13 @@ const config = {
 }
 
 /**
- * Get the daily contributions (grouped by week) for a given user.
+ * Get the daily contributions (grouped by week) for a given GitHub user.
  * @param username GitHub username.
  * @returns Contribution calendar
  */
-export const getContributionCalendar = async (username: string): Promise<GitHubCalendar | null> => {
+export const getContributionCalendarGH = async (
+  username: string
+): Promise<GitHubCalendar | null> => {
   const body = {
     query: `query {
       user(login: "${username}") {

@@ -1,39 +1,46 @@
 <template>
-  <h1 class="text-4xl font-semibold tracking-wider">{{ username }}</h1>
-  <div class="mt-4 flex justify-center" v-if="calendar">
-    <div class="inline-block" v-for="week of calendar.weeks">
-      <div class="flex flex-col" v-for="day of week.contributionDays">
-        <div class="m-[0.1rem] h-4 w-4 rounded-sm" :style="{ background: day.color }" />
-      </div>
+  <div class="flex items-center">
+    <div class="mr-6 h-32 w-32">
+      <AccountAvatar :account="username" :imageSrc="''" size="large" />
     </div>
+    <h1 class="text-4xl font-semibold tracking-wider">{{ username }}</h1>
   </div>
-  <div v-else>No data</div>
+  <Calendar :calendar="calendar" :loading="loading" mainColor="#3e63dd" />
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
-  import { getContributionCalendar } from '~/common/api/github'
+  import { computed, watch, ref } from 'vue'
+  import { emptyCalendar, getFullCalendar } from '~/profile/helpers/helpers'
+  import AccountAvatar from '~/common/components/AccountAvatar.vue'
+  import Calendar from '~/profile/components/Calendar.vue'
 
   const props = defineProps({
     username: { type: String, required: true }
   })
-  const calendar = ref<GitHubCalendar>()
+
+  const calendar = ref<GitDashboardCalendar>(emptyCalendar())
+  const loading = ref(true)
+
+  const userMap = {
+    andreaduina: {
+      github: 'AndreaDuina',
+      gitlab: 'muwave'
+    },
+    francescozonaro: {
+      github: 'francescozonaro'
+    }
+  }
 
   const init = async () => {
     try {
-      const res = await getContributionCalendar(props.username)
-      calendar.value = res as GitHubCalendar
+      loading.value = true
+      const res = await getFullCalendar(userMap[props.username])
+      calendar.value = res as GitDashboardCalendar
+      loading.value = false
     } catch (err) {
       console.error(`Error getting calendar`, err)
     }
   }
 
   init()
-
-  watch(
-    () => props.username,
-    async () => {
-      calendar.value = (await getContributionCalendar(props.username)) as GitHubCalendar
-    }
-  )
 </script>
