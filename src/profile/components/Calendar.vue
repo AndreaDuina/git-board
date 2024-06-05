@@ -1,5 +1,6 @@
 <template>
   <div class="flex justify-center" v-if="calendar">
+    <!-- Days of the week names -->
     <div class="inline-block">
       <div class="flex flex-col" v-for="i of 8">
         <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm">
@@ -8,12 +9,15 @@
       </div>
     </div>
     <div class="inline-block" v-for="week of calendar.weeks">
+      <!-- Month names -->
       <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm">
         {{ monthTitles[week.firstDay] }}
       </div>
+      <!-- Data -->
       <div class="flex flex-col" v-for="day of week.days">
         <div
           class="m-[0.1rem] h-4 w-4 rounded-sm"
+          :class="[{ 'animate-pulse': loading }]"
           :style="{ background: getContributionColor(day.count) }"
         />
       </div>
@@ -23,9 +27,11 @@
 
 <script setup lang="ts">
   import { PropType, computed } from 'vue'
+  import { emptyCalendar } from '~/profile/helpers/helpers'
 
   const props = defineProps({
-    calendar: { type: Object as PropType<GitDashboardCalendar>, required: true }
+    calendar: { type: Object as PropType<GitDashboardCalendar>, required: true },
+    loading: { type: Boolean, default: false }
   })
 
   const weekDays = {
