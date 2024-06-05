@@ -5,7 +5,6 @@ interface GitHubCalendar {
     contributionDays: GitHubContributionDay[]
     firstDay: string
   }[]
-}
 
 interface GitHubContributionDay {
   color: string
