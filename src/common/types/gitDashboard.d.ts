@@ -10,3 +10,7 @@ interface GitDashboardCalendarDay {
   count: number
   date: string
 }
+
+interface PushMap {
+  [date: string]: number
+}

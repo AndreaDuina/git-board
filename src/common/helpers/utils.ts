@@ -27,12 +27,14 @@ export const invertColor = (hexColor: string) => {
   return color.toString()
 }
 
+export const todayIso = () => new Date().toISOString()
+
 /**
  * Returns the ISO date of last year today.
  * @returns
  */
-export const lastYear = () => {
-  const now = new Date().toISOString()
+export const lastYear = (from: Date = new Date()) => {
+  const now = from.toISOString()
   const year = parseInt(now.substring(0, 4))
   return `${year - 1}${now.substring(4)}`
 }
