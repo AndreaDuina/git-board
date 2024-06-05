@@ -8,16 +8,20 @@
         </div>
       </div>
     </div>
-    <div class="inline-block" v-for="week of calendar.weeks">
+    <div class="inline-block" v-for="(week, idx) of calendar.weeks">
       <!-- Month names -->
       <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm">
         {{ monthTitles[week.firstDay] }}
       </div>
       <!-- Data -->
-      <div class="flex flex-col" v-for="day of week.days">
+      <div
+        class="flex flex-col"
+        :class="[{ 'animate-pulse': loading }]"
+        v-for="day of week.days"
+        :style="{ animationDelay: `${20 * idx}ms` }"
+      >
         <div
           class="m-[0.1rem] h-4 w-4 rounded-sm"
-          :class="[{ 'animate-pulse': loading }]"
           :style="{ background: getContributionColor(day.count) }"
         />
       </div>
