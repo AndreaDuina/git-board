@@ -32,11 +32,15 @@
 <script setup lang="ts">
   import { PropType, computed } from 'vue'
   import { emptyCalendar } from '~/profile/helpers/helpers'
+  import { generateShades } from '~/common/helpers/utils'
 
   const props = defineProps({
     calendar: { type: Object as PropType<GitDashboardCalendar>, required: true },
-    loading: { type: Boolean, default: false }
+    loading: { type: Boolean, default: false },
+    mainColor: { type: String, default: '#30a14e' }
   })
+
+  const colors = computed(() => generateShades(props.mainColor, 5))
 
   const weekDays = {
     0: '',
@@ -67,15 +71,15 @@
   const getContributionColor = (count: number): string => {
     switch (true) {
       case count < 1:
-        return '#ffffff'
+        return '#2b2f36' //'#2b2f36'
       case count < 3:
-        return '#9be9a8'
+        return colors.value[1] // '#9be9a8'
       case count < 5:
-        return '#40c463'
+        return colors.value[2] // '#40c463'
       case count < 10:
-        return '#30a14e'
+        return colors.value[3] // '#30a14e'
       default:
-        return '#216e39'
+        return colors.value[4] // '#216e39'
     }
   }
 

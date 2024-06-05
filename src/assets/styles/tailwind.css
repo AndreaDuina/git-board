@@ -10,16 +10,16 @@
     write your css once. */
   .dark-theme {
     /* Application background */
-    --color-background: 28 14 33;
+    --color-background: 27 27 31;
     /* Components background */
-    --color-background-light: 48 22 56;
+    --color-background-light: 43 47 54;
     /* Brighter background (e.g. selected components) */
-    --color-background-bright: 64 40 71;
+    --color-background-bright: 63 67 74;
     /* Dark background (navbar) */
-    --color-background-dark: 9 4 10;
+    --color-background-dark: 22 22 24;
 
     /* Primary color (e.g. buttons, selections) */
-    --color-primary: 166 22 98;
+    --color-primary: 54 148 242;
     /* Lighter primary color (e.g. hover primary color) */
     --color-primary-light: 192 38 107;
     /* Darker primary color (e.g. click primary color) */

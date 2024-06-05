@@ -5,7 +5,7 @@
     </div>
     <h1 class="text-4xl font-semibold tracking-wider">{{ username }}</h1>
   </div>
-  <Calendar :calendar="calendar" :loading="loading" />
+  <Calendar :calendar="calendar" :loading="loading" mainColor="#3e63dd" />
 </template>
 
 <script setup lang="ts">
