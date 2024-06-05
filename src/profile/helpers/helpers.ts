@@ -1,5 +1,6 @@
 import { getContributionCalendarGH } from '~/common/api/github'
 import { getContributionCalendarGL } from '~/common/api/gitlab'
+import { lastYear, todayIso } from '~/common/helpers/utils'
 
 const calendarGetter: { [platform: string]: Function } = {
   github: getContributionCalendarGH,
@@ -53,10 +54,8 @@ export const emptyCalendar = (): GitDashboardCalendar => {
 export const parseCalendarGithub = (data: GitHubCalendar): GitDashboardCalendar => {
   const calendar: GitDashboardCalendar = emptyCalendar()
   calendar.total = data.totalContributions
-
   const githubDays: GitHubContributionDay[] = data.weeks.flatMap(week => week.contributionDays)
   const calendarDays: GitDashboardCalendarDay[] = calendar.weeks.flatMap(week => week.days)
-
   githubDays.forEach((githubDay, index) => {
     if (calendarDays[index]) {
       calendarDays[index].count = githubDay.contributionCount
@@ -121,16 +120,18 @@ const sumCalendars = (a: GitDashboardCalendar, b: GitDashboardCalendar): GitDash
  * @param usernames Object mapping the platform name and the username on that platform.
  * @returns
  */
-export const getFullCalendar = async (usernames: {
-  [platform: string]: string
-}): Promise<GitDashboardCalendar> => {
+export const getFullCalendar = async (
+  usernames: { [platform: string]: string },
+  from = lastYear(),
+  to = todayIso()
+): Promise<GitDashboardCalendar> => {
   const supportedPlatforms = Object.keys(usernames)
 
   // Get calendars from API
   const apiCalendars = []
   for (const platform of supportedPlatforms) {
     if (calendarGetter[platform]) {
-      apiCalendars.push(calendarGetter[platform](usernames[platform]))
+      apiCalendars.push(calendarGetter[platform](usernames[platform], from, to))
     }
   }
   const resolvedApiCalendars = await Promise.all(apiCalendars)

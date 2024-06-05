@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { lastYear } from '../helpers/utils'
+import { lastYear, todayIso } from '../helpers/utils'
 
-const ENDPOINT = 'https://gitlab.com'
+const ENDPOINT = 'https://gitlab.com/api/v4'
 
 const axiosGL = axios.create({
-  baseURL: 'https://gitlab.com/api/v4',
+  baseURL: ENDPOINT,
   headers: {
     'PRIVATE-TOKEN': import.meta.env.VITE_GITLAB_API_TOKEN,
     'Content-Type': 'application/json'
@@ -16,9 +16,13 @@ const axiosGL = axios.create({
  * @param username GitLab username.
  * @returns Contributions by day
  */
-export const getContributionCalendarGL = async (username: string): Promise<GitLabCalendar> => {
+export const getContributionCalendarGL = async (
+  username: string,
+  from = lastYear(),
+  to = todayIso()
+): Promise<GitLabCalendar> => {
   // TODO: wait for release https://gitlab.com/gitlab-org/gitlab/-/issues/322153
-  const yearActivity = await getOneYearPushActivity(username)
+  const yearActivity = await getOneYearPushActivityGL(username, from, to)
 
   const days: { [date: string]: number } = {}
   for (const push of yearActivity) {
@@ -37,14 +41,18 @@ export const getContributionCalendarGL = async (username: string): Promise<GitLa
  * @param username GitLab username.
  * @returns
  */
-const getOneYearPushActivity = async (username: string): Promise<GitLabPushActivity[]> => {
+export const getOneYearPushActivityGL = async (
+  username: string,
+  from: string,
+  to: string
+): Promise<GitLabPushActivity[]> => {
   let result: GitLabPushActivity[] = []
 
   // Perform 50 requests in groups of 5
   for (let i = 0; i < 10; i++) {
     const promises = []
-    for (let j = 1; j <= 1; j++) {
-      promises.push(getUserPushGL(username, i + j))
+    for (let j = 1; j <= 5; j++) {
+      promises.push(getUserPushGL(username, from, to, i + j))
     }
     const response = await Promise.all(promises)
     result = [...result, ...response.flat()]
@@ -53,7 +61,6 @@ const getOneYearPushActivity = async (username: string): Promise<GitLabPushActiv
       break
     }
   }
-
   return result
 }
 
@@ -63,14 +70,25 @@ const getOneYearPushActivity = async (username: string): Promise<GitLabPushActiv
  * @param pageIdx page index.
  * @returns
  */
-const getUserPushGL = async (userId: string, pageIdx = 1): Promise<GitLabPushActivity[]> => {
-  const res = await axiosGL.get(`/users/${userId}/events`, {
-    params: {
-      action: 'pushed',
-      after: lastYear(),
-      per_page: 100,
-      page: pageIdx
-    }
-  })
-  return res.data
+const getUserPushGL = async (
+  userId: string,
+  from: string,
+  to: string,
+  pageIdx = 1
+): Promise<GitLabPushActivity[]> => {
+  try {
+    const res = await axiosGL.get(`/users/${userId}/events`, {
+      params: {
+        action: 'pushed',
+        per_page: 100,
+        page: pageIdx,
+        after: from,
+        before: to
+      }
+    })
+    return res.data
+  } catch (err) {
+    console.error(`Error getting GitLab for ${userId} at page ${pageIdx}`)
+    return []
+  }
 }

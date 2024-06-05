@@ -1,47 +1,52 @@
 <template>
-  <div class="flex justify-center" v-if="calendar">
-    <!-- Days of the week names -->
-    <div class="inline-block">
-      <div class="mr-1 flex flex-col">
-        <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm" v-for="i of 8">
-          {{ weekDaysAxis[i - 1] }}
+  <div v-if="calendar">
+    <div class="flex justify-center">
+      <!-- Days of the week names -->
+      <div class="inline-block">
+        <div class="mr-1 flex flex-col">
+          <div
+            class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm"
+            v-for="i of 8"
+          >
+            {{ weekDaysAxis[i - 1] }}
+          </div>
+        </div>
+      </div>
+      <div class="inline-block" v-for="(week, idx) of calendar.weeks">
+        <!-- Month names -->
+        <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
+          {{ monthTitles[week.firstDay] ?? '' }}
+        </div>
+        <!-- Data -->
+        <div
+          class="flex flex-col"
+          :class="[{ 'animate-pulse': loading }]"
+          v-for="day of week.days"
+          :style="{ animationDelay: `${20 * idx}ms` }"
+        >
+          <div
+            class="m-[0.1rem] h-4 w-4 rounded-sm"
+            :style="{ background: getContributionColor(day.count) }"
+          />
         </div>
       </div>
     </div>
-    <div class="inline-block" v-for="(week, idx) of calendar.weeks">
-      <!-- Month names -->
-      <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
-        {{ monthTitles[week.firstDay] }}
-      </div>
-      <!-- Data -->
+    <!-- Legend -->
+    <div class=""></div>
+    <div class="mt-2 flex w-full items-center justify-center">
+      <span class="mr-2">Low</span>
       <div
-        class="flex flex-col"
-        :class="[{ 'animate-pulse': loading }]"
-        v-for="day of week.days"
-        :style="{ animationDelay: `${20 * idx}ms` }"
-      >
-        <div
-          class="m-[0.1rem] h-4 w-4 rounded-sm"
-          :style="{ background: getContributionColor(day.count) }"
-        />
-      </div>
+        class="m-[0.1rem] h-4 w-4 rounded-sm"
+        :style="{ background: color }"
+        v-for="color of colors"
+      />
+      <span class="ml-2">High</span>
     </div>
-  </div>
-  <!-- Legend -->
-  <div class=""></div>
-  <div class="mt-2 flex w-full items-center justify-center">
-    <span class="mr-2">Low</span>
-    <div
-      class="m-[0.1rem] h-4 w-4 rounded-sm"
-      :style="{ background: color }"
-      v-for="color of colors"
-    />
-    <span class="ml-2">High</span>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { PropType, computed } from 'vue'
+  import { PropType, computed, onMounted, onUnmounted, ref, watch } from 'vue'
   import { emptyCalendar } from '~/profile/helpers/helpers'
   import { generateShades } from '~/common/helpers/utils'
 
@@ -51,10 +56,10 @@
     mainColor: { type: String, default: '#30a14e' }
   })
 
+  const monthTitles = ref<{ [firstDay: string]: string }>({})
   const colors = computed(() => ['#2b2f36', ...generateShades(props.mainColor, 5).slice(1)])
 
   const weekDaysAxis = ['', 'M', '', 'W', '', 'F', '', 'S']
-
   const monthNames = [
     'Jan',
     'Feb',
@@ -85,7 +90,8 @@
     }
   }
 
-  const monthTitles = computed(() => {
+  const updateMonthTitles = () => {
+    console.log('OOOO')
     const result: { [firstDay: string]: string } = {}
 
     let lastMonth = ''
@@ -99,7 +105,14 @@
       }
       result[firstDay] = ''
     }
+    monthTitles.value = result
+  }
 
-    return result
+  onMounted(updateMonthTitles)
+  onMounted(() => {
+    const unwatch = watch(() => props.calendar, updateMonthTitles, {
+      deep: true
+    })
+    onUnmounted(unwatch)
   })
 </script>
