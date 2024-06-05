@@ -46,15 +46,15 @@ export const getContributionCalendarGH = async (
     return calendar
   } catch (err) {
     console.error(`Error getting GitHub calendar for ${username}`, err)
-    const referece = emptyCalendar()
+    const reference = emptyCalendar(from, to)
     const empty: GitHubCalendar = { totalContributions: 0, weeks: [] }
 
-    for (let i = 0; i < referece.weeks.length; i++) {
+    for (let i = 0; i < reference.weeks.length; i++) {
       const week: any = {
         contributionDays: [],
-        firstDay: referece.weeks[i].firstDay
+        firstDay: reference.weeks[i].firstDay
       }
-      for (const day of referece.weeks[i].days) {
+      for (const day of reference.weeks[i].days) {
         week.contributionDays.push({
           contributionCount: day.count,
           date: day.date

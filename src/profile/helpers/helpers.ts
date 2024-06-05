@@ -10,11 +10,7 @@ const calendarGetter: { [platform: string]: Function } = {
 /**
  * Returns an empty calendar.
  */
-export const emptyCalendar = (): GitDashboardCalendar => {
-  const today = new Date()
-  const firstDay = new Date()
-  firstDay.setDate(today.getDate() - 367) //TODO: leapyears
-
+export const emptyCalendar = (from = lastYear(), to = todayIso()): GitDashboardCalendar => {
   const calendar: GitDashboardCalendar = {
     total: 0,
     weeks: []
@@ -22,10 +18,10 @@ export const emptyCalendar = (): GitDashboardCalendar => {
 
   let calendarWeek: { days: GitDashboardCalendarDay[]; firstDay: string } = {
     days: [],
-    firstDay: firstDay.toISOString().split('T')[0]
+    firstDay: from.split('T')[0]
   }
 
-  for (let d = new Date(firstDay); d <= today; d.setDate(d.getDate() + 1)) {
+  for (let d = new Date(from); d <= new Date(to); d.setDate(d.getDate() + 1)) {
     const calendarDay: GitDashboardCalendarDay = {
       count: 0,
       date: d.toISOString().split('T')[0]
@@ -51,8 +47,13 @@ export const emptyCalendar = (): GitDashboardCalendar => {
  * Parse the GitHub API response to GitDashboardCalendar.
  * @param data
  */
-export const parseCalendarGithub = (data: GitHubCalendar): GitDashboardCalendar => {
-  const calendar: GitDashboardCalendar = emptyCalendar()
+export const parseCalendarGithub = (
+  data: GitHubCalendar,
+  from: string,
+  to: string
+): GitDashboardCalendar => {
+  const calendar: GitDashboardCalendar = emptyCalendar(from, to)
+
   calendar.total = data.totalContributions
   const githubDays: GitHubContributionDay[] = data.weeks.flatMap(week => week.contributionDays)
   const calendarDays: GitDashboardCalendarDay[] = calendar.weeks.flatMap(week => week.days)
@@ -69,8 +70,12 @@ export const parseCalendarGithub = (data: GitHubCalendar): GitDashboardCalendar 
  * Parse the GitLab API response to GitDashboardCalendar.
  * @param data
  */
-const parseCalendarGitlab = (data: GitLabCalendar): GitDashboardCalendar => {
-  const calendar: GitDashboardCalendar = emptyCalendar()
+const parseCalendarGitlab = (
+  data: GitLabCalendar,
+  from: string,
+  to: string
+): GitDashboardCalendar => {
+  const calendar: GitDashboardCalendar = emptyCalendar(from, to)
   const calendarDays: GitDashboardCalendarDay[] = calendar.weeks.flatMap(week => week.days)
 
   let total = 0
@@ -96,8 +101,13 @@ const calendarParser: { [platform: string]: (...args: any[]) => GitDashboardCale
 /**
  * Sum two commit calendars.
  */
-const sumCalendars = (a: GitDashboardCalendar, b: GitDashboardCalendar): GitDashboardCalendar => {
-  const sumCalendar: GitDashboardCalendar = emptyCalendar()
+const sumCalendars = (
+  a: GitDashboardCalendar,
+  b: GitDashboardCalendar,
+  from: string,
+  to: string
+): GitDashboardCalendar => {
+  const sumCalendar: GitDashboardCalendar = emptyCalendar(from, to)
 
   let total = 0
   sumCalendar.weeks.forEach((week, wIndex) => {
@@ -137,11 +147,11 @@ export const getFullCalendar = async (
   const resolvedApiCalendars = await Promise.all(apiCalendars)
 
   // Parse calendars into GitDashboardCalendar and sum them
-  let calendar: GitDashboardCalendar = emptyCalendar()
+  let calendar: GitDashboardCalendar = emptyCalendar(from, to)
   for (const i in supportedPlatforms) {
     const platform = supportedPlatforms[i]
-    const parsed = calendarParser[platform](resolvedApiCalendars[i])
-    calendar = sumCalendars(calendar, parsed)
+    const parsed = calendarParser[platform](resolvedApiCalendars[i], from, to)
+    calendar = sumCalendars(calendar, parsed, from, to)
   }
 
   return calendar

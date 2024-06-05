@@ -3,6 +3,7 @@ interface GitHubCalendar {
   weeks: {
     contributionDays: GitHubContributionDay[]
   }[]
+}
 
 interface GitHubContributionDay {
   contributionCount: number
