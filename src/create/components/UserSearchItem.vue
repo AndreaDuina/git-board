@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full rounded-xl bg-background-light px-8 py-4"
+    class="w-full rounded-xl bg-background-light px-8 py-4 transition-colors"
     :class="darkHover ? 'hover:bg-background' : 'hover:bg-background-bright'"
     @click="emit('onClick', user)"
   >
