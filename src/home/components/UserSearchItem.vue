@@ -1,0 +1,30 @@
+<template>
+  <div class="w-full rounded-xl bg-background-light px-8 py-4 hover:bg-background-bright">
+    <div class="flex items-center">
+      <img class="mr-2 h-16 w-16 rounded-full border-2 border-light" :src="user.imgUrl" />
+      <div class="flex flex-col">
+        <div class="flex items-center">
+          <h2 class="text-2xl font-medium">{{ user.username }}</h2>
+          <img class="ml-2 h-6 w-6" :src="platformLogo" />
+        </div>
+        <div>{{ user.username }} {{ user.pageUrl }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import logoGH from '~/assets/github-mark-white.svg'
+  import logoGL from '~/assets/gitlab-logo.svg'
+
+  const props = defineProps({
+    user: { type: Object as PropType<UserMacroAPI> }
+  })
+
+  const logosMap = {
+    github: logoGH,
+    gitlab: logoGL
+  }
+
+  const platformLogo = computed(() => logosMap[props.user.platform])
+</script>
