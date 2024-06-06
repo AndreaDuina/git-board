@@ -94,3 +94,17 @@ export function getPreviousSunday(dateStr: string): string {
 
   return date.toISOString()
 }
+
+export const emptyAccount = (): Account => {
+  return {
+    username: '',
+    name: '',
+    email: '',
+    imgUrl: '',
+    platforms: {
+      github: [],
+      gitlab: []
+    },
+    socials: {}
+  }
+}

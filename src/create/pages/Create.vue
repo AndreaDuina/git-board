@@ -39,6 +39,7 @@
   <div class="mt-4 flex justify-end">
     <button
       class="rounded-xl bg-primary px-4 py-2 text-lg hover:brightness-110 active:brightness-90"
+      @click="createDashboard"
     >
       Create dashboard
     </button>
@@ -52,8 +53,10 @@
   import { searchUser } from '~/common/api/macro'
   import levenshtein from 'fast-levenshtein'
   import { useStateStore } from '~/stores/state'
+  import { router } from 'vue-router'
 
   const state = useStateStore()
+  const router = useRouter()
 
   const searchResults = ref<UserMacroAPI[]>([])
   const selectedUsers = reactive<{ [hash: string]: UserMacroAPI }>({})
@@ -92,6 +95,10 @@
   }
 
   const getHash = (user: UserMacroAPI) => `${user.username}@${user.platform}`
+  const reverseHash = (hash: string) => {
+    ;[username, platform] = hash.split('@')
+    return { username, platform }
+  }
 
   const addToDashboard = (clickedUser: UserMacroAPI) => {
     const hash = getHash(clickedUser)
@@ -103,6 +110,45 @@
   const removeFromDashboard = (clickedUser: UserMacroAPI) => {
     const hash = getHash(clickedUser)
     delete selectedUsers[hash]
+  }
+
+  const createDashboard = () => {
+    state.localUser = buildAccount()
+    router.push({ name: 'profile', params: { username: '@local' } })
+  }
+
+  const buildAccount = () => {
+    let name = ''
+    let imgUrl = ''
+    const platforms: { [platform: string]: string[] } = {}
+
+    for (const hash in selectedUsers) {
+      const user = selectedUsers[hash]
+      if (user.name) {
+        name = user.name
+      }
+      if (user.imgUrl) {
+        imgUrl = user.imgUrl
+      }
+      if (!platforms[user.platform]) {
+        platforms[user.platform] = []
+      }
+      platforms[user.platform].push(user.username)
+    }
+
+    // If no name was found use username
+    const hashes = Object.keys(selectedUsers)
+    name = hashes.length > 0 ? selectedUsers[hashes[0]].username : ''
+
+    const account: Account = {
+      username: '@local',
+      name,
+      email: '',
+      imgUrl,
+      platforms,
+      socials: []
+    }
+    return account
   }
 
   init()

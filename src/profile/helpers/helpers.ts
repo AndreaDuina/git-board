@@ -148,27 +148,32 @@ const sumCalendars = (
  * @returns
  */
 export const getFullCalendar = async (
-  usernames: { [platform: string]: string },
+  usernames: { [platform: string]: string[] },
   from = lastYear(),
   to = todayIso()
 ): Promise<GitDashboardCalendar> => {
   const supportedPlatforms = Object.keys(usernames)
 
   // Get calendars from API
-  const apiCalendars = []
+  const promisesCalendars: any[] = []
   for (const platform of supportedPlatforms) {
     if (calendarGetter[platform]) {
-      apiCalendars.push(calendarGetter[platform](usernames[platform], from, to))
+      usernames[platform].forEach((username: string) =>
+        promisesCalendars.push(calendarGetter[platform](username, from, to))
+      )
     }
   }
-  const resolvedApiCalendars = await Promise.all(apiCalendars)
+  const resCalendars = await Promise.all(promisesCalendars)
 
   // Parse calendars into GitDashboardCalendar and sum them
   let calendar: GitDashboardCalendar = emptyCalendar(from, to)
-  for (const i in supportedPlatforms) {
+  for (let i = 0, k = 0; i < supportedPlatforms.length; i++) {
     const platform = supportedPlatforms[i]
-    const parsed = calendarParser[platform](resolvedApiCalendars[i], from, to)
-    calendar = sumCalendars(calendar, parsed, from, to)
+    for (let j = 0; j < usernames[platform].length; j++) {
+      const parsed = calendarParser[platform](resCalendars[k], from, to)
+      calendar = sumCalendars(calendar, parsed, from, to)
+      k++
+    }
   }
 
   return calendar

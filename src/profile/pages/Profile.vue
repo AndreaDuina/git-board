@@ -1,9 +1,9 @@
 <template>
   <div class="flex items-center">
     <div class="mr-6 h-32 w-32">
-      <AccountAvatar :account="username" :imageSrc="''" size="large" />
+      <AccountAvatar :account="username" :imageSrc="user.imgUrl" size="large" />
     </div>
-    <h1 class="text-4xl font-semibold tracking-wider">{{ username }}</h1>
+    <h1 class="text-4xl font-semibold tracking-wider">{{ user.name }}</h1>
   </div>
   <div class="flex w-full items-start justify-center">
     <Calendar :calendar="calendar" :loading="loading" mainColor="#3694f2" />
@@ -27,23 +27,43 @@
   import { emptyCalendar, getFullCalendar } from '~/profile/helpers/helpers'
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
+  import { useStateStore } from '~/stores/state'
+  import { emptyAccount } from '~/common/helpers/utils'
 
   const props = defineProps({
     username: { type: String, required: true }
   })
 
+  const state = useStateStore()
+
+  const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const loading = ref(true)
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
 
-  const userMap: { [username: string]: { [platform: string]: string } } = {
+  // Tesing only
+  const userMap: { [username: string]: Account } = {
     andreaduina: {
-      github: 'AndreaDuina',
-      gitlab: 'muwave'
+      username: 'andreaduina',
+      name: 'Andrea Duina',
+      email: '',
+      imgUrl: '',
+      platforms: {
+        github: ['AndreaDuina', 'francescozonaro'],
+        gitlab: ['muwave']
+      },
+      socials: {}
     },
     francescozonaro: {
-      github: 'francescozonaro'
+      username: 'francescozonaro',
+      name: 'Francesco Zonaro',
+      email: '',
+      imgUrl: '',
+      platforms: {
+        github: ['francescozonaro']
+      },
+      socials: {}
     }
   }
 
@@ -60,9 +80,16 @@
   }
 
   const init = async () => {
+    if (props.username == '@local') {
+      user.value = state.localUser
+    } else {
+      // TODO: Get from server
+      user.value = userMap[props.username]
+    }
+
     try {
       loading.value = true
-      const res = await getFullCalendar(userMap[props.username])
+      const res = await getFullCalendar(user.value.platforms)
       calendar.value = res
       loading.value = false
     } catch (err) {

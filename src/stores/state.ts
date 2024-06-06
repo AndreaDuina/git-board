@@ -7,7 +7,17 @@ export const useStateStore = defineStore('state', () => {
     platforms: []
   })
 
+  const localUser = ref<Account>({
+    username: '@local',
+    name: '',
+    email: '',
+    imgUrl: '',
+    platforms: {},
+    socials: {}
+  })
+
   return {
-    searchUsersParams
+    searchUsersParams,
+    localUser
   }
 })

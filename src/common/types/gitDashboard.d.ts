@@ -23,3 +23,16 @@ interface UserMacroAPI {
   name: string
   pageUrl: string
 }
+
+interface Account {
+  username: string
+  name: string
+  email: string
+  imgUrl: string
+  platforms: {
+    [key: string]: string[]
+  }
+  socials: {
+    [key: string]: string
+  }
+}
