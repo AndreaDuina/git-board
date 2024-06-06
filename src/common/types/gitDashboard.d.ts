@@ -14,3 +14,12 @@ interface GitDashboardCalendarDay {
 interface PushMap {
   [date: string]: number
 }
+
+interface UserMacroAPI {
+  platform: string
+  imgUrl: string
+  username: string
+  id: number
+  name: string
+  pageUrl: string
+}

@@ -79,7 +79,15 @@
   } from '@headlessui/vue'
   import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 
-  const platforms = [{ name: 'All platforms' }, { name: 'GitHub' }, { name: 'GitLab' }]
+  const emit = defineEmits<{
+    (e: 'search', text: string, platforms: string[]): void
+  }>()
+
+  const platforms = [
+    { name: 'All platforms', id: 'all' },
+    { name: 'GitHub', id: 'github' },
+    { name: 'GitLab', id: 'gitlab' }
+  ]
 
   const router = useRouter()
   const selectedPlatform = ref(platforms[0])
@@ -88,8 +96,14 @@
   const search = () => {
     if (!searchText || !searchText.value) return
 
+    const searchPlatforms =
+      selectedPlatform.value.id == 'all'
+        ? platforms.slice(1).map(p => p.id)
+        : [selectedPlatform.value.id]
+
     try {
-      const normalizedText = searchText.value.trim().toLowerCase()
+      const normalizedText = searchText.value.trim()
+      emit('search', normalizedText, searchPlatforms)
     } finally {
       searchText.value = ''
     }
