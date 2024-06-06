@@ -47,10 +47,23 @@
   import UserSearchItem from '~/create/components/UserSearchItem.vue'
   import { searchUser } from '~/common/api/macro'
   import levenshtein from 'fast-levenshtein'
+  import { useStateStore } from '~/stores/state'
+
+  const state = useStateStore()
 
   const searchResults = ref<UserMacroAPI[]>([])
   const selectedUsers = reactive<{ [hash: string]: UserMacroAPI }>({})
   let lastSearchText = ''
+
+  const init = () => {
+    // Load search parameters from state if possible
+    if (state.searchUsersParams.username) {
+      search(state.searchUsersParams.username, state.searchUsersParams.platforms)
+      // Reset state
+      state.searchUsersParams.username = ''
+      state.searchUsersParams.platforms = []
+    }
+  }
 
   const search = async (username: string, platforms: string[]) => {
     try {
@@ -84,4 +97,6 @@
     const hash = getHash(clickedUser)
     delete selectedUsers[hash]
   }
+
+  init()
 </script>
