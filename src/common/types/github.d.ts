@@ -2,6 +2,7 @@ interface GitHubCalendar {
   totalContributions: number
   weeks: {
     contributionDays: GitHubContributionDay[]
+    firstDay: string
   }[]
 }
 
