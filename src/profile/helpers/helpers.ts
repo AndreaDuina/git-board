@@ -3,8 +3,8 @@ import { getContributionCalendarGL } from '~/common/api/gitlab'
 import { lastYear, todayIso } from '~/common/helpers/utils'
 
 const calendarGetter: { [platform: string]: Function } = {
-  github: getContributionCalendarGH,
-  gitlab: getContributionCalendarGL
+  github: () => getContributionCalendarGH,
+  gitlab: () => getContributionCalendarGL
 }
 
 /**

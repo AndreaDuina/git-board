@@ -92,3 +92,13 @@ const getUserPushGL = async (
     return []
   }
 }
+
+export const searchUserGL = async (username: string): Promise<GitLabUser[]> => {
+  try {
+    const res = await axiosGL.get(`/users?username=${username}`)
+    return res.data
+  } catch (err) {
+    console.warn(`GitLab user ${username} not found`)
+    return []
+  }
+}
