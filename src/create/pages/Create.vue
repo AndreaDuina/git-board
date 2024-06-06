@@ -5,8 +5,11 @@
     <div class="flex w-1/2 flex-col items-start overflow-y-auto p-6">
       <!--span class="mb-2 text-xl">Search results</span-->
       <div class="flex w-full justify-center">
-        <div class="flex w-full flex-col items-center justify-center gap-4">
+        <div class="flex w-full flex-col items-center justify-center gap-4" v-if="!loading">
           <UserSearchItem :user="user" v-for="user of searchResults" @onClick="addToDashboard" />
+        </div>
+        <div class="flex w-full flex-col items-center justify-center gap-4" v-else>
+          <UserSearchItemSkeleton v-for="i of 5" />
         </div>
       </div>
     </div>
@@ -45,6 +48,7 @@
 <script setup lang="ts">
   import SearchBar from '~/common/components/SearchBar.vue'
   import UserSearchItem from '~/create/components/UserSearchItem.vue'
+  import UserSearchItemSkeleton from '~/create/components/UserSearchItemSkeleton.vue'
   import { searchUser } from '~/common/api/macro'
   import levenshtein from 'fast-levenshtein'
   import { useStateStore } from '~/stores/state'
@@ -53,6 +57,7 @@
 
   const searchResults = ref<UserMacroAPI[]>([])
   const selectedUsers = reactive<{ [hash: string]: UserMacroAPI }>({})
+  const loading = ref(false)
   let lastSearchText = ''
 
   const init = () => {
@@ -67,12 +72,14 @@
 
   const search = async (username: string, platforms: string[]) => {
     try {
+      loading.value = true
       const res = await searchUser(platforms, username)
       // Sort by levenshtein distance
       searchResults.value = res.sort((a: UserMacroAPI, b: UserMacroAPI) =>
         sortLogic(a, b, username)
       )
       lastSearchText = username
+      loading.value = false
     } catch (err) {
       console.error(err)
     }
