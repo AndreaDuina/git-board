@@ -2,37 +2,26 @@
   <div v-if="calendar">
     <div class="flex justify-center">
       <!-- Days of the week names -->
-      <div class="inline-block">
-        <div class="mr-1 flex flex-col">
-          <div
-            class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm"
-            v-for="i of 8"
-          >
-            {{ weekDaysAxis[i - 1] }}
-          </div>
+      <div class="mr-1 flex flex-col">
+        <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm" v-for="i of 8">
+          {{ weekDaysAxis[i - 1] }}
         </div>
       </div>
-      <div class="inline-block" v-for="(week, idx) of calendar.weeks">
+      <div class="flex flex-col" v-for="(week, idx) of calendar.weeks">
         <!-- Month names -->
         <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
           {{ monthTitles[week.firstDay] ?? '' }}
         </div>
         <!-- Data -->
         <div
-          class="flex flex-col"
+          class="m-[0.1rem] h-4 w-4 rounded-sm"
           :class="[{ 'animate-pulse': loading }]"
+          :style="{ background: getContributionColor(day.count), animationDelay: `${20 * idx}ms` }"
           v-for="day of week.days"
-          :style="{ animationDelay: `${20 * idx}ms` }"
-        >
-          <div
-            class="m-[0.1rem] h-4 w-4 rounded-sm"
-            :style="{ background: getContributionColor(day.count) }"
-          />
-        </div>
+        />
       </div>
     </div>
     <!-- Legend -->
-    <div class=""></div>
     <div class="mt-2 flex w-full items-center justify-center">
       <span class="mr-2">Low</span>
       <div
@@ -60,20 +49,8 @@
   const colors = computed(() => ['#2b2f36', ...generateShades(props.mainColor, 5).slice(1)])
 
   const weekDaysAxis = ['', 'M', '', 'W', '', 'F', '', 'S']
-  const monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ]
+  // prettier-ignore
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
   const getContributionColor = (count: number): string => {
     switch (true) {

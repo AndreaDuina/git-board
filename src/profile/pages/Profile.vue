@@ -6,7 +6,7 @@
     <h1 class="text-4xl font-semibold tracking-wider">{{ username }}</h1>
   </div>
   <div class="flex w-full items-start justify-center">
-    <Calendar :calendar="calendar" :loading="loading" mainColor="#3694f2" />
+    <Calendar :calendar="calendar" :loading="true" mainColor="#3694f2" />
     <div class="ml-4 flex flex-col gap-1">
       <button
         class="rounded-[3px] px-4 py-[0.15rem] active:brightness-90"
