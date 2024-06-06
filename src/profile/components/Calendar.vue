@@ -38,7 +38,6 @@
   import { PropType, computed, onMounted, onUnmounted, ref, watch } from 'vue'
   import { emptyCalendar } from '~/profile/helpers/helpers'
   import { generateShades } from '~/common/helpers/utils'
-  import { validateHeaderName } from 'http'
 
   const props = defineProps({
     calendar: { type: Object as PropType<GitDashboardCalendar>, required: true },
@@ -50,20 +49,8 @@
   const colors = computed(() => ['#2b2f36', ...generateShades(props.mainColor, 5).slice(1)])
 
   const weekDaysAxis = ['', '', 'M', '', 'W', '', 'F', '']
-  const monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ]
+  // prettier-ignore
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
   const getContributionColor = (count: number): string => {
     switch (true) {
