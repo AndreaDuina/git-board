@@ -53,7 +53,7 @@
     const res = await getFullCalendar(
       userMap[props.username],
       `${years[idx]}-01-01T00:00:00Z`,
-      `${years[idx] + 1}-01-01T00:00:00Z`
+      `${years[idx]}-12-31T00:00:00Z`
     )
     loading.value = false
     calendar.value = res
