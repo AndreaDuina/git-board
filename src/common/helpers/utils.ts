@@ -72,3 +72,25 @@ export function generateShades(baseColor: string, steps: number) {
 
   return shades.reverse()
 }
+
+export function getNextSunday(dateStr: string): string {
+  const date = new Date(dateStr)
+  const dayOfWeek = date.getUTCDay()
+
+  const daysToAdd = dayOfWeek === 0 ? 0 : 7 - dayOfWeek
+
+  date.setUTCDate(date.getUTCDate() + daysToAdd)
+
+  return date.toISOString()
+}
+
+export function getPreviousSunday(dateStr: string): string {
+  const date = new Date(dateStr)
+  const dayOfWeek = date.getUTCDay()
+
+  const daysToSubtract = dayOfWeek === 0 ? 0 : dayOfWeek
+
+  date.setUTCDate(date.getUTCDate() - daysToSubtract)
+
+  return date.toISOString()
+}

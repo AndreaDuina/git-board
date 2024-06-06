@@ -48,12 +48,26 @@
   const monthTitles = ref<{ [firstDay: string]: string }>({})
   const colors = computed(() => ['#2b2f36', ...generateShades(props.mainColor, 5).slice(1)])
 
-  const weekDaysAxis = ['', 'M', '', 'W', '', 'F', '', 'S']
-  // prettier-ignore
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const weekDaysAxis = ['', '', 'M', '', 'W', '', 'F', '']
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ]
 
   const getContributionColor = (count: number): string => {
     switch (true) {
+      case count < 0:
+        return ''
       case count < 1:
         return '#2b2f36' //'#2b2f36'
       case count < 3:
@@ -72,8 +86,10 @@
 
     let lastMonth = ''
     for (const week of props.calendar.weeks) {
+      const validDay = week.days.find(day => day.count !== -1)
+      const firstValidDay = validDay.date
       const firstDay = week.firstDay
-      const month = firstDay.substring(5, 7)
+      const month = firstValidDay.substring(5, 7)
       if (lastMonth != month) {
         result[firstDay] = monthNames[parseInt(month) - 1]
         lastMonth = month
@@ -81,6 +97,7 @@
       }
       result[firstDay] = ''
     }
+    console.log(result)
     monthTitles.value = result
   }
 

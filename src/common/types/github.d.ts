@@ -8,7 +8,7 @@ interface GitHubCalendar {
 
 interface GitHubContributionDay {
   contributionCount: number
-  [date]: string
+  date: string
 }
 
 interface GitHubPushEvent {

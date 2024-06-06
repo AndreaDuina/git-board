@@ -1,6 +1,6 @@
 import { getContributionCalendarGH } from '~/common/api/github'
 import { getContributionCalendarGL } from '~/common/api/gitlab'
-import { lastYear, todayIso } from '~/common/helpers/utils'
+import { getNextSunday, getPreviousSunday, lastYear, todayIso } from '~/common/helpers/utils'
 
 const calendarGetter: { [platform: string]: Function } = {
   github: getContributionCalendarGH,
@@ -11,6 +11,11 @@ const calendarGetter: { [platform: string]: Function } = {
  * Returns an empty calendar.
  */
 export const emptyCalendar = (from = lastYear(), to = todayIso()): GitDashboardCalendar => {
+  // const nextSundayISO = getNextSunday(to)
+  // const nextSunday = new Date(nextSundayISO)
+  const previousSundayISO = getPreviousSunday(from)
+  const previousSunday = new Date(previousSundayISO)
+
   const calendar: GitDashboardCalendar = {
     total: 0,
     weeks: []
@@ -21,9 +26,12 @@ export const emptyCalendar = (from = lastYear(), to = todayIso()): GitDashboardC
     firstDay: from.split('T')[0]
   }
 
-  for (let d = new Date(from); d <= new Date(to); d.setDate(d.getDate() + 1)) {
+  const fromDate = new Date(from)
+  const toDate = new Date(to)
+
+  for (let d = new Date(previousSunday); d <= toDate; d.setDate(d.getDate() + 1)) {
     const calendarDay: GitDashboardCalendarDay = {
-      count: 0,
+      count: d < fromDate || d > toDate ? -1 : 0,
       date: d.toISOString().split('T')[0]
     }
     calendarWeek.days.push(calendarDay)
@@ -53,14 +61,21 @@ export const parseCalendarGithub = (
   to: string
 ): GitDashboardCalendar => {
   const calendar: GitDashboardCalendar = emptyCalendar(from, to)
-
   calendar.total = data.totalContributions
-  const githubDays: GitHubContributionDay[] = data.weeks.flatMap(week => week.contributionDays)
+
+  const githubDays: { [key: string]: number } = {}
+
+  data.weeks.forEach(week => {
+    week.contributionDays.forEach(day => {
+      githubDays[day.date] = day.contributionCount
+    })
+  })
+
   const calendarDays: GitDashboardCalendarDay[] = calendar.weeks.flatMap(week => week.days)
-  githubDays.forEach((githubDay, index) => {
-    if (calendarDays[index]) {
-      calendarDays[index].count = githubDay.contributionCount
-    }
+
+  calendarDays.forEach(calendarDay => {
+    const date = calendarDay.date
+    calendarDay.count = githubDays[date]
   })
 
   return calendar
