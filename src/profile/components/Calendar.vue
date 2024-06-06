@@ -38,6 +38,7 @@
   import { PropType, computed, onMounted, onUnmounted, ref, watch } from 'vue'
   import { emptyCalendar } from '~/profile/helpers/helpers'
   import { generateShades } from '~/common/helpers/utils'
+  import { validateHeaderName } from 'http'
 
   const props = defineProps({
     calendar: { type: Object as PropType<GitDashboardCalendar>, required: true },
@@ -86,7 +87,8 @@
 
     let lastMonth = ''
     for (const week of props.calendar.weeks) {
-      const validDay = week.days.find(day => day.count !== -1)
+      const validDay = week.days.find(day => day.count > -1)
+      console.log(validDay)
       const firstValidDay = validDay.date
       const firstDay = week.firstDay
       const month = firstValidDay.substring(5, 7)
@@ -97,7 +99,6 @@
       }
       result[firstDay] = ''
     }
-    console.log(result)
     monthTitles.value = result
   }
 
