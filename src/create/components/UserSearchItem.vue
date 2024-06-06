@@ -1,5 +1,9 @@
 <template>
-  <div class="w-full rounded-xl bg-background-light px-8 py-4 hover:bg-background-bright">
+  <div
+    class="w-full rounded-xl bg-background-light px-8 py-4"
+    :class="darkHover ? 'hover:bg-background' : 'hover:bg-background-bright'"
+    @click="emit('onClick', user)"
+  >
     <div class="flex items-center">
       <img class="mr-2 h-16 w-16 rounded-full border-2 border-light" :src="user.imgUrl" />
       <div class="flex flex-col">
@@ -18,8 +22,13 @@
   import logoGL from '~/assets/gitlab-logo.svg'
 
   const props = defineProps({
-    user: { type: Object as PropType<UserMacroAPI> }
+    user: { type: Object as PropType<UserMacroAPI> },
+    darkHover: { type: Boolean, default: false }
   })
+
+  const emit = defineEmits<{
+    (e: 'onClick', user: UserMacroAPI): void
+  }>()
 
   const logosMap = {
     github: logoGH,
