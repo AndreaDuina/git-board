@@ -4,10 +4,10 @@
       <img class="mr-2 h-16 w-16 rounded-full border-2 border-light" :src="user.imgUrl" />
       <div class="flex flex-col">
         <div class="flex items-center">
+          <img class="mr-2 h-6 w-6" :src="platformLogo" />
           <h2 class="text-2xl font-medium">{{ user.username }}</h2>
-          <img class="ml-2 h-6 w-6" :src="platformLogo" />
         </div>
-        <div>{{ user.username }} {{ user.pageUrl }}</div>
+        <div>{{ user.pageUrl }}</div>
       </div>
     </div>
   </div>
