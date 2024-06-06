@@ -93,19 +93,28 @@
   const selectedPlatform = ref(platforms[0])
 
   const searchText = ref('')
+  let lastText = ''
   const search = () => {
     if (!searchText || !searchText.value) return
 
-    const searchPlatforms =
-      selectedPlatform.value.id == 'all'
-        ? platforms.slice(1).map(p => p.id)
-        : [selectedPlatform.value.id]
+    const searchPlatforms = getSearchPlatforms()
 
     try {
       const normalizedText = searchText.value.trim()
+      lastText = normalizedText
       emit('search', normalizedText, searchPlatforms)
     } finally {
       searchText.value = ''
     }
   }
+
+  const getSearchPlatforms = () =>
+    selectedPlatform.value.id == 'all'
+      ? platforms.slice(1).map(p => p.id)
+      : [selectedPlatform.value.id]
+
+  watch(
+    () => selectedPlatform.value,
+    () => emit('search', lastText, getSearchPlatforms())
+  )
 </script>
