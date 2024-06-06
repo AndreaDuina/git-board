@@ -1,5 +1,4 @@
 <template>
-  <h1 class="text-4xl font-semibold tracking-wider">Git Dashboard</h1>
   <SearchBar @search="search" />
 
   <div class="mt-8 flex flex-col items-center justify-center gap-4">
