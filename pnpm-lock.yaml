@@ -17,6 +17,9 @@ importers:
       axios:
         specifier: ^1.3.1
         version: 1.3.1
+      fast-levenshtein:
+        specifier: ^3.0.0
+        version: 3.0.0
       octokit:
         specifier: ^4.0.2
         version: 4.0.2
@@ -36,6 +39,9 @@ importers:
         specifier: ^4.1.6
         version: 4.1.6(vue@3.2.47)
     devDependencies:
+      '@types/fast-levenshtein':
+        specifier: ^0.0.4
+        version: 0.0.4
       '@types/node':
         specifier: ^18.11.18
         version: 18.11.18
@@ -274,6 +280,9 @@ packages:
 
   '@types/estree@1.0.0':
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
+
+  '@types/fast-levenshtein@0.0.4':
+    resolution: {integrity: sha512-tkDveuitddQCxut1Db8eEFfMahTjOumTJGPHmT9E7KUH+DkVq9WTpVvlfenf3S+uCBeu8j5FP2xik/KfxOEjeA==}
 
   '@types/node@18.11.18':
     resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
@@ -717,6 +726,13 @@ packages:
   fast-glob@3.3.2:
     resolution: {integrity: sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==}
     engines: {node: '>=8.6.0'}
+
+  fast-levenshtein@3.0.0:
+    resolution: {integrity: sha512-hKKNajm46uNmTlhHSyZkmToAc56uZJwYq7yrciZjqOxnlfQwERDQJmHPUp7m1m9wx8vgOe8IaCKZ5Kv2k1DdCQ==}
+
+  fastest-levenshtein@1.0.16:
+    resolution: {integrity: sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==}
+    engines: {node: '>= 4.9.1'}
 
   fastq@1.15.0:
     resolution: {integrity: sha512-wBrocU2LCXXa+lWBt8RoIRD89Fi8OdABODa/kEnyeyjS5aZO5/GNvI5sEINADqP/h8M29UHTHUb53sUu5Ihqdw==}
@@ -1633,6 +1649,8 @@ snapshots:
 
   '@types/estree@1.0.0': {}
 
+  '@types/fast-levenshtein@0.0.4': {}
+
   '@types/node@18.11.18': {}
 
   '@vitejs/plugin-vue@3.2.0(vite@3.2.5(@types/node@18.11.18))(vue@3.2.47)':
@@ -2143,6 +2161,12 @@ snapshots:
       glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.5
+
+  fast-levenshtein@3.0.0:
+    dependencies:
+      fastest-levenshtein: 1.0.16
+
+  fastest-levenshtein@1.0.16: {}
 
   fastq@1.15.0:
     dependencies:

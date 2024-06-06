@@ -118,7 +118,7 @@ const getUserPushGH = async (username: string, pageIdx = 1): Promise<GitHubPushE
 
 export const searchUserGH = async (username: string): Promise<GitHubUserSearchResponse> => {
   try {
-    const res = await axiosGH.get(`/search/users?q=${encodeURIComponent(username)}`)
+    const res = await axiosGH.get(`/search/users?q=${encodeURIComponent(username)}&per_page=5`)
     return res.data
   } catch (err) {
     console.warn(`GitHub user ${username} not found`)
