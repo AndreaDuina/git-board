@@ -75,7 +75,7 @@
     let lastMonth = ''
     for (const week of props.calendar.weeks) {
       const validDay = week.days.find(day => day.count > -1)
-      const firstValidDay = validDay.date
+      const firstValidDay = validDay ? validDay.date : new Date(0).toISOString()
       const firstDay = week.firstDay
       const month = firstValidDay.substring(5, 7)
       if (lastMonth != month) {
