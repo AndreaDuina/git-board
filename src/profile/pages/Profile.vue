@@ -59,7 +59,7 @@
       email: '',
       imgUrl: '',
       platforms: {
-        github: ['AndreaDuina', 'francescozonaro'],
+        github: ['AndreaDuina'],
         gitlab: ['muwave']
       },
       socials: {}

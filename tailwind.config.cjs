@@ -7,7 +7,8 @@ module.exports = {
     extend: {
       fontFamily: {
         inter: ['Libre Franklin'],
-        sans: defaultTheme.fontFamily.sans
+        sans: defaultTheme.fontFamily.sans,
+        code: ['Consolas']
       },
       colors: {
         background: 'rgb(var(--color-background) / <alpha-value>)',
