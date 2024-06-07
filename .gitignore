@@ -33,3 +33,6 @@ env.local.ts
 
 # Docs
 docs/.vitepress/cache/*
+
+# Firebase
+.firebase/*
