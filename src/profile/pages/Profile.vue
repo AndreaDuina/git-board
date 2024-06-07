@@ -80,7 +80,7 @@
     loading.value = true
     activeYearIdx.value = idx
     const res = await getFullCalendar(
-      userMap[props.username],
+      user.value.platforms,
       `${years[idx]}-01-01T00:00:00Z`,
       `${years[idx]}-12-31T00:00:00Z`
     )
