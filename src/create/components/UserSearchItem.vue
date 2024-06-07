@@ -22,7 +22,7 @@
   import logoGL from '~/assets/gitlab-logo.svg'
 
   const props = defineProps({
-    user: { type: Object as PropType<UserMacroAPI> },
+    user: { type: Object as PropType<UserMacroAPI>, required: true },
     darkHover: { type: Boolean, default: false }
   })
 
