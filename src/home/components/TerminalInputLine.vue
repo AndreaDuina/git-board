@@ -93,4 +93,13 @@
     context.font = window.getComputedStyle(input.value as HTMLInputElement).font
     input.value?.focus()
   })
+
+  watch(
+    () => props.focused,
+    newValue => {
+      if (newValue) {
+        input.value?.focus()
+      }
+    }
+  )
 </script>

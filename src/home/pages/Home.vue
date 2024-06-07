@@ -10,11 +10,11 @@
 
     <div class="absolute top-1/3 right-12 z-20 flex w-full -translate-y-1/2 justify-end">
       <div
-        class="terminal-shadow shadow-background-lightmuwa w-[60rem] rounded-md bg-background-dark"
+        class="terminal-shadow shadow-background-lightmuwa w-[60rem] rounded-md bg-black"
         id="terminal"
         @click="setFocus"
       >
-        <div class="flex h-8 items-center justify-between bg-black px-2">
+        <div class="flex h-8 items-center justify-between rounded-t-md bg-background-dark px-2">
           <span class="text-sm">Git Dashboard</span>
           <div class="flex items-center gap-2">
             <div class="h-3 w-3 rounded-full" style="background-color: #2aca44"></div>
