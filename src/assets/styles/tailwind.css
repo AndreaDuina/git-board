@@ -95,28 +95,13 @@
 
 @layer utilities {
   /* CSS variables cannot be referenced here */
-  .scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(64 40 71) transparent; /*var(--color-background-bright) var(--color-background-dark);*/
-  }
 
-  .scrollbar::-webkit-scrollbar {
-    width: 7px;
-    height: 20px;
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
-
-  .scrollbar::-webkit-scrollbar-thumb {
-    background: rgb(64 40 71); /*var(--color-background-bright);*/
-    border-radius: 100vh;
-  }
-
-  .scrollbar::-webkit-scrollbar-track {
-    background: transparent; /*var(--color-background-dark);*/
-  }
-
-  @media (min-width: 640px) {
-    .scrollbar {
-      scrollbar-width: auto;
-    }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
