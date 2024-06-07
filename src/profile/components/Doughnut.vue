@@ -8,21 +8,24 @@
   import { PropType, ref, watch, onMounted, onUnmounted } from 'vue'
   import { Chart, registerables } from 'chart.js'
 
-  Chart.register(...registerables)
-  Chart.defaults.color = '#fff'
-
   const props = defineProps({
     data: { type: Object as PropType<GitDashboardLanguageProficiency>, required: true },
     id: { type: String, required: true }
   })
 
-  const chartInstance = ref<Chart<'doughnut', number[], string> | null>(null)
+  let chartInstance: Chart<'doughnut', number[], string> | null = null
 
+  const init = () => {
+    Chart.register(...registerables)
+    Chart.defaults.color = '#fff'
+  }
+
+  // TODO: remove dummy
   const renderChart = (dummy = false) => {
     const ctx = document.getElementById(props.id) as HTMLCanvasElement
 
-    if (chartInstance.value) {
-      chartInstance.value.destroy()
+    if (chartInstance) {
+      chartInstance.destroy()
     }
 
     const chartData = dummy
@@ -43,7 +46,7 @@
           ]
         }
 
-    chartInstance.value = new Chart(ctx, {
+    chartInstance = new Chart(ctx, {
       type: 'doughnut',
       data: chartData,
       options: {
@@ -71,4 +74,6 @@
       renderChart()
     }
   )
+
+  init()
 </script>
