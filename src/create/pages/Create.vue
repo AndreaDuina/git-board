@@ -53,7 +53,7 @@
   import { searchUser } from '~/common/api/macro'
   import levenshtein from 'fast-levenshtein'
   import { useStateStore } from '~/stores/state'
-  import { router } from 'vue-router'
+  import { useRouter } from 'vue-router'
 
   const state = useStateStore()
   const router = useRouter()
@@ -96,7 +96,7 @@
 
   const getHash = (user: UserMacroAPI) => `${user.username}@${user.platform}`
   const reverseHash = (hash: string) => {
-    ;[username, platform] = hash.split('@')
+    const [username, platform] = hash.split('@')
     return { username, platform }
   }
 
@@ -146,7 +146,7 @@
       email: '',
       imgUrl,
       platforms,
-      socials: []
+      socials: {}
     }
     return account
   }

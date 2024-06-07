@@ -1,9 +1,9 @@
 <template>
   <nav class="flex justify-between p-2">
-    <div class="flex items-center">
+    <RouterLink class="flex items-center" to="/">
       <img src="/logo.svg" class="mr-4 h-10 w-10" />
       <h1 class="text-4xl font-semibold tracking-wider">Git Dashboard</h1>
-    </div>
+    </RouterLink>
 
     <div class="flex items-center">
       <button
