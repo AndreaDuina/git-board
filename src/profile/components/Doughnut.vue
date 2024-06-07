@@ -16,7 +16,7 @@
     id: { type: String, required: true }
   })
 
-  const chartInstance = ref<Chart | null>(null)
+  const chartInstance = ref<Chart<'doughnut', number[], string> | null>(null)
 
   const renderChart = (dummy = false) => {
     const ctx = document.getElementById(props.id) as HTMLCanvasElement
@@ -32,7 +32,15 @@
         }
       : {
           labels: Object.keys(props.data),
-          datasets: [{ data: Object.values(props.data), borderWidth: 0 }]
+          datasets: [
+            {
+              data: Object.values(props.data),
+              backgroundColor: ['#0077b6', '#48cae4', '#caf0f8'],
+              borderWidth: 2,
+              borderColor: '',
+              borderRadius: 5
+            }
+          ]
         }
 
     chartInstance.value = new Chart(ctx, {
@@ -45,7 +53,7 @@
           }
         },
         responsive: false,
-        cutout: '70%',
+        cutout: '80%',
         animation: {
           duration: dummy ? 0 : 1000
         }

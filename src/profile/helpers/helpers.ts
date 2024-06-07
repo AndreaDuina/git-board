@@ -229,5 +229,11 @@ export const getFullLanguageProficiency = async (usernames: {
     }
   }
 
-  return langs
+  let sortedLangs = Object.fromEntries(
+    Object.entries(langs)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+  )
+
+  return sortedLangs
 }
