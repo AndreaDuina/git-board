@@ -164,7 +164,6 @@ export const getGitHubLanguageProficiency = async (
     const repoName = repo.name
     const owner = repo.owner.login
     const contributors = await getRepoContributorStats(owner, repoName)
-    console.log(contributors)
     const languages: GitHubRepoLanguages = await getRepoLanguages(owner, repoName)
 
     let totalCommits = 0
