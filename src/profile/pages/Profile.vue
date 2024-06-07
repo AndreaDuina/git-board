@@ -20,15 +20,23 @@
       </button>
     </div>
   </div>
+  <div class="mt-8 flex justify-center">
+    <Doughnut :data="langProf" :id="'d1'" />
+  </div>
 </template>
 
 <script setup lang="ts">
   import { computed, watch, ref } from 'vue'
-  import { emptyCalendar, getFullCalendar } from '~/profile/helpers/helpers'
+  import {
+    emptyCalendar,
+    getFullCalendar,
+    getFullLanguageProficiency
+  } from '~/profile/helpers/helpers'
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
   import { useStateStore } from '~/stores/state'
   import { emptyAccount } from '~/common/helpers/utils'
+  import Doughnut from '~/profile/components/Doughnut.vue'
 
   const props = defineProps({
     username: { type: String, required: true }
@@ -38,6 +46,7 @@
 
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
+  const langProf = ref<GitDashboardLanguageProficiency>({})
   const loading = ref(true)
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
@@ -91,9 +100,13 @@
       loading.value = true
       const res = await getFullCalendar(user.value.platforms)
       calendar.value = res
+
+      const resLangProf = await getFullLanguageProficiency(user.value.platforms)
+      langProf.value = resLangProf
+
       loading.value = false
     } catch (err) {
-      console.error(`Error getting calendar`, err)
+      console.error(`Error loading profile`, err)
     }
   }
 

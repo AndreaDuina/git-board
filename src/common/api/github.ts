@@ -129,3 +129,62 @@ export const searchUserGH = async (username: string): Promise<GitHubUserSearchRe
     }
   }
 }
+
+// ##########################################################################################################################################################################################
+
+export const getRepositories = async (username: string): Promise<GitHubRepo[]> => {
+  const ownedRes = await axiosGH.get(`/users/${username}/repos`)
+  return ownedRes.data
+}
+
+export const getRepoLanguages = async (
+  owner: string,
+  repo: string
+): Promise<Record<string, number>> => {
+  const res = await axiosGH.get(`/repos/${owner}/${repo}/languages`)
+  return res.data
+}
+
+export const getRepoContributorStats = async (
+  owner: string,
+  repo: string
+): Promise<GitHubRepoContributorStats[]> => {
+  const res = await axiosGH.get(`/repos/${owner}/${repo}/stats/contributors`)
+  return res.data
+}
+
+export const getGitHubLanguageProficiency = async (
+  username: string
+): Promise<GitHubUserLanguageProficiency> => {
+  const repos = await getRepositories(username)
+  const userProficiency: GitHubUserLanguageProficiency = {}
+
+  for (const repo of repos) {
+    const repoName = repo.name
+    const owner = repo.owner.login
+    const contributors = await getRepoContributorStats(owner, repoName)
+    const languages: GitHubRepoLanguages = await getRepoLanguages(owner, repoName)
+
+    let totalCommits = 0
+
+    contributors.forEach((contributor: any) => {
+      totalCommits += contributor.total
+    })
+
+    const ownerContributor = contributors.find(
+      (contributor: any) => contributor.author.login === owner
+    )
+    const ownerCommits = ownerContributor ? ownerContributor.total : 0
+    const ownerShare = ownerCommits / totalCommits
+
+    for (const [language, kbOfCode] of Object.entries(languages)) {
+      if (!userProficiency[language]) {
+        userProficiency[language] = 0
+      }
+      const proficiency = kbOfCode * ownerShare
+      userProficiency[language] += proficiency
+    }
+  }
+
+  return userProficiency
+}

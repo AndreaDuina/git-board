@@ -102,3 +102,7 @@ export const searchUserGL = async (username: string): Promise<GitLabUser[]> => {
     return []
   }
 }
+
+export const getGitLabLanguageProficiency = async (username: string): Promise<any> => {
+  return {}
+}
