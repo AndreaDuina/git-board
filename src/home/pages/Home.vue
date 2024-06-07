@@ -110,7 +110,6 @@
   }
 
   const setFocus = () => {
-    console.log('click')
     focused.value = true
     // Add event listener to handle click outside the div
     document.addEventListener('click', handleClickOutside)
@@ -124,4 +123,8 @@
       document.removeEventListener('click', handleClickOutside)
     }
   }
+
+  onMounted(() => {
+    window.addEventListener('focusout', (e: FocusEvent) => (focused.value = false))
+  })
 </script>
