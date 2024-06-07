@@ -7,7 +7,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --open",
-    "build": "vue-tsc --noEmit && vite build"
+    "build": "vue-tsc --noEmit && vite build",
+    "test-deploy": "pnpm run build && firebase hosting:channel:deploy stage --expires 1d"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.8",
