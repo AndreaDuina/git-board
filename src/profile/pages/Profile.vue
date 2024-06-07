@@ -1,11 +1,14 @@
 <template>
-  <div class="flex items-center">
+  <!-- Profile -->
+  <div class="mt-4 flex items-center">
     <div class="mr-6 h-32 w-32">
       <AccountAvatar :account="username" :imageSrc="user.imgUrl" size="large" />
     </div>
     <h1 class="text-4xl font-semibold tracking-wider">{{ user.name }}</h1>
   </div>
-  <div class="flex w-full items-start justify-center">
+
+  <!-- Calendar -->
+  <div class="mt-8 flex w-full items-start justify-center">
     <Calendar :calendar="calendar" :loading="loading" mainColor="#3694f2" />
     <div class="ml-4 flex flex-col gap-1">
       <button
@@ -20,8 +23,12 @@
       </button>
     </div>
   </div>
-  <div class="mt-8 flex justify-center">
-    <Doughnut :data="langProf" :id="'d1'" />
+
+  <div class="mt-8">
+    <h3 class="text-3xl font-medium">Language proficiency</h3>
+    <div class="mt-4">
+      <Doughnut :data="langProf" :id="'d1'" />
+    </div>
   </div>
 </template>
 

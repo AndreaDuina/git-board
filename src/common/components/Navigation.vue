@@ -13,4 +13,11 @@
       </button>
     </div>
   </nav>
+  <div class="border-gradient h-[2px] w-full" />
 </template>
+
+<style scoped>
+  .border-gradient {
+    background: linear-gradient(to right, rgb(var(--color-background-light)), rgba(0, 0, 0, 0) 70%);
+  }
+</style>
