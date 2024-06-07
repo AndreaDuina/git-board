@@ -1,5 +1,5 @@
-import { getContributionCalendarGH } from '~/common/api/github'
-import { getContributionCalendarGL } from '~/common/api/gitlab'
+import { getContributionCalendarGH, getGitHubLanguageProficiency } from '~/common/api/github'
+import { getContributionCalendarGL, getGitLabLanguageProficiency } from '~/common/api/gitlab'
 import { getNextSunday, getPreviousSunday, lastYear, todayIso } from '~/common/helpers/utils'
 
 const calendarGetter: { [platform: string]: Function } = {
@@ -177,4 +177,53 @@ export const getFullCalendar = async (
   }
 
   return calendar
+}
+
+const langProfsGetter: { [platform: string]: Function } = {
+  github: (username: string) => getGitHubLanguageProficiency(username),
+  gitlab: (username: string) => getGitLabLanguageProficiency(username)
+}
+
+function sumLangProfs(
+  element1: GitDashboardLanguageProficiency,
+  element2: GitDashboardLanguageProficiency
+): GitDashboardLanguageProficiency {
+  const result: GitDashboardLanguageProficiency = { ...element1 }
+  for (const key in element2) {
+    if (result[key]) {
+      result[key] += element2[key]
+    } else {
+      result[key] = element2[key]
+    }
+  }
+  return result
+}
+
+/**
+ * Get the calendar sum of the commits across the given platforms.
+ * @param usernames Object mapping the platform name and the username on that platform.
+ * @returns
+ */
+export const getFullLanguageProficiency = async (usernames: {
+  [platform: string]: string
+}): Promise<GitDashboardLanguageProficiency> => {
+  const supportedPlatforms = Object.keys(usernames)
+
+  // Get calendars from API
+  const apiLangProfs = []
+  for (const platform of supportedPlatforms) {
+    if (calendarGetter[platform]) {
+      apiLangProfs.push(langProfsGetter[platform](usernames[platform]))
+    }
+  }
+  const resolvedApiLangProfs = await Promise.all(apiLangProfs)
+
+  let langs: GitDashboardLanguageProficiency = {}
+  for (const i in supportedPlatforms) {
+    const parsed = resolvedApiLangProfs[i] //TODO: parsers & normalization
+    langs = sumLangProfs(langs, parsed)
+  }
+
+  console.log(langs)
+  return langs
 }

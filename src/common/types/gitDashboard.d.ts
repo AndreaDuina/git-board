@@ -36,3 +36,7 @@ interface Account {
     [key: string]: string
   }
 }
+
+interface GitDashboardLanguageProficiency {
+  [language: string]: number
+}
