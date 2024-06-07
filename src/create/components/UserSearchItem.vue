@@ -1,14 +1,17 @@
 <template>
   <div
-    class="w-full rounded-xl bg-background-light px-8 py-4 transition-colors"
+    class="w-full cursor-pointer select-none rounded-xl bg-background-light px-8 py-4 transition-colors"
     :class="darkHover ? 'hover:bg-background' : 'hover:bg-background-bright'"
     @click="emit('onClick', user)"
   >
     <div class="flex items-center">
-      <img class="mr-2 h-16 w-16 rounded-full border-2 border-light" :src="user.imgUrl" />
+      <img
+        class="mr-2 h-16 w-16 select-none rounded-full border-2 border-light"
+        :src="user.imgUrl"
+      />
       <div class="flex flex-col">
         <div class="flex items-center">
-          <img class="mr-2 h-6 w-6" :src="platformLogo" />
+          <img class="mr-2 h-6 w-6 select-none" :src="platformLogo" />
           <h2 class="text-2xl font-medium">{{ user.username }}</h2>
         </div>
         <div>{{ user.pageUrl }}</div>
@@ -30,7 +33,7 @@
     (e: 'onClick', user: UserMacroAPI): void
   }>()
 
-  const logosMap = {
+  const logosMap: { [platform: string]: string } = {
     github: logoGH,
     gitlab: logoGL
   }

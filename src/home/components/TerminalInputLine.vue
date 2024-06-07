@@ -55,7 +55,6 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue'
-  import TerminalAddress from './TerminalAddress.vue'
 
   const props = defineProps({
     focused: { type: Boolean, required: true }

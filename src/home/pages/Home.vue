@@ -66,7 +66,7 @@
 
     <img
       :src="fullCanlendar"
-      class="absolute top-0 left-0 z-0 h-[40rem] blur-[3px] brightness-125"
+      class="absolute top-0 left-0 z-0 h-[40rem] select-none blur-[3px] brightness-125"
     />
     <div class="absolute top-0 left-0 z-10 h-[40rem] w-full bg-background opacity-0" />
   </div>
