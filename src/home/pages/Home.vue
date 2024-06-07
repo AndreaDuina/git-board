@@ -1,16 +1,16 @@
 <template>
-  <div class="relative mt-12 h-[40rem] w-full">
+  <div class="relative mt-12 h-screen w-full">
     <!--div class="absolute top-0 left-0 z-20 w-full">
       <SearchBar @search="search" />
     </div-->
-    <div class="font-code absolute top-1/2 right-12 z-20 -translate-y-1/2 text-right">
+    <!--div class="font-code absolute top-1/2 right-12 z-20 -translate-y-1/2 text-right">
       <h1 class="text-6xl font-semibold tracking-wide">Your whole git history</h1>
       <h2 class="mt-2 text-4xl font-medium tracking-wide">All in one place</h2>
-    </div>
+    </div -->
 
-    <div class="absolute top-1/2 right-12 z-20 flex w-full -translate-y-1/2 justify-end">
+    <div class="absolute top-1/3 right-12 z-20 flex w-full -translate-y-1/2 justify-end">
       <div
-        class="w-[45rem] rounded-md bg-background-dark shadow-2xl shadow-background-light"
+        class="w-[60rem] rounded-md bg-background-dark shadow-2xl shadow-background-light"
         id="terminal"
         @click="setFocus"
       >
@@ -22,7 +22,12 @@
             <div class="h-3 w-3 rounded-full" style="background-color: #ff5f5a"></div>
           </div>
         </div>
-        <div class="h-[25rem]">
+        <div class="font-code h-[32rem]">
+          <div>
+            <TerminalAddress />
+            <span>git-board --help</span>
+          </div>
+
           <!-- prettier-ignore -->
           <div class="font-code w-full text-sm">
             <br>
@@ -40,9 +45,22 @@
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@@@@@@@@&nbsp;&nbsp;@@@@@@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@@@@@@@@@@@@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@@@@@@@@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </div>
+          </div>
 
-          <TerminalLine @on-enter="onCommandEnter" :focused="focused" />
+          <div>
+            <br />
+            <TerminalAddress />
+            <span>git-board search --platform [</span>
+            <img :src="logoGH" class="inline-block h-4 w-4 rounded-full" />
+            <span>'GitHub', </span>
+            <img :src="logoGL" class="inline-block h-4 w-4 rounded-full" />
+            <span>'GitLab']</span>
+          </div>
+          <div>
+            <TerminalInputLine @on-enter="onCommandEnter" :focused="focused">
+              &nbsp;Enter username:&nbsp;
+            </TerminalInputLine>
+          </div>
         </div>
       </div>
     </div>
@@ -56,24 +74,14 @@
 </template>
 
 <style scoped>
-  .caret {
-    width: 0.5em;
-    height: 1.25em;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 5;
-    animation: blink 1s step-end infinite;
+  .no-scroll::-webkit-scrollbar {
+    display: none;
   }
 
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
-    }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scroll {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 </style>
 
@@ -82,7 +90,10 @@
   import { useStateStore } from '~/stores/state'
   import { useRouter } from 'vue-router'
   import fullCanlendar from '~/assets/fullCalendar.png'
-  import TerminalLine from '~/home/components/TerminalLine.vue'
+  import TerminalInputLine from '~/home/components/TerminalInputLine.vue'
+  import TerminalAddress from '../components/TerminalAddress.vue'
+  import logoGH from '~/assets/github-mark-white.svg'
+  import logoGL from '~/assets/gitlab-logo.svg'
 
   const state = useStateStore()
   const router = useRouter()

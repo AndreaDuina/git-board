@@ -1,10 +1,7 @@
 <template>
   <div class="font-code">
     <div class="relative flex w-full items-center">
-      <span class="text-lime-500">root@git-board</span>
-      <span>:</span>
-      <span class="text-blue-500">~</span>
-      <span>$</span>
+      <slot />
       <div class="relative flex flex-grow items-center">
         <!--@focus="focused = true" @blur="focused = false"-->
         <input
@@ -58,6 +55,7 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue'
+  import TerminalAddress from './TerminalAddress.vue'
 
   const props = defineProps({
     focused: { type: Boolean, required: true }
@@ -93,5 +91,6 @@
   onMounted(() => {
     // Set font style for measurement
     context.font = window.getComputedStyle(input.value as HTMLInputElement).font
+    input.value?.focus()
   })
 </script>
