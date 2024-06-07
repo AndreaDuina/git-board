@@ -157,32 +157,36 @@ export const getGitHubLanguageProficiency = async (
   username: string
 ): Promise<GitHubUserLanguageProficiency> => {
   const repos = await getRepositories(username)
+
   const userProficiency: GitHubUserLanguageProficiency = {}
 
   for (const repo of repos) {
     const repoName = repo.name
     const owner = repo.owner.login
     const contributors = await getRepoContributorStats(owner, repoName)
+    console.log(contributors)
     const languages: GitHubRepoLanguages = await getRepoLanguages(owner, repoName)
 
     let totalCommits = 0
 
-    contributors.forEach((contributor: any) => {
-      totalCommits += contributor.total
-    })
+    if (contributors.length > 0) {
+      contributors.forEach((contributor: any) => {
+        totalCommits += contributor.total
+      })
 
-    const ownerContributor = contributors.find(
-      (contributor: any) => contributor.author.login === owner
-    )
-    const ownerCommits = ownerContributor ? ownerContributor.total : 0
-    const ownerShare = ownerCommits / totalCommits
+      const ownerContributor = contributors.find(
+        (contributor: any) => contributor.author.login === owner
+      )
+      const ownerCommits = ownerContributor ? ownerContributor.total : 0
+      const ownerShare = ownerCommits / totalCommits
 
-    for (const [language, kbOfCode] of Object.entries(languages)) {
-      if (!userProficiency[language]) {
-        userProficiency[language] = 0
+      for (const [language, kbOfCode] of Object.entries(languages)) {
+        if (!userProficiency[language]) {
+          userProficiency[language] = 0
+        }
+        const proficiency = kbOfCode * ownerShare
+        userProficiency[language] += proficiency
       }
-      const proficiency = kbOfCode * ownerShare
-      userProficiency[language] += proficiency
     }
   }
 
