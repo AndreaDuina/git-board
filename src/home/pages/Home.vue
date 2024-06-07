@@ -10,7 +10,7 @@
 
     <div class="absolute top-1/3 right-12 z-20 flex w-full -translate-y-1/2 justify-end">
       <div
-        class="w-[60rem] rounded-md bg-background-dark shadow-2xl shadow-background-light"
+        class="terminal-shadow w-[60rem] rounded-md bg-background-dark shadow-background-light"
         id="terminal"
         @click="setFocus"
       >
@@ -74,14 +74,10 @@
 </template>
 
 <style scoped>
-  .no-scroll::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .no-scroll {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+  .terminal-shadow {
+    -webkit-box-shadow: 0px 0px 50px 4px rgb(var(--color-background-light) / 1);
+    -moz-box-shadow: 0px 0px 50px 4px rgb(var(--color-background-light) / 1);
+    box-shadow: 0px 0px 50px 4px rgb(var(--color-background-light) / 1);
   }
 </style>
 
