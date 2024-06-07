@@ -205,25 +205,29 @@ function sumLangProfs(
  * @returns
  */
 export const getFullLanguageProficiency = async (usernames: {
-  [platform: string]: string
+  [platform: string]: string[]
 }): Promise<GitDashboardLanguageProficiency> => {
   const supportedPlatforms = Object.keys(usernames)
 
-  // Get calendars from API
-  const apiLangProfs = []
+  const apiLangProfs: any[] = []
   for (const platform of supportedPlatforms) {
-    if (calendarGetter[platform]) {
-      apiLangProfs.push(langProfsGetter[platform](usernames[platform]))
+    if (langProfsGetter[platform]) {
+      usernames[platform].forEach((username: string) =>
+        apiLangProfs.push(langProfsGetter[platform](username))
+      )
     }
   }
   const resolvedApiLangProfs = await Promise.all(apiLangProfs)
 
   let langs: GitDashboardLanguageProficiency = {}
-  for (const i in supportedPlatforms) {
-    const parsed = resolvedApiLangProfs[i] //TODO: parsers & normalization
-    langs = sumLangProfs(langs, parsed)
+  for (let i = 0, k = 0; i < supportedPlatforms.length; i++) {
+    const platform = supportedPlatforms[i]
+    for (let j = 0; j < usernames[platform].length; j++) {
+      const parsed = resolvedApiLangProfs[k] //TODO: parsers & normalization
+      langs = sumLangProfs(langs, parsed)
+      k++
+    }
   }
 
-  console.log(langs)
   return langs
 }
