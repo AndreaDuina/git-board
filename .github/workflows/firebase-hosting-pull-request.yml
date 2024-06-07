@@ -16,7 +16,7 @@ jobs:
       VITE_GITLAB_API_TOKEN: ${{ secrets.VITE_GITLAB_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - run: npm i pnpm -g && pnpm i && npm prun build
+      - run: npm i pnpm -g && pnpm i && pnpm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
