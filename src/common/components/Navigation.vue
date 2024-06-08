@@ -8,6 +8,7 @@
     <div class="flex items-center">
       <button
         class="rounded-md border border-light px-3 py-2 hover:border-white hover:bg-background-light active:bg-background-dark"
+        @click="signInWithGitHub"
       >
         Log in
       </button>
@@ -21,3 +22,7 @@
     background: linear-gradient(to right, rgb(var(--color-background-light)), rgba(0, 0, 0, 0) 70%);
   }
 </style>
+
+<script setup lang="ts">
+  import { signInWithGitHub } from '../firebase/auth'
+</script>
