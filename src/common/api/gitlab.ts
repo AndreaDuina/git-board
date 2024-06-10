@@ -126,7 +126,7 @@ const getUserJoinedProjectEvents = async (
     })
     return res.data
   } catch (err) {
-    console.error(`Error getting GitLab merge requests for user ${userId} at page ${pageIdx}`)
+    console.error(`Error getting GitLab joined requests for user ${userId} at page ${pageIdx}`)
     return []
   }
 }
