@@ -9,6 +9,11 @@ const calendarGetter: { [platform: string]: Function } = {
     getContributionCalendarGL(username, from, to)
 }
 
+const langPortfolioGetter: { [platform: string]: Function } = {
+  github: (username: string) => getLanguagePortfolioGH(username),
+  gitlab: (username: string) => getLanguagePortfolioGL(username)
+}
+
 /**
  * Returns an empty calendar.
  */
@@ -179,11 +184,9 @@ export const getFullCalendar = async (
   return calendar
 }
 
-const langProfsGetter: { [platform: string]: Function } = {
-  github: (username: string) => getLanguagePortfolioGH(username),
-  gitlab: (username: string) => getLanguagePortfolioGL(username)
-}
-
+/**
+ * Sum two language portfolios.
+ */
 function sumLangProfs(
   element1: GitDashboardLanguageProficiency,
   element2: GitDashboardLanguageProficiency
@@ -200,20 +203,20 @@ function sumLangProfs(
 }
 
 /**
- * Get the calendar sum of the commits across the given platforms.
+ * Get the language portfolio across the given platforms.
  * @param usernames Object mapping the platform name and the username on that platform.
  * @returns
  */
-export const getFullLanguageProficiency = async (usernames: {
+export const getFullLanguagePortfolio = async (usernames: {
   [platform: string]: string[]
 }): Promise<GitDashboardLanguageProficiency> => {
   const supportedPlatforms = Object.keys(usernames)
 
   const apiLangProfs: any[] = []
   for (const platform of supportedPlatforms) {
-    if (langProfsGetter[platform]) {
+    if (langPortfolioGetter[platform]) {
       usernames[platform].forEach((username: string) =>
-        apiLangProfs.push(langProfsGetter[platform](username))
+        apiLangProfs.push(langPortfolioGetter[platform](username))
       )
     }
   }
@@ -236,8 +239,6 @@ export const getFullLanguageProficiency = async (usernames: {
   )
 
   const totalSize = Object.values(sortedLangs).reduce((total, size) => total + size, 0)
-
-  console.log(totalSize)
 
   const normalizedLangs: Record<string, number> = {}
 

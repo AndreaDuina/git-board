@@ -12,7 +12,7 @@
   const props = defineProps({
     data: { type: Object as PropType<GitDashboardLanguageProficiency>, required: true },
     id: { type: String, required: true },
-    mainColor: { type: String, default: '#00b4d8' }
+    mainColor: { type: String, default: '#3694F2' }
   })
 
   let chartInstance: Chart<'doughnut', number[], string> | null = null
@@ -41,8 +41,8 @@
             {
               data: Object.values(props.data),
               backgroundColor: [...generateShades(props.mainColor, 5)].reverse(),
-              borderWidth: 2,
-              borderColor: '',
+              borderWidth: 3,
+              borderColor: '#1B1B1F',
               borderRadius: 5
             }
           ]

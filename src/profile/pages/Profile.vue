@@ -37,7 +37,7 @@
   import {
     emptyCalendar,
     getFullCalendar,
-    getFullLanguageProficiency
+    getFullLanguagePortfolio
   } from '~/profile/helpers/helpers'
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
@@ -109,7 +109,7 @@
       const res = await getFullCalendar(user.value.platforms)
       calendar.value = res
 
-      const resLanguagePortfolio = await getFullLanguageProficiency(user.value.platforms)
+      const resLanguagePortfolio = await getFullLanguagePortfolio(user.value.platforms)
       languagePortfolio.value = resLanguagePortfolio
 
       loading.value = false

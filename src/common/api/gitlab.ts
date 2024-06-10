@@ -133,10 +133,10 @@ const getUserJoinedProjectEvents = async (
 
 /**
  * Get the ids of all the projects in which a user is involved.
- * @param userId GitLab username.
+ * @param userId GitLab user id.
  * @returns
  */
-const getGitLabProjectsIds = async (userId: number): Promise<number[]> => {
+const getProjectIdsByUserIdGL = async (userId: number): Promise<number[]> => {
   const ownedProjectsRes = await axiosGL.get(`/users/${userId}/projects`)
   const ownedProjects: GitLabProject[] = ownedProjectsRes.data
   const ownedProjectsIds: number[] = [
@@ -163,7 +163,7 @@ const getGitLabProjectsIds = async (userId: number): Promise<number[]> => {
   return allProjectIds
 }
 
-const getGitLabRepoLanguages = async (projectId: number): Promise<Record<string, number>> => {
+const getProjectLanguagesGL = async (projectId: number): Promise<Record<string, number>> => {
   const resLanguages = await axiosGL.get(`/projects/${projectId}/languages`)
   const languages = resLanguages.data
   const adjustedLanguages: Record<string, number> = {}
@@ -183,19 +183,19 @@ const getProjectContributorStatsGL = async (projectId: number): Promise<GitLabCo
 /**
  * Get the programming languages used by a given GitLab user.
  * @param username Gitlab username.
- * @returns Language proficiency
+ * @returns Language portfolio
  */
 export const getLanguagePortfolioGL = async (username: string): Promise<Record<string, number>> => {
   const userAccount = await searchUserGL(username)
   const userId = userAccount[0].id
   const userFullName = userAccount[0].name
-  const projectIds = await getGitLabProjectsIds(userId)
+  const projectIds = await getProjectIdsByUserIdGL(userId)
 
   const languagePortfolio: Record<string, number> = {}
 
   for (const projectId of projectIds) {
     const contributors: GitLabContributor[] = await getProjectContributorStatsGL(projectId)
-    const languages: Record<string, number> = await getGitLabRepoLanguages(projectId)
+    const languages: Record<string, number> = await getProjectLanguagesGL(projectId)
 
     let totalCommits = 0
 
