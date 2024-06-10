@@ -25,9 +25,9 @@
   </div>
 
   <div class="mt-8">
-    <h3 class="text-3xl font-medium">Language proficiency</h3>
+    <h3 class="text-3xl font-medium">Language portfolio</h3>
     <div class="mt-4">
-      <Doughnut :data="langProf" :id="'d1'" />
+      <Doughnut :data="languagePortfolio" :id="'d1'" />
     </div>
   </div>
 </template>
@@ -53,7 +53,7 @@
 
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
-  const langProf = ref<GitDashboardLanguageProficiency>({})
+  const languagePortfolio = ref<GitDashboardLanguageProficiency>({})
   const loading = ref(true)
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
@@ -77,7 +77,8 @@
       email: '',
       imgUrl: '',
       platforms: {
-        github: ['francescozonaro']
+        github: ['francescozonaro'],
+        gitlab: ['dimeilaz']
       },
       socials: {}
     }
@@ -108,8 +109,8 @@
       const res = await getFullCalendar(user.value.platforms)
       calendar.value = res
 
-      const resLangProf = await getFullLanguageProficiency(user.value.platforms)
-      langProf.value = resLangProf
+      const resLanguagePortfolio = await getFullLanguageProficiency(user.value.platforms)
+      languagePortfolio.value = resLanguagePortfolio
 
       loading.value = false
     } catch (err) {

@@ -7,10 +7,12 @@
 <script setup lang="ts">
   import { PropType, ref, watch, onMounted, onUnmounted } from 'vue'
   import { Chart, registerables } from 'chart.js'
+  import { generateShades } from '~/common/helpers/utils'
 
   const props = defineProps({
     data: { type: Object as PropType<GitDashboardLanguageProficiency>, required: true },
-    id: { type: String, required: true }
+    id: { type: String, required: true },
+    mainColor: { type: String, default: '#00b4d8' }
   })
 
   let chartInstance: Chart<'doughnut', number[], string> | null = null
@@ -38,7 +40,7 @@
           datasets: [
             {
               data: Object.values(props.data),
-              backgroundColor: ['#0077b6', '#48cae4', '#caf0f8'],
+              backgroundColor: [...generateShades(props.mainColor, 5)].reverse(),
               borderWidth: 2,
               borderColor: '',
               borderRadius: 5

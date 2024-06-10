@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { lastYear, todayIso } from '../helpers/utils'
+import { join } from 'path'
 
 const ENDPOINT = 'https://gitlab.com/api/v4'
 
@@ -103,6 +104,121 @@ export const searchUserGL = async (username: string): Promise<GitLabUser[]> => {
   }
 }
 
-export const getGitLabLanguageProficiency = async (username: string): Promise<any> => {
-  return {}
+// #############################################
+
+/**
+ * Get GitLab 100 joined project events for a given user.
+ * @param userId GitLab username.
+ * @param pageIdx page index.
+ * @returns
+ */
+const getUserJoinedProjectEvents = async (
+  userId: number,
+  pageIdx = 1
+): Promise<GitLabJoinedProjectEvent[]> => {
+  try {
+    const res = await axiosGL.get(`/users/${userId}/events`, {
+      params: {
+        action: 'joined',
+        per_page: 100,
+        page: pageIdx
+      }
+    })
+    return res.data
+  } catch (err) {
+    console.error(`Error getting GitLab merge requests for user ${userId} at page ${pageIdx}`)
+    return []
+  }
+}
+
+/**
+ * Get the ids of all the projects in which a user is involved.
+ * @param userId GitLab username.
+ * @returns
+ */
+const getGitLabProjectsIds = async (userId: number): Promise<number[]> => {
+  const ownedProjectsRes = await axiosGL.get(`/users/${userId}/projects`)
+  const ownedProjects: GitLabProject[] = ownedProjectsRes.data
+  const ownedProjectsIds: number[] = [
+    ...new Set(ownedProjects.map((project: GitLabProject) => project.id))
+  ]
+
+  let joinedProjectEvents: GitLabJoinedProjectEvent[] = []
+  const promises = []
+  for (let i = 1; i <= 5; i++) {
+    promises.push(getUserJoinedProjectEvents(userId, i))
+    const response = await Promise.all(promises)
+    joinedProjectEvents = [...joinedProjectEvents, ...response.flat()]
+    // If at least one response is empty stop
+    if (response.some((val: any[]) => val.length == 0)) {
+      break
+    }
+  }
+
+  const joinedProjectsIds: number[] = [
+    ...new Set(joinedProjectEvents.map((event: any) => event.project_id))
+  ]
+
+  const allProjectIds = [...ownedProjectsIds, ...joinedProjectsIds]
+  return allProjectIds
+}
+
+const getGitLabRepoLanguages = async (projectId: number): Promise<Record<string, number>> => {
+  const resLanguages = await axiosGL.get(`/projects/${projectId}/languages`)
+  const languages = resLanguages.data
+  const adjustedLanguages: Record<string, number> = {}
+
+  for (const language in languages) {
+    adjustedLanguages[language] = languages[language] / 100
+  }
+
+  return adjustedLanguages
+}
+
+const getProjectContributorStatsGL = async (projectId: number): Promise<GitLabContributor[]> => {
+  const res = await axiosGL.get(`/projects/${projectId}/repository/contributors`)
+  return res.data
+}
+
+/**
+ * Get the programming languages used by a given GitLab user.
+ * @param username Gitlab username.
+ * @returns Language proficiency
+ */
+export const getLanguagePortfolioGL = async (username: string): Promise<Record<string, number>> => {
+  const userAccount = await searchUserGL(username)
+  const userId = userAccount[0].id
+  const userFullName = userAccount[0].name
+  const projectIds = await getGitLabProjectsIds(userId)
+
+  const languagePortfolio: Record<string, number> = {}
+
+  for (const projectId of projectIds) {
+    const contributors: GitLabContributor[] = await getProjectContributorStatsGL(projectId)
+    const languages: Record<string, number> = await getGitLabRepoLanguages(projectId)
+
+    let totalCommits = 0
+
+    if (contributors.length > 0) {
+      contributors.forEach((contributor: GitLabContributor) => {
+        totalCommits += contributor.commits
+      })
+
+      const userContributor = contributors.find(
+        (contributor: any) => contributor.name === username || contributor.name === userFullName
+      )
+      const userCommits = userContributor ? userContributor.commits : 0
+      const userShare = (userCommits * userCommits) / totalCommits
+
+      for (const [language, percentage] of Object.entries(languages)) {
+        if (!languagePortfolio[language]) {
+          languagePortfolio[language] = 0
+        }
+        const proficiency = percentage * userShare
+        languagePortfolio[language] += proficiency
+      }
+    }
+  }
+
+  return languagePortfolio
 }

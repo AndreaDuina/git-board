@@ -1,5 +1,5 @@
-import { getContributionCalendarGH, getGitHubLanguageProficiency } from '~/common/api/github'
-import { getContributionCalendarGL, getGitLabLanguageProficiency } from '~/common/api/gitlab'
+import { getContributionCalendarGH, getLanguagePortfolioGH } from '~/common/api/github'
+import { getContributionCalendarGL, getLanguagePortfolioGL } from '~/common/api/gitlab'
 import { getNextSunday, getPreviousSunday, lastYear, todayIso } from '~/common/helpers/utils'
 
 const calendarGetter: { [platform: string]: Function } = {
@@ -180,8 +180,8 @@ export const getFullCalendar = async (
 }
 
 const langProfsGetter: { [platform: string]: Function } = {
-  github: (username: string) => getGitHubLanguageProficiency(username),
-  gitlab: (username: string) => getGitLabLanguageProficiency(username)
+  github: (username: string) => getLanguagePortfolioGH(username),
+  gitlab: (username: string) => getLanguagePortfolioGL(username)
 }
 
 function sumLangProfs(
@@ -223,7 +223,7 @@ export const getFullLanguageProficiency = async (usernames: {
   for (let i = 0, k = 0; i < supportedPlatforms.length; i++) {
     const platform = supportedPlatforms[i]
     for (let j = 0; j < usernames[platform].length; j++) {
-      const parsed = resolvedApiLangProfs[k] //TODO: parsers & normalization
+      const parsed = resolvedApiLangProfs[k]
       langs = sumLangProfs(langs, parsed)
       k++
     }
@@ -232,8 +232,18 @@ export const getFullLanguageProficiency = async (usernames: {
   let sortedLangs = Object.fromEntries(
     Object.entries(langs)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 3)
+      .slice(0, 5)
   )
 
-  return sortedLangs
+  const totalSize = Object.values(sortedLangs).reduce((total, size) => total + size, 0)
+
+  console.log(totalSize)
+
+  const normalizedLangs: Record<string, number> = {}
+
+  for (const language of Object.keys(sortedLangs)) {
+    normalizedLangs[language] = (sortedLangs[language] * 100) / totalSize
+  }
+
+  return normalizedLangs
 }

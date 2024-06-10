@@ -130,22 +130,29 @@ export const searchUserGH = async (username: string): Promise<GitHubUserSearchRe
   }
 }
 
-// ##########################################################################################################################################################################################
-
-export const getRepositories = async (username: string): Promise<GitHubRepo[]> => {
+export const getReposByUsernameGH = async (username: string): Promise<GitHubRepository[]> => {
   const ownedRes = await axiosGH.get(`/users/${username}/repos`)
   return ownedRes.data
 }
 
-export const getRepoLanguages = async (
+export const getRepoLanguagesGH = async (
   owner: string,
   repo: string
 ): Promise<Record<string, number>> => {
   const res = await axiosGH.get(`/repos/${owner}/${repo}/languages`)
-  return res.data
+  const languages: Record<string, number> = res.data
+  const totalSize = Object.values(languages).reduce((total, size) => total + size, 0)
+
+  const adjustedLanguages: Record<string, number> = {}
+
+  for (const language of Object.keys(languages)) {
+    adjustedLanguages[language] = languages[language] / totalSize
+  }
+
+  return adjustedLanguages
 }
 
-export const getRepoContributorStats = async (
+export const getRepoContributorStatsGH = async (
   owner: string,
   repo: string
 ): Promise<GitHubRepoContributorStats[]> => {
@@ -153,18 +160,21 @@ export const getRepoContributorStats = async (
   return res.data
 }
 
-export const getGitHubLanguageProficiency = async (
-  username: string
-): Promise<GitHubUserLanguageProficiency> => {
-  const repos = await getRepositories(username)
+/**
+ * Get the programming languages used by a given GitHub user.
+ * @param username GitHub username.
+ * @returns Language proficiency
+ */
+export const getLanguagePortfolioGH = async (username: string): Promise<Record<string, number>> => {
+  const repos = await getReposByUsernameGH(username)
 
-  const userProficiency: GitHubUserLanguageProficiency = {}
+  const languagePortfolio: Record<string, number> = {}
 
   for (const repo of repos) {
     const repoName = repo.name
     const owner = repo.owner.login
-    const contributors = await getRepoContributorStats(owner, repoName)
-    const languages: GitHubRepoLanguages = await getRepoLanguages(owner, repoName)
+    const contributors = await getRepoContributorStatsGH(owner, repoName)
+    const languages: Record<string, number> = await getRepoLanguagesGH(owner, repoName)
 
     let totalCommits = 0
 
@@ -173,21 +183,21 @@ export const getGitHubLanguageProficiency = async (
         totalCommits += contributor.total
       })
 
-      const ownerContributor = contributors.find(
+      const userContributor = contributors.find(
         (contributor: any) => contributor.author.login === owner
       )
-      const ownerCommits = ownerContributor ? ownerContributor.total : 0
-      const ownerShare = ownerCommits / totalCommits
+      const userCommits = userContributor ? userContributor.total : 0
+      const userShare = (userCommits * userCommits) / totalCommits
 
-      for (const [language, kbOfCode] of Object.entries(languages)) {
-        if (!userProficiency[language]) {
-          userProficiency[language] = 0
+      for (const [language, percentage] of Object.entries(languages)) {
+        if (!languagePortfolio[language]) {
+          languagePortfolio[language] = 0
         }
-        const proficiency = kbOfCode * ownerShare
-        userProficiency[language] += proficiency
+        const proficiency = percentage * userShare
+        languagePortfolio[language] += proficiency
       }
     }
   }
 
-  return userProficiency
+  return languagePortfolio
 }
