@@ -336,17 +336,46 @@ export const getFullStarHistory = async (usernames: {
     }
   }
 
-  let stortedStarHistory = Object.fromEntries(
+  const formatDate = (year: number, month: number): string => {
+    return `${year}-${month.toString().padStart(2, '0')}`
+  }
+
+  // Find the first and last dates in the data
+  const dates = Object.keys(starHistory).sort()
+  const firstDate = dates[0]
+  const lastDate = dates[dates.length - 1]
+
+  // Extract year and month from first and last dates
+  const [startYear, startMonth] = firstDate.split('-').map(Number)
+  const [endYear, endMonth] = lastDate.split('-').map(Number)
+
+  // Iterate over all months between the first and last dates
+  for (let year = startYear; year <= endYear; year++) {
+    for (let month = 1; month <= 12; month++) {
+      // Skip months before the start date and after the end date
+      if (year === startYear && month < startMonth) continue
+      if (year === endYear && month > endMonth) break
+
+      const formattedDate = formatDate(year, month)
+
+      // Fill in missing months with 0
+      if (!starHistory[formattedDate]) {
+        starHistory[formattedDate] = 0
+      }
+    }
+  }
+
+  let sortedStarHistory = Object.fromEntries(
     Object.entries(starHistory).sort(([a], [b]) => a.localeCompare(b))
   )
 
   let cumulativeStars = 0
-  for (const date in stortedStarHistory) {
-    if (stortedStarHistory[date]) {
-      cumulativeStars += stortedStarHistory[date]
+  for (const date in sortedStarHistory) {
+    if (sortedStarHistory[date]) {
+      cumulativeStars += sortedStarHistory[date]
     }
-    stortedStarHistory[date] = cumulativeStars
+    sortedStarHistory[date] = cumulativeStars
   }
 
-  return stortedStarHistory
+  return sortedStarHistory
 }
