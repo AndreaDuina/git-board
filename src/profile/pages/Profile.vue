@@ -52,7 +52,6 @@
   import { useStateStore } from '~/stores/state'
   import { emptyAccount } from '~/common/helpers/utils'
   import Doughnut from '~/profile/components/Doughnut.vue'
-  import Radar from '~/profile/components/Radar.vue'
   import Linechart from '~/profile/components/Linechart.vue'
 
   const props = defineProps({
@@ -64,7 +63,7 @@
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const languagePortfolio = ref<GitDashboardLanguageProficiency>({})
-  const starsHistory = ref<GitDashboardStarsHistory>({})
+  const starsHistory = ref<GitDashboardStarHistory>({})
   const loading = ref(true)
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)

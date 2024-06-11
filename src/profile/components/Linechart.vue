@@ -1,6 +1,6 @@
 <template>
   <div v-if="data">
-    <canvas :id="id"></canvas>
+    <canvas :id="id" width="500" height="300"></canvas>
   </div>
 </template>
 
@@ -15,7 +15,7 @@
     mainColor: { type: String, default: '#3694F2' }
   })
 
-  let chartInstance: Chart<'radar', number[], string> | null = null
+  let chartInstance: Chart<'line', number[], string> | null = null
 
   const init = () => {
     Chart.register(...registerables)
@@ -33,13 +33,17 @@
     const chartData = dummy
       ? {
           labels: ['Loading'],
-          datasets: [{ data: [1], backgroundColor: ['#333'], borderWidth: 0 }]
+          datasets: [{ data: [1], backgroundColor: ['#fff'] }]
         }
       : {
           labels: Object.keys(props.data),
           datasets: [
             {
-              data: Object.values(props.data)
+              data: Object.values(props.data),
+              borderColor: props.mainColor,
+              fill: false,
+              tension: 0.4,
+              pointRadius: 0
             }
           ]
         }
@@ -51,6 +55,25 @@
         plugins: {
           legend: {
             display: false
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false // Remove the background grid
+            },
+            ticks: {
+              color: '#fff' // Set the x-axis color to white
+            }
+          },
+          y: {
+            grid: {
+              display: false, // Remove the background grid
+              borderColor: '#fff'
+            },
+            ticks: {
+              color: '#fff' // Set the y-axis color to white
+            }
           }
         },
         responsive: false,
