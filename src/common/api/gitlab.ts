@@ -104,8 +104,6 @@ export const searchUserGL = async (username: string): Promise<GitLabUser[]> => {
   }
 }
 
-// #############################################
-
 /**
  * Get GitLab 100 joined project events for a given user.
  * @param userId GitLab username.

@@ -24,10 +24,16 @@
     </div>
   </div>
 
-  <div class="mt-8">
-    <h3 class="text-3xl font-medium">Language portfolio</h3>
-    <div class="mt-4">
-      <Doughnut :data="languagePortfolio" :id="'d1'" />
+  <div class="mt-8 grid w-full grid-cols-2 gap-8">
+    <div class="flex flex-col items-center">
+      <h3 class="mb-4 text-3xl font-medium">Language portfolio</h3>
+
+      <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
+    </div>
+
+    <div class="flex flex-col items-center">
+      <h3 class="mb-4 text-3xl font-medium">Language Portfolio (Radar)</h3>
+      <Radar :data="languagePortfolio" :id="'radar-push-activity'" />
     </div>
   </div>
 </template>
@@ -44,6 +50,7 @@
   import { useStateStore } from '~/stores/state'
   import { emptyAccount } from '~/common/helpers/utils'
   import Doughnut from '~/profile/components/Doughnut.vue'
+  import Radar from '~/profile/components/Radar.vue'
 
   const props = defineProps({
     username: { type: String, required: true }
