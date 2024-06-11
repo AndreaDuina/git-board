@@ -27,18 +27,13 @@
   <!-- Stats -->
   <div class="mt-8 mb-8 grid w-full grid-cols-2 gap-8">
     <div class="flex flex-col items-center">
-      <h3 class="mb-4 text-3xl font-medium">Language portfolio</h3>
+      <h3 class="mb-8 text-3xl font-medium">Language portfolio</h3>
 
       <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
     </div>
 
     <div class="flex flex-col items-center">
-      <h3 class="mb-4 text-3xl font-medium">Language Portfolio (Radar)</h3>
-      <Radar :data="languagePortfolio" :id="'radar-push-activity'" />
-    </div>
-
-    <div class="col-span-2 flex flex-col items-center">
-      <h3 class="mb-4 text-3xl font-medium">Stars History</h3>
+      <h3 class="mb-8 text-3xl font-medium">Stars History</h3>
       <Linechart :data="starsHistory" :id="'barchart-star-history'" />
     </div>
   </div>
