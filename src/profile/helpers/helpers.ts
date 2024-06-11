@@ -1,4 +1,9 @@
-import { getContributionCalendarGH, getLanguagePortfolioGH } from '~/common/api/github'
+import {
+  getContributionCalendarGH,
+  getLanguagePortfolioGH,
+  getRepoStarsGH,
+  getStarsHistoryGH
+} from '~/common/api/github'
 import { getContributionCalendarGL, getLanguagePortfolioGL } from '~/common/api/gitlab'
 import { getNextSunday, getPreviousSunday, lastYear, todayIso } from '~/common/helpers/utils'
 
@@ -12,6 +17,11 @@ const calendarGetter: { [platform: string]: Function } = {
 const langPortfolioGetter: { [platform: string]: Function } = {
   github: (username: string) => getLanguagePortfolioGH(username),
   gitlab: (username: string) => getLanguagePortfolioGL(username)
+}
+
+const starHistoryGetter: { [platform: string]: Function } = {
+  github: (username: string) => getStarsHistoryGH(username)
+  // gitlab: (username: string) => getStarsHistoryGL(username)
 }
 
 /**
@@ -247,4 +257,96 @@ export const getFullLanguagePortfolio = async (usernames: {
   }
 
   return normalizedLangs
+}
+
+/**
+ * Parse the GitHub API response when getting a user star history.
+ * @param data
+ */
+export const parseStarHistoryGithub = (data: GitHubStarEvent[]): GitDashboardStarHistory => {
+  let history: GitDashboardStarHistory = {}
+
+  for (const event of data) {
+    const date: string = event.starred_at.substring(0, 7)
+    if (history[date]) {
+      history[date] += 1
+    } else {
+      history[date] = 1
+    }
+  }
+
+  return history
+}
+
+export const parseStarHistoryGitlab = (data: GitLabStarEvent[]): GitDashboardStarHistory => {
+  let history: GitDashboardStarHistory = {}
+  return history
+}
+
+const starHistoryParser: { [platform: string]: (...args: any[]) => GitDashboardStarHistory } = {
+  github: parseStarHistoryGithub,
+  gitlab: parseStarHistoryGitlab
+}
+
+/**
+ * Sum two star events to get the star history.
+ */
+function sumStarHistory(
+  history1: GitDashboardStarHistory,
+  history2: GitDashboardStarHistory
+): GitDashboardStarHistory {
+  const result: GitDashboardStarHistory = { ...history1 }
+  for (const key in history2) {
+    if (result[key]) {
+      result[key] += history2[key]
+    } else {
+      result[key] = history2[key]
+    }
+  }
+  return result
+}
+
+/**
+ * Get the starring history across the given platforms.
+ * @param usernames Object mapping the platform name and the username on that platform.
+ * @returns
+ */
+export const getFullStarHistory = async (usernames: {
+  [platform: string]: string[]
+}): Promise<GitDashboardStarHistory> => {
+  const supportedPlatforms = Object.keys(usernames)
+
+  const apiStarHistory: any[] = []
+  for (const platform of supportedPlatforms) {
+    if (starHistoryGetter[platform]) {
+      usernames[platform].forEach((username: string) =>
+        apiStarHistory.push(starHistoryGetter[platform](username))
+      )
+    }
+  }
+  const resolvedApiStarHistory = await Promise.all(apiStarHistory)
+
+  let starHistory: GitDashboardStarHistory = {}
+  for (let i = 0, k = 0; i < supportedPlatforms.length; i++) {
+    const platform = supportedPlatforms[i]
+    for (let j = 0; j < usernames[platform].length; j++) {
+      const parsed = starHistoryParser[platform](resolvedApiStarHistory[k])
+      starHistory = sumStarHistory(starHistory, parsed)
+      k++
+    }
+  }
+
+  let stortedStarHistory = Object.fromEntries(
+    Object.entries(starHistory).sort(([a], [b]) => a.localeCompare(b))
+  )
+
+  let cumulativeStars = 0
+  for (const date in stortedStarHistory) {
+    if (stortedStarHistory[date]) {
+      cumulativeStars += stortedStarHistory[date]
+    }
+    stortedStarHistory[date] = cumulativeStars
+  }
+
+  return stortedStarHistory
 }

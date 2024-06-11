@@ -66,3 +66,8 @@ interface GitHubRepoContributorStats {
     w: number //week in some format
   }[]
 }
+
+interface GitHubStarEvent {
+  starred_at: string
+  user: GitHubUser
+}

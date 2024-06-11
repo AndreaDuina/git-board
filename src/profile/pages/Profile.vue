@@ -24,7 +24,8 @@
     </div>
   </div>
 
-  <div class="mt-8 grid w-full grid-cols-2 gap-8">
+  <!-- Stats -->
+  <div class="mt-8 mb-8 grid w-full grid-cols-2 gap-8">
     <div class="flex flex-col items-center">
       <h3 class="mb-4 text-3xl font-medium">Language portfolio</h3>
 
@@ -35,6 +36,11 @@
       <h3 class="mb-4 text-3xl font-medium">Language Portfolio (Radar)</h3>
       <Radar :data="languagePortfolio" :id="'radar-push-activity'" />
     </div>
+
+    <div class="col-span-2 flex flex-col items-center">
+      <h3 class="mb-4 text-3xl font-medium">Stars History</h3>
+      <Linechart :data="starsHistory" :id="'barchart-star-history'" />
+    </div>
   </div>
 </template>
 
@@ -43,7 +49,8 @@
   import {
     emptyCalendar,
     getFullCalendar,
-    getFullLanguagePortfolio
+    getFullLanguagePortfolio,
+    getFullStarHistory
   } from '~/profile/helpers/helpers'
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
@@ -51,6 +58,7 @@
   import { emptyAccount } from '~/common/helpers/utils'
   import Doughnut from '~/profile/components/Doughnut.vue'
   import Radar from '~/profile/components/Radar.vue'
+  import Linechart from '~/profile/components/Linechart.vue'
 
   const props = defineProps({
     username: { type: String, required: true }
@@ -61,6 +69,7 @@
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const languagePortfolio = ref<GitDashboardLanguageProficiency>({})
+  const starsHistory = ref<GitDashboardStarsHistory>({})
   const loading = ref(true)
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
@@ -84,7 +93,7 @@
       email: '',
       imgUrl: '',
       platforms: {
-        github: ['francescozonaro'],
+        github: ['francescozonaro', 'probberechts'],
         gitlab: ['dimeilaz']
       },
       socials: {}
@@ -118,6 +127,9 @@
 
       const resLanguagePortfolio = await getFullLanguagePortfolio(user.value.platforms)
       languagePortfolio.value = resLanguagePortfolio
+
+      const resStarsHistory = await getFullStarHistory(user.value.platforms)
+      starsHistory.value = resStarsHistory
 
       loading.value = false
     } catch (err) {

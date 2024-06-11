@@ -40,3 +40,12 @@ interface Account {
 interface GitDashboardLanguageProficiency {
   [language: string]: number
 }
+
+interface GitDashboardStarEvent {
+  date: string
+  count: number
+}
+
+interface GitDashboardStarHistory {
+  [date: string]: number
+}

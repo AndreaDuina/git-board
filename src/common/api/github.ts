@@ -8,7 +8,7 @@ const axiosGH = axios.create({
   baseURL: ENDPOINT,
   headers: {
     Authorization: `bearer ${import.meta.env.VITE_GITHUB_API_TOKEN}`,
-    Accept: 'application/vnd.github.v3+json'
+    Accept: 'application/vnd.github.v3.star+json'
   }
 })
 
@@ -200,4 +200,36 @@ export const getLanguagePortfolioGH = async (username: string): Promise<Record<s
   }
 
   return languagePortfolio
+}
+
+/**
+ * Get the stars associated to a certain repository.
+ * @param owner Username of the repository's owner.
+ * @param repo Repository name.
+ */
+export const getRepoStarEventsGH = async (
+  owner: string,
+  repo: string
+): Promise<GitHubStarEvent[]> => {
+  const res = await axiosGH.get(`/repos/${owner}/${repo}/stargazers`)
+  return res.data
+}
+
+/**
+ * Get all the stars received by a github user.
+ * @param username Github username.
+ */
+export const getStarsHistoryGH = async (username: string): Promise<GitHubStarEvent[]> => {
+  const repos: GitHubRepository[] = await getReposByUsernameGH(username)
+
+  const promises: Promise<GitHubStarEvent[]>[] = []
+
+  let stars: GitHubStarEvent[] = []
+  repos.forEach(repo => {
+    promises.push(getRepoStarEventsGH(username, repo.name))
+  })
+
+  const response = (await Promise.all(promises)).flat()
+  stars = [...stars, ...response]
+  return stars
 }
