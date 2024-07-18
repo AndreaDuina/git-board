@@ -25,17 +25,17 @@
   </div>
 
   <!-- Stats -->
-  <div class="mt-8 mb-8 grid w-full grid-cols-2 gap-8">
+  <div class="mt-32 mb-8 grid w-full gap-8">
     <div class="flex flex-col items-center">
-      <h3 class="mb-8 text-3xl font-medium">Language portfolio</h3>
+      <!-- <h3 class="mb-8 text-3xl font-medium">Language portfolio</h3> -->
 
       <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
     </div>
 
-    <div class="flex flex-col items-center">
+    <!-- <div class="flex flex-col items-center">
       <h3 class="mb-8 text-3xl font-medium">Stars History</h3>
       <Linechart :data="starsHistory" :id="'barchart-star-history'" />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -44,15 +44,15 @@
   import {
     emptyCalendar,
     getFullCalendar,
-    getFullLanguagePortfolio,
-    getFullStarHistory
+    getFullLanguagePortfolio
+    // getFullStarHistory
   } from '~/profile/helpers/helpers'
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
   import { useStateStore } from '~/stores/state'
   import { emptyAccount } from '~/common/helpers/utils'
   import Doughnut from '~/profile/components/Doughnut.vue'
-  import Linechart from '~/profile/components/Linechart.vue'
+  // import Linechart from '~/profile/components/Linechart.vue'
 
   const props = defineProps({
     username: { type: String, required: true }
@@ -63,7 +63,7 @@
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const languagePortfolio = ref<GitDashboardLanguageProficiency>({})
-  const starsHistory = ref<GitDashboardStarHistory>({})
+  // const starsHistory = ref<GitDashboardStarHistory>({})
   const loading = ref(true)
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
@@ -122,8 +122,8 @@
       const resLanguagePortfolio = await getFullLanguagePortfolio(user.value.platforms)
       languagePortfolio.value = resLanguagePortfolio
 
-      const resStarsHistory = await getFullStarHistory(user.value.platforms)
-      starsHistory.value = resStarsHistory
+      // const resStarsHistory = await getFullStarHistory(user.value.platforms)
+      // starsHistory.value = resStarsHistory
 
       loading.value = false
     } catch (err) {
