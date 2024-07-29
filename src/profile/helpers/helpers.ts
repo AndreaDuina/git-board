@@ -1,8 +1,7 @@
 import {
   getContributionCalendarGH,
   getLanguagePortfolioGH,
-  getRepoStarsGH,
-  getStarsHistoryGH
+  getOwnedReposByUsernameGH
 } from '~/common/api/github'
 import { getContributionCalendarGL, getLanguagePortfolioGL } from '~/common/api/gitlab'
 import { getNextSunday, getPreviousSunday, lastYear, todayIso } from '~/common/helpers/utils'
@@ -19,9 +18,8 @@ const langPortfolioGetter: { [platform: string]: Function } = {
   gitlab: (username: string) => getLanguagePortfolioGL(username)
 }
 
-const starHistoryGetter: { [platform: string]: Function } = {
-  github: (username: string) => getStarsHistoryGH(username)
-  // gitlab: (username: string) => getStarsHistoryGL(username)
+const reposListGetter: { [platform: string]: Function } = {
+  github: (username: string) => getOwnedReposByUsernameGH(username)
 }
 
 /**
@@ -260,122 +258,25 @@ export const getFullLanguagePortfolio = async (usernames: {
 }
 
 /**
- * Parse the GitHub API response when getting a user star history.
- * @param data
- */
-export const parseStarHistoryGithub = (data: GitHubStarEvent[]): GitDashboardStarHistory => {
-  let history: GitDashboardStarHistory = {}
-
-  for (const event of data) {
-    const date: string = event.starred_at.substring(0, 7)
-    if (history[date]) {
-      history[date] += 1
-    } else {
-      history[date] = 1
-    }
-  }
-
-  return history
-}
-
-export const parseStarHistoryGitlab = (data: GitLabStarEvent[]): GitDashboardStarHistory => {
-  let history: GitDashboardStarHistory = {}
-  return history
-}
-
-const starHistoryParser: { [platform: string]: (...args: any[]) => GitDashboardStarHistory } = {
-  github: parseStarHistoryGithub,
-  gitlab: parseStarHistoryGitlab
-}
-
-/**
- * Sum two star events to get the star history.
- */
-function sumStarHistory(
-  history1: GitDashboardStarHistory,
-  history2: GitDashboardStarHistory
-): GitDashboardStarHistory {
-  const result: GitDashboardStarHistory = { ...history1 }
-  for (const key in history2) {
-    if (result[key]) {
-      result[key] += history2[key]
-    } else {
-      result[key] = history2[key]
-    }
-  }
-  return result
-}
-
-/**
- * Get the starring history across the given platforms.
+ * Get the list of public repositories across the given platforms.
  * @param usernames Object mapping the platform name and the username on that platform.
  * @returns
  */
-export const getFullStarHistory = async (usernames: {
+export const getFullReposList = async (usernames: {
   [platform: string]: string[]
-}): Promise<GitDashboardStarHistory> => {
+}): Promise<any> => {
   const supportedPlatforms = Object.keys(usernames)
 
-  const apiStarHistory: any[] = []
+  const apiReposList: any[] = []
   for (const platform of supportedPlatforms) {
-    if (starHistoryGetter[platform]) {
+    if (reposListGetter[platform]) {
       usernames[platform].forEach((username: string) =>
-        apiStarHistory.push(starHistoryGetter[platform](username))
+        apiReposList.push(reposListGetter[platform](username))
       )
     }
   }
-  const resolvedApiStarHistory = await Promise.all(apiStarHistory)
 
-  let starHistory: GitDashboardStarHistory = {}
-  for (let i = 0, k = 0; i < supportedPlatforms.length; i++) {
-    const platform = supportedPlatforms[i]
-    for (let j = 0; j < usernames[platform].length; j++) {
-      const parsed = starHistoryParser[platform](resolvedApiStarHistory[k])
-      starHistory = sumStarHistory(starHistory, parsed)
-      k++
-    }
-  }
+  const resolvedApiReposList = await Promise.all(apiReposList)
 
-  const formatDate = (year: number, month: number): string => {
-    return `${year}-${month.toString().padStart(2, '0')}`
-  }
-
-  // Find the first and last dates in the data
-  const dates = Object.keys(starHistory).sort()
-  const firstDate = dates[0]
-  const lastDate = dates[dates.length - 1]
-
-  // Extract year and month from first and last dates
-  const [startYear, startMonth] = firstDate.split('-').map(Number)
-  const [endYear, endMonth] = lastDate.split('-').map(Number)
-
-  // Iterate over all months between the first and last dates
-  for (let year = startYear; year <= endYear; year++) {
-    for (let month = 1; month <= 12; month++) {
-      // Skip months before the start date and after the end date
-      if (year === startYear && month < startMonth) continue
-      if (year === endYear && month > endMonth) break
-
-      const formattedDate = formatDate(year, month)
-
-      // Fill in missing months with 0
-      if (!starHistory[formattedDate]) {
-        starHistory[formattedDate] = 0
-      }
-    }
-  }
-
-  let sortedStarHistory = Object.fromEntries(
-    Object.entries(starHistory).sort(([a], [b]) => a.localeCompare(b))
-  )
-
-  let cumulativeStars = 0
-  for (const date in sortedStarHistory) {
-    if (sortedStarHistory[date]) {
-      cumulativeStars += sortedStarHistory[date]
-    }
-    sortedStarHistory[date] = cumulativeStars
-  }
-
-  return sortedStarHistory
+  return null
 }

@@ -28,14 +28,12 @@
   <div class="mt-32 mb-8 grid w-full gap-8">
     <div class="flex flex-col items-center">
       <!-- <h3 class="mb-8 text-3xl font-medium">Language portfolio</h3> -->
-
       <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
     </div>
+  </div>
 
-    <!-- <div class="flex flex-col items-center">
-      <h3 class="mb-8 text-3xl font-medium">Stars History</h3>
-      <Linechart :data="starsHistory" :id="'barchart-star-history'" />
-    </div> -->
+  <div class="mt-32 mb-8 grid w-full gap-8">
+    <div class="flex flex-col items-center"></div>
   </div>
 </template>
 
@@ -44,8 +42,8 @@
   import {
     emptyCalendar,
     getFullCalendar,
-    getFullLanguagePortfolio
-    // getFullStarHistory
+    getFullLanguagePortfolio,
+    getFullReposList
   } from '~/profile/helpers/helpers'
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
@@ -63,7 +61,7 @@
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const languagePortfolio = ref<GitDashboardLanguageProficiency>({})
-  // const starsHistory = ref<GitDashboardStarHistory>({})
+  const reposList = ref<GitDashboardReposList>({})
   const loading = ref(true)
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
@@ -87,7 +85,7 @@
       email: '',
       imgUrl: '',
       platforms: {
-        github: ['francescozonaro', 'probberechts'],
+        github: ['francescozonaro'],
         gitlab: ['dimeilaz']
       },
       socials: {}
@@ -122,8 +120,8 @@
       const resLanguagePortfolio = await getFullLanguagePortfolio(user.value.platforms)
       languagePortfolio.value = resLanguagePortfolio
 
-      // const resStarsHistory = await getFullStarHistory(user.value.platforms)
-      // starsHistory.value = resStarsHistory
+      // const resReposList = await getFullReposList(user.value.platforms)
+      // reposList.value = resReposList
 
       loading.value = false
     } catch (err) {

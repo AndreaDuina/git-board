@@ -66,56 +66,65 @@ export const getContributionCalendarGH = async (
   }
 }
 
-export const getOneYearPushEventsGH = async (
-  username: string,
-  before: string,
-  after: string
-): Promise<GitHubPushEvent[]> => {
-  let result: GitHubPushEvent[] = []
+/** FIXME: Not needed + Doesn't work
+ */
+// export const getOneYearPushActivityGH = async (
+//   username: string,
+//   before: string,
+//   after: string
+// ): Promise<GitHubPushEvent[]> => {
+//   let result: GitHubPushEvent[] = []
 
-  // Perform 50 requests in groups of 5
-  for (let i = 0; i < 10; i++) {
-    const promises = []
-    for (let j = 1; j <= 5; j++) {
-      promises.push(getUserPushGH(username, i + j))
-    }
-    const response = await Promise.all(promises)
-    const responseFlat = response.flat()
+//   // Perform 50 requests in groups of 5
+//   for (let i = 0; i < 10; i++) {
+//     const promises = []
+//     for (let j = 1; j <= 5; j++) {
+//       promises.push(getUserPushGH(username, i + j))
+//     }
+//     const response = await Promise.all(promises)
+//     const responseFlat = response.flat()
 
-    // If getting activity earlier that `before` stop
-    for (let i = 0; i < responseFlat.length; i++) {
-      if (responseFlat[i].created_at < after) {
-        result = [...result, ...responseFlat.slice(0, i)]
-        break
-      }
-    }
+//     // If getting activity earlier that `before` stop
+//     for (let i = 0; i < responseFlat.length; i++) {
+//       if (responseFlat[i].created_at < after) {
+//         result = [...result, ...responseFlat.slice(0, i)]
+//         break
+//       }
+//     }
 
-    result = [...result, ...responseFlat]
+//     result = [...result, ...responseFlat]
 
-    // If at least one response is empty stop
-    if (response.some((val: any[]) => val.length == 0)) {
-      break
-    }
-  }
+//     // If at least one response is empty stop
+//     if (response.some((val: any[]) => val.length == 0)) {
+//       break
+//     }
+//   }
 
-  return result.filter((item: GitHubPushEvent) => item.created_at <= before)
-}
+//   return result.filter((item: GitHubPushEvent) => item.created_at <= before)
+// }
 
-const getUserPushGH = async (username: string, pageIdx = 1): Promise<GitHubPushEvent[]> => {
-  try {
-    const res = await axiosGH.get(`/users/${username}/events`, {
-      params: {
-        per_page: 100,
-        page: pageIdx
-      }
-    })
-    return res.data.filter((item: any) => item.type == 'PushEvent')
-  } catch (err) {
-    console.error(`Error getting GitHub for ${username} at page ${pageIdx}`)
-    return []
-  }
-}
+/** FIXME: Not needed + Doesn't work
+ */
+// const getUserPushGH = async (username: string, pageIdx = 1): Promise<GitHubPushEvent[]> => {
+//   try {
+//     const res = await axiosGH.get(`/users/${username}/events`, {
+//       params: {
+//         per_page: 100,
+//         page: pageIdx
+//       }
+//     })
+//     return res.data.filter((item: any) => item.type == 'PushEvent')
+//   } catch (err) {
+//     console.error(`Error getting GitHub for ${username} at page ${pageIdx}`)
+//     return []
+//   }
+// }
 
+/**
+ * Get the user data for a given GitHub user.
+ * @param username GitHub username.
+ * @returns User data
+ */
 export const searchUserGH = async (username: string): Promise<GitHubUserSearchResponse> => {
   try {
     const res = await axiosGH.get(`/search/users?q=${encodeURIComponent(username)}&per_page=5`)
@@ -130,33 +139,50 @@ export const searchUserGH = async (username: string): Promise<GitHubUserSearchRe
   }
 }
 
-export const getReposByUsernameGH = async (username: string): Promise<GitHubRepository[]> => {
-  const ownedRes = await axiosGH.get(`/users/${username}/repos`)
-  return ownedRes.data
+/**
+ * Get the list of public repos owned by a given GitHub user.
+ * @param username GitHub username.
+ * @returns Repository list
+ */
+export const getOwnedReposByUsernameGH = async (username: string): Promise<GitHubRepository[]> => {
+  const ownedRepositoriesRes = await axiosGH.get(`/users/${username}/repos`)
+  return ownedRepositoriesRes.data
 }
 
-export const getRepoLanguagesGH = async (
-  owner: string,
-  repo: string
-): Promise<Record<string, number>> => {
-  const res = await axiosGH.get(`/repos/${owner}/${repo}/languages`)
+/**
+ * Fetches all repositories (owned and joined) for a given GitHub user.
+ * @param username GitHub username.
+ * @returns Repository list
+ */
+export const getAllReposByUsernameGH = async (username: string): Promise<GitHubRepository[]> => {
+  throw new Error('Function getAllReposByUsernameGH is not yet implemented')
+}
+
+/**
+ * Get the list of programming languages associated to a GitHub repository.
+ * @param repo GitHub repository
+ * @returns
+ */
+const getRepoLanguagesGH = async (repo: GitHubRepository): Promise<Record<string, number>> => {
+  const res = await axiosGH.get(`/repos/${repo.owner.login}/${repo.name}/languages`)
   const languages: Record<string, number> = res.data
   const totalSize = Object.values(languages).reduce((total, size) => total + size, 0)
-
   const adjustedLanguages: Record<string, number> = {}
-
   for (const language of Object.keys(languages)) {
     adjustedLanguages[language] = languages[language] / totalSize
   }
-
   return adjustedLanguages
 }
 
+/**
+ * Get the contributors stats associated to a GitHub repository.
+ * @param repo GitHub repository
+ * @returns
+ */
 export const getRepoContributorStatsGH = async (
-  owner: string,
-  repo: string
+  repo: GitHubRepository
 ): Promise<GitHubRepoContributorStats[]> => {
-  const res = await axiosGH.get(`/repos/${owner}/${repo}/stats/contributors`)
+  const res = await axiosGH.get(`/repos/${repo.owner.login}/${repo.name}/stats/contributors`)
   return res.data
 }
 
@@ -166,15 +192,14 @@ export const getRepoContributorStatsGH = async (
  * @returns Language proficiency
  */
 export const getLanguagePortfolioGH = async (username: string): Promise<Record<string, number>> => {
-  const repos = await getReposByUsernameGH(username)
+  const repos = await getOwnedReposByUsernameGH(username)
 
   const languagePortfolio: Record<string, number> = {}
 
   for (const repo of repos) {
-    const repoName = repo.name
     const owner = repo.owner.login
-    const contributors = await getRepoContributorStatsGH(owner, repoName)
-    const languages: Record<string, number> = await getRepoLanguagesGH(owner, repoName)
+    const contributors = await getRepoContributorStatsGH(repo)
+    const languages: Record<string, number> = await getRepoLanguagesGH(repo)
 
     let totalCommits = 0
 
@@ -213,23 +238,4 @@ export const getRepoStarEventsGH = async (
 ): Promise<GitHubStarEvent[]> => {
   const res = await axiosGH.get(`/repos/${owner}/${repo}/stargazers`)
   return res.data
-}
-
-/**
- * Get all the stars received by a github user.
- * @param username Github username.
- */
-export const getStarsHistoryGH = async (username: string): Promise<GitHubStarEvent[]> => {
-  const repos: GitHubRepository[] = await getReposByUsernameGH(username)
-
-  const promises: Promise<GitHubStarEvent[]>[] = []
-
-  let stars: GitHubStarEvent[] = []
-  repos.forEach(repo => {
-    promises.push(getRepoStarEventsGH(username, repo.name))
-  })
-
-  const response = (await Promise.all(promises)).flat()
-  stars = [...stars, ...response]
-  return stars
 }

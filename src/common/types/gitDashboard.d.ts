@@ -46,6 +46,6 @@ interface GitDashboardStarEvent {
   count: number
 }
 
-interface GitDashboardStarHistory {
-  [date: string]: number
+interface GitDashboardReposList {
+  name: string
 }

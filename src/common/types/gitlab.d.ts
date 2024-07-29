@@ -2,7 +2,7 @@ interface GitLabCalendar {
   [date: string]: number
 }
 
-interface GitLabPushActivity {
+interface GitLabPushEvent {
   author_username: string
   created_at: string
   [key: string]: any
@@ -18,8 +18,10 @@ interface GitLabUser {
   [key: string]: any
 }
 
-interface GitLabProject {
+interface GitLabRepository {
   id: number
+  name: string
+  owner: GitLabUser
 }
 
 interface GitLabContributor {
