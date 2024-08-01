@@ -13,8 +13,6 @@ const calendarGetter: { [platform: string]: Function } = {
  * Returns an empty calendar.
  */
 export const emptyCalendar = (from = lastYear(), to = todayIso()): GitDashboardCalendar => {
-  // const nextSundayISO = getNextSunday(to)
-  // const nextSunday = new Date(nextSundayISO)
   const previousSundayISO = getPreviousSunday(from)
   const previousSunday = new Date(previousSundayISO)
 

@@ -15,15 +15,6 @@ interface PushMap {
   [date: string]: number
 }
 
-interface UserMacroAPI {
-  platform: string
-  imgUrl: string
-  username: string
-  id: number
-  name: string
-  pageUrl: string
-}
-
 interface Account {
   username: string
   name: string
@@ -37,6 +28,23 @@ interface Account {
   }
 }
 
+interface GitUser {
+  platform: string
+  imgUrl: string
+  username: string
+  id: number
+  name: string
+  pageUrl: string
+}
+
+interface GitRepository {
+  id: number
+  name: string
+  owner: GitUser
+}
+
+//
+
 interface GitDashboardLanguageProficiency {
   [language: string]: number
 }
@@ -44,10 +52,4 @@ interface GitDashboardLanguageProficiency {
 interface GitDashboardStarEvent {
   date: string
   count: number
-}
-
-interface GitDashboardRepository {
-  id: number
-  name: string
-  owner: GitHubUser
 }

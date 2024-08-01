@@ -1,16 +1,36 @@
 import { getOwnedReposByUsernameGH } from '~/common/api/github'
 import { getOwnedReposByUsernameGL } from '~/common/api/gitlab'
+import { parseSingleUserGH, parseSingleUserGL } from '~/common/api/macro'
 
 const reposListGetter: { [platform: string]: Function } = {
   github: (username: string) => getOwnedReposByUsernameGH(username),
   gitlab: (username: string) => getOwnedReposByUsernameGL(username)
 }
 
-function sumReposList(
-  element1: GitDashboardRepository[],
-  element2: GitDashboardRepository[]
-): GitDashboardRepository[] {
+function sumReposList(element1: GitRepository[], element2: GitRepository[]): GitRepository[] {
   return [...element1, ...element2]
+}
+
+const parseRepoListGithub = (repoList: any[]): GitRepository[] => {
+  return repoList.map(repo => ({
+    id: repo.id,
+    name: repo.name,
+    owner: parseSingleUserGH(repo.owner)
+  }))
+}
+
+// Define the function to parse a list of GitLab repositories
+const parseRepoListGitlab = (repoList: any[]): GitRepository[] => {
+  return repoList.map(repo => ({
+    id: repo.id,
+    name: repo.name,
+    owner: parseSingleUserGL(repo.owner)
+  }))
+}
+
+const repoParser: { [platform: string]: (...args: any[]) => GitRepository[] } = {
+  github: parseRepoListGithub,
+  gitlab: parseRepoListGitlab
 }
 
 /**
@@ -20,7 +40,7 @@ function sumReposList(
  */
 export const getFullOwnedReposList = async (usernames: {
   [platform: string]: string[]
-}): Promise<GitDashboardRepository[]> => {
+}): Promise<GitRepository[]> => {
   const supportedPlatforms = Object.keys(usernames)
 
   const apiReposList: any[] = []
@@ -34,15 +54,18 @@ export const getFullOwnedReposList = async (usernames: {
 
   const resolvedApiReposList = await Promise.all(apiReposList)
 
-  let repos: GitDashboardRepository[] = []
+  let repos: GitRepository[] = []
   for (let i = 0, k = 0; i < supportedPlatforms.length; i++) {
     const platform = supportedPlatforms[i]
     for (let j = 0; j < usernames[platform].length; j++) {
-      const parsed = resolvedApiReposList[k]
+      console.log(resolvedApiReposList[k])
+      const parsed = repoParser[platform](resolvedApiReposList[k])
       repos = sumReposList(repos, parsed)
       k++
     }
   }
+
+  console.log(repos)
 
   return repos
 }

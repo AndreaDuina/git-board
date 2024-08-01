@@ -6,43 +6,43 @@ const searchUserMap: { [platform: string]: (username: string) => any } = {
   gitlab: searchUserGL
 }
 
-const parseUserGH = (data: GitHubUserSearchResponse): UserMacroAPI[] => {
-  const result: UserMacroAPI[] = []
-  for (const item of data.items) {
-    result.push({
-      platform: 'github',
-      imgUrl: item.avatar_url,
-      username: item.login,
-      id: item.id,
-      name: item.login,
-      pageUrl: item.html_url
-    })
+export const parseSingleUserGH = (item: GitHubUser): GitUser => {
+  return {
+    platform: 'github',
+    imgUrl: item.avatar_url,
+    username: item.login,
+    id: item.id,
+    name: item.login,
+    pageUrl: item.html_url
   }
-  return result
 }
 
-const parseUserGL = (data: GitLabUser[]): UserMacroAPI[] => {
-  const result: UserMacroAPI[] = []
-  for (const user of data) {
-    result.push({
-      platform: 'gitlab',
-      imgUrl: user.avatar_url,
-      username: user.username,
-      id: user.id,
-      name: user.name,
-      pageUrl: user.web_url
-    })
+export const parseSingleUserGL = (user: GitLabUser): GitUser => {
+  return {
+    platform: 'gitlab',
+    imgUrl: user.avatar_url,
+    username: user.username,
+    id: user.id,
+    name: user.name,
+    pageUrl: user.web_url
   }
-  return result
 }
 
-const parseUserMap: { [platform: string]: (data: any) => UserMacroAPI[] } = {
-  github: parseUserGH,
-  gitlab: parseUserGL
+const parseUserListGH = (data: GitHubUserSearchResponse): GitUser[] => {
+  return data.items.map(parseSingleUserGH)
+}
+
+const parseUserListGL = (data: GitLabUser[]): GitUser[] => {
+  return data.map(parseSingleUserGL)
+}
+
+const parseUserMap: { [platform: string]: (data: any) => GitUser[] } = {
+  github: parseUserListGH,
+  gitlab: parseUserListGL
 }
 
 export const searchUser = async (platforms: string[], username: string) => {
-  const users: UserMacroAPI[] = []
+  const users: GitUser[] = []
 
   const promises = []
   for (const platform of platforms) {

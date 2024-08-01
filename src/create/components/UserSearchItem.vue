@@ -25,12 +25,12 @@
   import logoGL from '~/assets/gitlab-logo.svg'
 
   const props = defineProps({
-    user: { type: Object as PropType<UserMacroAPI>, required: true },
+    user: { type: Object as PropType<GitUser>, required: true },
     darkHover: { type: Boolean, default: false }
   })
 
   const emit = defineEmits<{
-    (e: 'onClick', user: UserMacroAPI): void
+    (e: 'onClick', user: GitUser): void
   }>()
 
   const logosMap: { [platform: string]: string } = {

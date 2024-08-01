@@ -36,7 +36,7 @@
   <div class="flex flex-col items-center">
     <div v-for="repo in ownedReposList" :key="repo.id" class="flex flex-col items-center">
       <div class="mt-3 w-[600px] rounded-xl border-[0.5px] p-6 text-center shadow-xl">
-        {{ repo.name }} {{ repo.id }} {{ repo.owner.login || repo.owner.username }}
+        {{ repo.name }} {{ repo.id }} {{ repo.owner.username }}
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const languagePortfolio = ref<GitDashboardLanguageProficiency>({})
-  const ownedReposList = ref<GitDashboardRepository[]>({})
+  const ownedReposList = ref<GitRepository[]>({})
   const loading = ref(true)
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
