@@ -45,7 +45,7 @@ interface GitRepository {
 
 //
 
-interface GitDashboardLanguageProficiency {
+interface GitLanguagePortfolio {
   [language: string]: number
 }
 

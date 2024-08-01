@@ -50,8 +50,8 @@
   import SearchBar from '~/common/components/SearchBar.vue'
   import UserSearchItem from '~/create/components/UserSearchItem.vue'
   import UserSearchItemSkeleton from '~/create/components/UserSearchItemSkeleton.vue'
-  import { searchUser } from '~/common/api/macro'
   import levenshtein from 'fast-levenshtein'
+  import { searchUser } from '../helpers/search'
   import { useStateStore } from '~/stores/state'
   import { useRouter } from 'vue-router'
 

@@ -189,7 +189,7 @@ export const getRepoContributorStatsGH = async (
 /**
  * Get the programming languages used by a given GitHub user.
  * @param username GitHub username.
- * @returns Language proficiency
+ * @returns Language portfolio
  */
 export const getLanguagePortfolioGH = async (username: string): Promise<Record<string, number>> => {
   const repos = await getOwnedReposByUsernameGH(username)

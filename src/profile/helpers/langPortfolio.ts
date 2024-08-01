@@ -10,10 +10,10 @@ const langPortfolioGetter: { [platform: string]: Function } = {
  * Sum two language portfolios.
  */
 function sumLangProfs(
-  element1: GitDashboardLanguageProficiency,
-  element2: GitDashboardLanguageProficiency
-): GitDashboardLanguageProficiency {
-  const result: GitDashboardLanguageProficiency = { ...element1 }
+  element1: GitLanguagePortfolio,
+  element2: GitLanguagePortfolio
+): GitLanguagePortfolio {
+  const result: GitLanguagePortfolio = { ...element1 }
   for (const key in element2) {
     if (result[key]) {
       result[key] += element2[key]
@@ -31,7 +31,7 @@ function sumLangProfs(
  */
 export const getFullLanguagePortfolio = async (usernames: {
   [platform: string]: string[]
-}): Promise<GitDashboardLanguageProficiency> => {
+}): Promise<GitLanguagePortfolio> => {
   const supportedPlatforms = Object.keys(usernames)
 
   const apiLangProfs: any[] = []
@@ -44,7 +44,7 @@ export const getFullLanguagePortfolio = async (usernames: {
   }
   const resolvedApiLangProfs = await Promise.all(apiLangProfs)
 
-  let langs: GitDashboardLanguageProficiency = {}
+  let langs: GitLanguagePortfolio = {}
   for (let i = 0, k = 0; i < supportedPlatforms.length; i++) {
     const platform = supportedPlatforms[i]
     for (let j = 0; j < usernames[platform].length; j++) {

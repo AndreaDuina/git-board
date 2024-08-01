@@ -12,7 +12,7 @@
   import { generateShades } from '~/common/helpers/utils'
 
   const props = defineProps({
-    data: { type: Object as PropType<GitDashboardLanguageProficiency>, required: true },
+    data: { type: Object as PropType<GitLanguagePortfolio>, required: true },
     id: { type: String, required: true },
     mainColor: { type: String, default: '#3694F2' }
   })

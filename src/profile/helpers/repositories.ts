@@ -1,6 +1,6 @@
 import { getOwnedReposByUsernameGH } from '~/common/api/github'
 import { getOwnedReposByUsernameGL } from '~/common/api/gitlab'
-import { parseSingleUserGH, parseSingleUserGL } from '~/common/api/macro'
+import { parseRepoGH, parseRepoGL } from '~/common/api/macro'
 
 const reposListGetter: { [platform: string]: Function } = {
   github: (username: string) => getOwnedReposByUsernameGH(username),
@@ -12,20 +12,11 @@ function sumReposList(element1: GitRepository[], element2: GitRepository[]): Git
 }
 
 const parseRepoListGithub = (repoList: any[]): GitRepository[] => {
-  return repoList.map(repo => ({
-    id: repo.id,
-    name: repo.name,
-    owner: parseSingleUserGH(repo.owner)
-  }))
+  return repoList.map(parseRepoGH)
 }
 
-// Define the function to parse a list of GitLab repositories
 const parseRepoListGitlab = (repoList: any[]): GitRepository[] => {
-  return repoList.map(repo => ({
-    id: repo.id,
-    name: repo.name,
-    owner: parseSingleUserGL(repo.owner)
-  }))
+  return repoList.map(parseRepoGL)
 }
 
 const repoParser: { [platform: string]: (...args: any[]) => GitRepository[] } = {

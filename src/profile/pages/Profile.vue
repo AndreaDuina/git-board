@@ -61,7 +61,7 @@
   const state = useStateStore()
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
-  const languagePortfolio = ref<GitDashboardLanguageProficiency>({})
+  const languagePortfolio = ref<GitLanguagePortfolio>({})
   const ownedReposList = ref<GitRepository[]>({})
   const loading = ref(true)
   const activeYearIdx = ref(0)
