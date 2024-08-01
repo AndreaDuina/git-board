@@ -46,6 +46,8 @@ interface GitDashboardStarEvent {
   count: number
 }
 
-interface GitDashboardReposList {
+interface GitDashboardRepository {
+  id: number
   name: string
+  owner: GitHubUser
 }

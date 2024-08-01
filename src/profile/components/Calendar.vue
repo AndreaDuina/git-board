@@ -36,7 +36,6 @@
 
 <script setup lang="ts">
   import { PropType, computed, onMounted, onUnmounted, ref, watch } from 'vue'
-  import { emptyCalendar } from '~/profile/helpers/helpers'
   import { generateShades } from '~/common/helpers/utils'
 
   const props = defineProps({

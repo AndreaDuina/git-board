@@ -159,8 +159,6 @@ const getAllReposByUsernameGL = async (username: string): Promise<GitLabReposito
   const responses = await Promise.all(promises)
   joinedProjectEvents = responses.flat()
 
-  console.log(joinedProjectEvents)
-
   const joinedProjects: GitLabRepository[] = []
   try {
     await Promise.all(

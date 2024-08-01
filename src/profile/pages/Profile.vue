@@ -25,43 +25,44 @@
   </div>
 
   <!-- Stats -->
-  <div class="mt-32 mb-8 grid w-full gap-8">
+  <div class="mt-8 grid w-full grid-cols-2 gap-8">
     <div class="flex flex-col items-center">
-      <!-- <h3 class="mb-8 text-3xl font-medium">Language portfolio</h3> -->
       <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
     </div>
+    <div class="flex flex-col items-center">
+      <div class="flex flex-col items-center">Placeholder</div>
+    </div>
   </div>
-
-  <div class="mt-32 mb-8 grid w-full gap-8">
-    <div class="flex flex-col items-center"></div>
+  <div class="flex flex-col items-center">
+    <div v-for="repo in ownedReposList" :key="repo.id" class="flex flex-col items-center">
+      <div class="mt-3 w-[600px] rounded-xl border-[0.5px] p-6 text-center shadow-xl">
+        {{ repo.name }} {{ repo.id }} {{ repo.owner.login || repo.owner.username }}
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, watch, ref } from 'vue'
-  import {
-    emptyCalendar,
-    getFullCalendar,
-    getFullLanguagePortfolio,
-    getFullReposList
-  } from '~/profile/helpers/helpers'
+  import { emptyCalendar, getFullCalendar } from '~/profile/helpers/calendar'
+  import { getFullLanguagePortfolio } from '~/profile/helpers/langPortfolio'
+  import { getFullOwnedReposList } from '~/profile/helpers/repositories'
+  import { useStateStore } from '~/stores/state'
+  import { ref } from 'vue'
+  import { emptyAccount } from '~/common/helpers/utils'
+
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
-  import { useStateStore } from '~/stores/state'
-  import { emptyAccount } from '~/common/helpers/utils'
   import Doughnut from '~/profile/components/Doughnut.vue'
-  // import Linechart from '~/profile/components/Linechart.vue'
 
   const props = defineProps({
     username: { type: String, required: true }
   })
 
   const state = useStateStore()
-
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const languagePortfolio = ref<GitDashboardLanguageProficiency>({})
-  const reposList = ref<GitDashboardReposList>({})
+  const ownedReposList = ref<GitDashboardRepository[]>({})
   const loading = ref(true)
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
@@ -114,14 +115,15 @@
 
     try {
       loading.value = true
+
       const res = await getFullCalendar(user.value.platforms)
       calendar.value = res
 
       const resLanguagePortfolio = await getFullLanguagePortfolio(user.value.platforms)
       languagePortfolio.value = resLanguagePortfolio
 
-      // const resReposList = await getFullReposList(user.value.platforms)
-      // reposList.value = resReposList
+      const resOwnedReposList = await getFullOwnedReposList(user.value.platforms)
+      ownedReposList.value = resOwnedReposList
 
       loading.value = false
     } catch (err) {

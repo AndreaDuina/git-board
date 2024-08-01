@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { lastYear, todayIso } from '../helpers/utils'
-import { emptyCalendar } from '~/profile/helpers/helpers'
+import { emptyCalendar } from '~/profile/helpers/calendar'
 
 const ENDPOINT = 'https://api.github.com'
 
