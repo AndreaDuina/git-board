@@ -1,28 +1,56 @@
 <template>
-  <nav class="flex justify-between p-2">
+  <nav class="relative flex items-center justify-between text-white">
+    <!-- Left Side -->
     <RouterLink class="flex items-center" to="/">
-      <img src="/logo.svg" class="mr-4 h-10 w-10" />
+      <img src="/logo.svg" class="mr-4 h-10 w-10" alt="Logo" />
       <h1 class="text-4xl font-semibold tracking-wider">Git Dashboard</h1>
     </RouterLink>
 
-    <div class="flex items-center">
-      <button
-        class="rounded-md border border-light px-3 py-2 hover:border-white hover:bg-background-light active:bg-background-dark"
-        @click="signInWithGitHub"
+    <!-- Middle -->
+
+    <div class="flex items-center gap-4">
+      <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
+      <RouterLink :to="{ name: 'create' }" class="nav-link">Create</RouterLink>
+      <RouterLink
+        :to="{ name: 'profile', params: { username: 'andreaduina' } }"
+        class="nav-link"
+        v-if="isDev"
       >
-        Log in
-      </button>
+        Andrea Duina
+      </RouterLink>
+      <RouterLink
+        :to="{ name: 'profile', params: { username: 'francescozonaro' } }"
+        class="nav-link"
+        v-if="isDev"
+      >
+        Francesco Zonaro
+      </RouterLink>
+    </div>
+
+    <!-- Right Side -->
+    <div class="flex items-center">
+      <button class="nav-link" @click="signInWithGitHub">Log in</button>
     </div>
   </nav>
-  <div class="border-gradient h-[2px] w-full" />
+
+  <div class="border-gradient mt-4 h-[1px] w-full" />
 </template>
 
 <style scoped>
-  .border-gradient {
-    background: linear-gradient(to right, rgb(var(--color-background-light)), rgba(0, 0, 0, 0) 70%);
+  /* Scoped CSS selector to target RouterLink component */
+  nav .nav-link {
+    @apply mx-2 hover:text-gray-400;
   }
 </style>
 
 <script setup lang="ts">
   import { signInWithGitHub } from '../firebase/auth'
+
+  const isDev = import.meta.env.DEV
 </script>
+
+<style scoped>
+  .border-gradient {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0));
+  }
+</style>
