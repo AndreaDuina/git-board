@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-12 flex flex-col items-center justify-center">
+  <div class="mx-12 mt-12 flex flex-col items-center justify-center">
     <div class="mb-12 text-center text-6xl font-bold">
       <p>Your whole git history, all in one place</p>
     </div>
