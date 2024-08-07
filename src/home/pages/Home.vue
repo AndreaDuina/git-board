@@ -17,7 +17,9 @@
       <button @click="toggleTerminal" class="rounded-lg bg-white p-3 text-black hover:bg-gray-50">
         Get Started
       </button>
-      <button class="rounded-lg border-[0.5px] border-gray-600 p-3 text-white hover:bg-opacity-95">
+      <button
+        class="rounded-lg border-[0.5px] border-gray-600 p-3 text-white hover:bg-background-bright"
+      >
         Other
       </button>
     </div>
