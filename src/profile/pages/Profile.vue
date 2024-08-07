@@ -25,7 +25,7 @@
   </div>
 
   <!-- Stats -->
-  <div class="mt-8 grid w-full grid-cols-2 gap-8">
+  <div class="mt-8 grid w-full grid-cols-1 gap-8 lg:grid-cols-2">
     <div class="flex flex-col items-center">
       <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
     </div>
@@ -33,11 +33,27 @@
       <div class="flex flex-col items-center">Placeholder</div>
     </div>
   </div>
-  <div class="flex flex-col items-center">
+
+  <!-- Repositories -->
+  <div class="mt-8">
     <div v-for="repo in ownedReposList" :key="repo.id" class="flex flex-col items-center">
-      <div class="mt-3 w-[600px] rounded-xl border-[0.5px] p-6 text-center shadow-xl">
-        {{ repo.name }} {{ repo.id }} {{ repo.owner.username }}
-      </div>
+      <a
+        :href="'https://' + repo.owner.platform + '.com/' + repo.owner.username + '/' + repo.name"
+        target="_blank"
+        class="mt-3 flex w-[600px] items-center justify-between rounded-2xl border-[0.5px] border-gray-700 p-4 text-center hover:bg-background-light hover:brightness-110"
+      >
+        <p>{{ repo.name }}</p>
+        <img
+          v-if="repo.owner.platform === 'github'"
+          :src="logoGH"
+          class="inline-block h-4 w-4 rounded-full"
+        />
+        <img
+          v-if="repo.owner.platform === 'gitlab'"
+          :src="logoGL"
+          class="inline-block h-4 w-4 rounded-full"
+        />
+      </a>
     </div>
   </div>
 </template>
@@ -53,6 +69,8 @@
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
   import Doughnut from '~/profile/components/Doughnut.vue'
+  import logoGH from '~/assets/github-mark-white.svg'
+  import logoGL from '~/assets/gitlab-logo.svg'
 
   const props = defineProps({
     username: { type: String, required: true }
