@@ -1,9 +1,9 @@
 <template>
-  <nav class="relative flex items-center justify-between text-white">
+  <nav class="relative flex items-center justify-between px-4 text-white">
     <!-- Left Side -->
     <RouterLink class="flex items-center" to="/">
-      <img src="/logo.svg" class="mr-4 h-10 w-10" alt="Logo" />
-      <h1 class="text-4xl font-semibold tracking-wider">Git Dashboard</h1>
+      <img src="/logo.svg" class="h-10 w-10" alt="Logo" />
+      <h1 class="ml-4 hidden text-4xl font-semibold tracking-wider lg:block">Git Dashboard</h1>
     </RouterLink>
 
     <!-- Middle -->
