@@ -1,6 +1,6 @@
 <template>
   <div class="mx-24 mt-12 flex flex-col items-center justify-center">
-    <h1 class="titleGradient mb-12">Your whole git history, all in one place</h1>
+    <h1 class="mb-12 titleGradient">Your whole git history, all in one place</h1>
 
     <div class="mb-12 text-center">
       <p class="text-gray-400">
@@ -22,7 +22,7 @@
 
     <div v-if="isTerminalVisible" class="mt-12 flex justify-center align-middle">
       <div
-        class="terminal-shadow shadow-background-lightmuwa draggable w-[60rem] rounded-md bg-black"
+        class="terminal-shadow draggable w-[25rem] rounded-md bg-black md:w-[60rem]"
         id="terminal"
         @mousedown="startDrag"
         @click="setFocus"
@@ -72,9 +72,9 @@
 
 <style scoped>
   .terminal-shadow {
-    -webkit-box-shadow: 0px 0px 50px 4px rgb(var(--color-background-light) / 1);
-    -moz-box-shadow: 0px 0px 50px 4px rgb(var(--color-background-light) / 1);
-    box-shadow: 0px 0px 50px 4px rgb(var(--color-background-light) / 1);
+    -webkit-box-shadow: 0px 0px 05px 1px rgb(var(--color-background-light) / 1);
+    -moz-box-shadow: 0px 0px 05px 1px rgb(var(--color-background-light) / 1);
+    box-shadow: 0px 0px 05px 1px rgb(var(--color-background-light) / 1);
   }
 
   .draggable {
