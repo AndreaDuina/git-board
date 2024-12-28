@@ -27,7 +27,7 @@
     </div>
 
     <!-- Right Side -->
-    <div class="hidden items-center md:flex">
+    <div class="mr-8 hidden items-center md:flex">
       <button class="nav-link" @click="signInWithGitHub">Log in</button>
     </div>
 
@@ -50,6 +50,27 @@
     </button>
   </nav>
 
+  <!-- Mobile Menu (only visible on small screens) -->
+  <div v-show="isMenuOpen" class="flex flex-col items-center gap-4 md:hidden">
+    <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
+    <RouterLink :to="{ name: 'create' }" class="nav-link">Create</RouterLink>
+    <RouterLink
+      :to="{ name: 'profile', params: { username: 'andreaduina' } }"
+      class="nav-link"
+      v-if="isDev"
+    >
+      Andrea Duina
+    </RouterLink>
+    <RouterLink
+      :to="{ name: 'profile', params: { username: 'francescozonaro' } }"
+      class="nav-link"
+      v-if="isDev"
+    >
+      Francesco Zonaro
+    </RouterLink>
+    <button class="nav-link" @click="signInWithGitHub">Log in</button>
+  </div>
+
   <div class="border-gradient mt-4 h-[1px] w-full" />
 </template>
 
@@ -63,7 +84,12 @@
 <script setup lang="ts">
   import { signInWithGitHub } from '../firebase/auth'
 
+  const isMenuOpen = ref(false)
   const isDev = import.meta.env.DEV
+
+  const toggleMenu = () => {
+    isMenuOpen.value = !isMenuOpen.value
+  }
 </script>
 
 <style scoped>
