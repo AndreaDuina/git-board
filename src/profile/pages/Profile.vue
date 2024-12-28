@@ -29,7 +29,7 @@
       <!-- Repos -->
       <div class="col-span-2 flex flex-col items-center cardComponent md:col-span-2">
         <div
-          v-for="repo in ownedReposList.slice(0, 3)"
+          v-for="repo in ownedReposList"
           :key="repo.id"
           class="m-4 flex w-[95%] flex-col items-center p-6 cardComponent"
         >
@@ -130,7 +130,7 @@
       languagePortfolio.value = resLanguagePortfolio
 
       const resOwnedReposList = await getFullOwnedReposList(user.value.platforms)
-      ownedReposList.value = resOwnedReposList
+      ownedReposList.value = resOwnedReposList.slice(0, 3)
 
       loading.value = false
     } catch (err) {
