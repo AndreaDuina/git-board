@@ -1,8 +1,6 @@
 <template>
-  <div class="mt-12 flex flex-col items-center justify-center">
-    <div class="mb-12 text-center text-6xl font-bold">
-      <p>Your whole git history, all in one place</p>
-    </div>
+  <div class="mx-24 mt-12 flex flex-col items-center justify-center">
+    <h1 class="titleGradient mb-12">Your whole git history, all in one place</h1>
 
     <div class="mb-12 text-center">
       <p class="text-gray-400">
@@ -18,7 +16,7 @@
         Get Started
       </button>
       <button class="rounded-lg border-[0.5px] border-gray-600 p-3 text-white hover:bg-opacity-95">
-        Other
+        Docs
       </button>
     </div>
 

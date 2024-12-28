@@ -49,14 +49,11 @@ export const getFullOwnedReposList = async (usernames: {
   for (let i = 0, k = 0; i < supportedPlatforms.length; i++) {
     const platform = supportedPlatforms[i]
     for (let j = 0; j < usernames[platform].length; j++) {
-      console.log(resolvedApiReposList[k])
       const parsed = repoParser[platform](resolvedApiReposList[k])
       repos = sumReposList(repos, parsed)
       k++
     }
   }
-
-  console.log(repos)
 
   return repos
 }

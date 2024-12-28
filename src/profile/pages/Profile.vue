@@ -1,42 +1,49 @@
 <template>
   <!-- Profile -->
-  <div class="mt-4 flex items-center">
-    <div class="mr-6 h-32 w-32">
+  <div class="min-w-[700px]">
+    <div class="mt-4 flex items-center justify-center">
+      <!-- <div class="mr-6 h-32 w-32">
       <AccountAvatar :account="username" :imageSrc="user.imgUrl" size="large" />
+    </div> -->
+      <h1 class="titleGradient">{{ user.name }}</h1>
     </div>
-    <h1 class="text-4xl font-semibold tracking-wider">{{ user.name }}</h1>
-  </div>
 
-  <!-- Calendar -->
-  <div class="mt-8 flex w-full items-start justify-center">
-    <Calendar :calendar="calendar" :loading="loading" mainColor="#3694f2" />
-    <div class="ml-4 flex flex-col gap-1">
-      <button
-        class="rounded-[3px] px-4 py-[0.15rem] active:brightness-90"
-        :class="
-          activeYearIdx == idx ? 'bg-primary hover:brightness-110' : 'hover:bg-background-light'
-        "
-        @click="chooseYear(idx)"
-        v-for="(year, idx) of years"
-      >
-        {{ year }}
-      </button>
-    </div>
-  </div>
+    <div class="mx-12 grid grid-cols-4 gap-8">
+      <!-- Calendar -->
+      <div class="col-span-4 mt-8 flex w-full items-start justify-center p-6 cardComponent">
+        <Calendar :calendar="calendar" :loading="loading" mainColor="#3694f2" />
+        <div class="ml-4 hidden flex-col gap-1 xl:flex">
+          <button
+            class="rounded-[3px] px-4 py-[0.15rem] active:brightness-90"
+            :class="
+              activeYearIdx == idx ? 'bg-primary hover:brightness-110' : 'hover:bg-background-light'
+            "
+            @click="chooseYear(idx)"
+            v-for="(year, idx) of years"
+          >
+            {{ year }}
+          </button>
+        </div>
+      </div>
 
-  <!-- Stats -->
-  <div class="mt-8 grid w-full grid-cols-2 gap-8">
-    <div class="flex flex-col items-center">
-      <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
-    </div>
-    <div class="flex flex-col items-center">
-      <div class="flex flex-col items-center">Placeholder</div>
-    </div>
-  </div>
-  <div class="flex flex-col items-center">
-    <div v-for="repo in ownedReposList" :key="repo.id" class="flex flex-col items-center">
-      <div class="mt-3 w-[600px] rounded-xl border-[0.5px] p-6 text-center shadow-xl">
-        {{ repo.name }} {{ repo.id }} {{ repo.owner.username }}
+      <!-- Repos -->
+      <div class="col-span-2 flex flex-col items-center cardComponent md:col-span-2">
+        <div
+          v-for="repo in ownedReposList.slice(0, 3)"
+          :key="repo.id"
+          class="m-4 flex w-[95%] flex-col items-center p-6 cardComponent"
+        >
+          <span class="block lg:hidden">{{ repo.name }}</span>
+
+          <span class="hidden lg:block">
+            {{ repo.name }} {{ repo.id }} {{ repo.owner.username }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Language Portfolio -->
+      <div class="col-span-2 flex flex-col items-center cardComponent">
+        <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
       </div>
     </div>
   </div>
@@ -87,7 +94,7 @@
       imgUrl: '',
       platforms: {
         github: ['francescozonaro'],
-        gitlab: ['dimeilaz']
+        gitlab: []
       },
       socials: {}
     }

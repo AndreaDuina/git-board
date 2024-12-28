@@ -7,7 +7,51 @@
           {{ weekDaysAxis[i - 1] }}
         </div>
       </div>
-      <div class="flex flex-col" v-for="(week, idx) of calendar.weeks">
+
+      <!-- Xl screens calendar-->
+      <div class="hidden flex-col xl:flex" v-for="(week, idx) of calendar.weeks">
+        <!-- Month names -->
+        <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
+          {{ monthTitles[week.firstDay] ?? '' }}
+        </div>
+        <!-- Data -->
+        <div
+          class="m-[0.1rem] h-4 w-4 rounded-sm"
+          :class="[{ 'animate-pulse': loading }]"
+          :style="{ background: getContributionColor(day.count), animationDelay: `${20 * idx}ms` }"
+          v-for="day of week.days"
+        />
+      </div>
+
+      <!-- Lg screens calendar-->
+      <div
+        class="hidden flex-col lg:flex xl:hidden"
+        v-for="(week, idx) of calendar.weeks.slice(
+          calendar.weeks.length - 36,
+          calendar.weeks.length
+        )"
+      >
+        <!-- Month names -->
+        <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
+          {{ monthTitles[week.firstDay] ?? '' }}
+        </div>
+        <!-- Data -->
+        <div
+          class="m-[0.1rem] h-4 w-4 rounded-sm"
+          :class="[{ 'animate-pulse': loading }]"
+          :style="{ background: getContributionColor(day.count), animationDelay: `${20 * idx}ms` }"
+          v-for="day of week.days"
+        />
+      </div>
+
+      <!-- Mid screens calendar-->
+      <div
+        class="flex flex-col lg:hidden"
+        v-for="(week, idx) of calendar.weeks.slice(
+          calendar.weeks.length - 24,
+          calendar.weeks.length
+        )"
+      >
         <!-- Month names -->
         <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
           {{ monthTitles[week.firstDay] ?? '' }}
@@ -21,6 +65,7 @@
         />
       </div>
     </div>
+
     <!-- Legend -->
     <div class="mt-2 flex w-full items-center justify-center">
       <span class="mr-2">Low</span>

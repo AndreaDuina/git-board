@@ -2,13 +2,12 @@
   <nav class="relative flex items-center justify-between text-white">
     <!-- Left Side -->
     <RouterLink class="flex items-center" to="/">
-      <img src="/logo.svg" class="mr-4 h-10 w-10" alt="Logo" />
-      <h1 class="text-4xl font-semibold tracking-wider">Git Dashboard</h1>
+      <img src="/logo.svg" class="ml-8 mr-4 h-10 w-10" alt="Logo" />
+      <!-- <h1 class="text-4xl font-semibold tracking-wider">Git Dashboard</h1> -->
     </RouterLink>
 
-    <!-- Middle -->
-
-    <div class="flex items-center gap-4">
+    <!-- Middle & Right Side (only visible on medium screens and up) -->
+    <div class="hidden items-center gap-4 md:flex">
       <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
       <RouterLink :to="{ name: 'create' }" class="nav-link">Create</RouterLink>
       <RouterLink
@@ -28,9 +27,27 @@
     </div>
 
     <!-- Right Side -->
-    <div class="flex items-center">
+    <div class="hidden items-center md:flex">
       <button class="nav-link" @click="signInWithGitHub">Log in</button>
     </div>
+
+    <!-- Burger Menu (visible on small screens) -->
+    <button class="mr-8 flex items-center md:hidden" @click="toggleMenu" aria-label="Toggle menu">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </button>
   </nav>
 
   <div class="border-gradient mt-4 h-[1px] w-full" />

@@ -29,8 +29,8 @@
         {
           data: Object.values(props.data),
           backgroundColor: [...generateShades(props.mainColor, 5)].reverse(),
-          borderWidth: 3,
-          borderColor: '#1B1B1F',
+          borderWidth: 1.5,
+          borderColor: '#9DD40',
           borderRadius: 5
         }
       ]
@@ -42,33 +42,34 @@
       plugins: [ChartDataLabels],
       options: {
         layout: {
-          padding: 80
+          padding: 10
         },
         plugins: {
           legend: {
             display: false
           },
           datalabels: {
-            anchor: 'end',
-            align: 'end',
-            offset: 10,
-            borderColor: '#fff',
-            borderWidth: 2,
-            borderRadius: 25,
-            backgroundColor: '#1B1B1F',
+            anchor: 'start',
+            align: 'start',
+            offset: 20,
+            font: {
+              weight: 'bold',
+              size: 14
+            },
             color: '#fff',
             padding: {
               top: 4,
               bottom: 4,
-              left: 8,
-              right: 8
+              left: 4,
+              right: 4
             },
             clip: false,
-            formatter: (value, context) => context.chart.data.labels[context.dataIndex]
+            formatter: (value, context) =>
+              value > 20 ? context.chart.data.labels[context.dataIndex] : null
           }
         },
-        responsive: false,
-        maintainAspectRatio: false, // Allow the chart to grow beyond its aspect ratio
+        responsive: true,
+        maintainAspectRatio: true, // Allow the chart to grow beyond its aspect ratio
         cutout: '80%',
         animation: {
           duration: 1000
@@ -115,7 +116,7 @@
   }
 
   canvas {
-    width: 500px; /* Adjust the width as needed */
-    height: 500px; /* Adjust the height as needed */
+    width: 300px;
+    height: 300px;
   }
 </style>
