@@ -27,7 +27,7 @@
       <div
         class="hidden flex-col lg:flex xl:hidden"
         v-for="(week, idx) of calendar.weeks.slice(
-          calendar.weeks.length - 36,
+          calendar.weeks.length - 41,
           calendar.weeks.length
         )"
       >
@@ -48,7 +48,7 @@
       <div
         class="flex flex-col lg:hidden"
         v-for="(week, idx) of calendar.weeks.slice(
-          calendar.weeks.length - 24,
+          calendar.weeks.length - 29,
           calendar.weeks.length
         )"
       >

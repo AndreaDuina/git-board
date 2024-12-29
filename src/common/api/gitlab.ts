@@ -123,12 +123,10 @@ export const getOwnedReposByUsernameGL = async (username: string): Promise<GitLa
   const enrichedRepositories = await Promise.all(
     repositories.map(async (repo: any) => {
       try {
-        const languagesRes = await axiosGL.get(`/projects/${encodeURIComponent(repo.id)}/languages`)
+        const languages = await getRepoLanguagesGL(repo) // Use the existing function here
         return {
           ...repo,
-          language: Object.keys(languagesRes.data).reduce((a, b) =>
-            languagesRes.data[a] > languagesRes.data[b] ? a : b
-          )
+          language: Object.keys(languages).reduce((a, b) => (languages[a] > languages[b] ? a : b))
         }
       } catch (error) {
         console.error(`Failed to fetch languages for project ${repo.id}:`, error)
@@ -206,8 +204,13 @@ const getAllReposByUsernameGL = async (username: string): Promise<GitLabReposito
 const getRepoLanguagesGL = async (repo: GitLabRepository): Promise<Record<string, number>> => {
   const resLanguages = await axiosGL.get(`/projects/${repo.id}/languages`)
   const languages = resLanguages.data
+  const adjustedLanguages: Record<string, number> = {}
 
-  return languages
+  for (const language in languages) {
+    adjustedLanguages[language] = languages[language]
+  }
+
+  return adjustedLanguages
 }
 
 /**
@@ -236,12 +239,6 @@ export const getLanguagePortfolioGL = async (username: string): Promise<Record<s
     const contributors: GitLabContributor[] = await getRepoContributorStatsGL(repo)
     const languages: Record<string, number> = await getRepoLanguagesGL(repo)
 
-    const adjustedLanguages: Record<string, number> = {}
-
-    for (const language in languages) {
-      adjustedLanguages[language] = languages[language] / 100
-    }
-
     let totalCommits = 0
 
     if (contributors.length > 0) {
@@ -255,7 +252,7 @@ export const getLanguagePortfolioGL = async (username: string): Promise<Record<s
       const userCommits = userContributor ? userContributor.commits : 0
       const userShare = (userCommits * userCommits) / totalCommits
 
-      for (const [language, percentage] of Object.entries(adjustedLanguages)) {
+      for (const [language, percentage] of Object.entries(languages)) {
         if (!languagePortfolio[language]) {
           languagePortfolio[language] = 0
         }

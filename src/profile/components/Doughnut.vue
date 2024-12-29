@@ -103,8 +103,8 @@
 
 <style scoped>
   .loading-placeholder {
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
     border-radius: 100%;
     background-color: transparent;
     border: 20px solid #2b2f36;
@@ -113,10 +113,11 @@
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+    margin: 15px;
   }
 
   canvas {
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
   }
 </style>

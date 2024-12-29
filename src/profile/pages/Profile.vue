@@ -27,22 +27,31 @@
       </div>
 
       <!-- Repos -->
-      <div class="col-span-2 flex flex-col items-center cardComponent md:col-span-2">
+      <div class="col-span-2 flex flex-col items-center md:col-span-2">
         <div
           v-for="repo in ownedReposList"
           :key="repo.id"
-          class="m-4 flex w-[95%] flex-col items-center p-6 cardComponent"
+          class="mb-4 h-full w-[100%] p-6 cardComponent last:mb-0"
         >
-          <span class="block lg:hidden">{{ repo.name }}</span>
-
-          <span class="hidden lg:block">
-            {{ repo.name }} {{ repo.language }} {{ repo.lastActivity }}
-          </span>
+          <div class="mb-4 flex items-center justify-between">
+            <span class="text-md font-bold">{{ repo.name }}</span>
+            <span
+              id="activity-indicator"
+              class="flex items-center"
+              :title="getLastActivityMessage(repo.lastActivity)"
+            >
+              <EyeIcon class="h-4 w-4" :class="getLastActivityColor(repo.lastActivity)" />
+            </span>
+          </div>
+          <div class="mt-auto flex items-center justify-between">
+            <span class="text-sm text-gray-600">{{ repo.language }}</span>
+            <span class="text-sm text-gray-600">Placeholder</span>
+          </div>
         </div>
       </div>
 
       <!-- Language Portfolio -->
-      <div class="col-span-2 flex flex-col items-center cardComponent">
+      <div class="col-span-2 flex h-[360px] flex-col items-center justify-center cardComponent">
         <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
       </div>
     </div>
@@ -56,6 +65,8 @@
   import { useStateStore } from '~/stores/state'
   import { ref } from 'vue'
   import { emptyAccount } from '~/common/helpers/utils'
+
+  import { EyeIcon } from '@heroicons/vue/24/outline'
 
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
@@ -130,11 +141,29 @@
       languagePortfolio.value = resLanguagePortfolio
 
       const resOwnedReposList = await getFullOwnedReposList(user.value.platforms)
-      ownedReposList.value = resOwnedReposList.slice(0, 3)
+      resOwnedReposList.sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity))
+      ownedReposList.value = resOwnedReposList //.slice(0, 3)
 
       loading.value = false
     } catch (err) {
       console.error(`Error loading profile`, err)
+    }
+  }
+
+  const getLastActivityMessage = (lastActivity: string) => {
+    const diff = (new Date().getTime() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24)
+    return 'last activity ' + Math.round(diff) + ' days ago'
+  }
+
+  const getLastActivityColor = (lastActivity: string) => {
+    const diff = (new Date().getTime() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24)
+
+    if (diff < 100) {
+      return 'text-green'
+    } else if (diff < 300) {
+      return 'text-yellow-400'
+    } else {
+      return 'text-gray-400'
     }
   }
 
