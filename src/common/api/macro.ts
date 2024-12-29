@@ -10,10 +10,13 @@ export const parseUserGH = (item: GitHubUser): GitUser => {
 }
 
 export const parseRepoGH = (repo: GitHubRepository): GitRepository => {
+  console.log(repo)
   return {
     id: repo.id,
     name: repo.name,
-    owner: parseUserGH(repo.owner)
+    owner: parseUserGH(repo.owner),
+    language: repo.language,
+    lastActivity: repo.updated_at
   }
 }
 
@@ -29,9 +32,12 @@ export const parseUserGL = (user: GitLabUser): GitUser => {
 }
 
 export const parseRepoGL = (repo: GitLabRepository): GitRepository => {
+  console.log(repo)
   return {
     id: repo.id,
     name: repo.name,
-    owner: parseUserGL(repo.owner)
+    owner: parseUserGL(repo.owner),
+    language: repo.language,
+    lastActivity: repo.last_activity_at
   }
 }

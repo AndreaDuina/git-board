@@ -36,7 +36,7 @@
           <span class="block lg:hidden">{{ repo.name }}</span>
 
           <span class="hidden lg:block">
-            {{ repo.name }} {{ repo.id }} {{ repo.owner.username }}
+            {{ repo.name }} {{ repo.language }} {{ repo.lastActivity }}
           </span>
         </div>
       </div>
@@ -94,7 +94,7 @@
       imgUrl: '',
       platforms: {
         github: ['francescozonaro'],
-        gitlab: []
+        gitlab: ['dimeilaz']
       },
       socials: {}
     }

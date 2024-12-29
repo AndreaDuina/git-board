@@ -166,12 +166,8 @@ export const getAllReposByUsernameGH = async (username: string): Promise<GitHubR
 const getRepoLanguagesGH = async (repo: GitHubRepository): Promise<Record<string, number>> => {
   const res = await axiosGH.get(`/repos/${repo.owner.login}/${repo.name}/languages`)
   const languages: Record<string, number> = res.data
-  const totalSize = Object.values(languages).reduce((total, size) => total + size, 0)
-  const adjustedLanguages: Record<string, number> = {}
-  for (const language of Object.keys(languages)) {
-    adjustedLanguages[language] = languages[language] / totalSize
-  }
-  return adjustedLanguages
+
+  return languages
 }
 
 /**
@@ -201,6 +197,12 @@ export const getLanguagePortfolioGH = async (username: string): Promise<Record<s
     const contributors = await getRepoContributorStatsGH(repo)
     const languages: Record<string, number> = await getRepoLanguagesGH(repo)
 
+    const totalSize = Object.values(languages).reduce((total, size) => total + size, 0)
+    const adjustedLanguages: Record<string, number> = {}
+    for (const language of Object.keys(languages)) {
+      adjustedLanguages[language] = languages[language] / totalSize
+    }
+
     let totalCommits = 0
 
     if (contributors.length > 0) {
@@ -214,7 +216,7 @@ export const getLanguagePortfolioGH = async (username: string): Promise<Record<s
       const userCommits = userContributor ? userContributor.total : 0
       const userShare = (userCommits * userCommits) / totalCommits
 
-      for (const [language, percentage] of Object.entries(languages)) {
+      for (const [language, percentage] of Object.entries(adjustedLanguages)) {
         if (!languagePortfolio[language]) {
           languagePortfolio[language] = 0
         }

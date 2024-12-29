@@ -41,6 +41,8 @@ interface GitRepository {
   id: number
   name: string
   owner: GitUser
+  language: string
+  lastActivity: Date
 }
 
 //

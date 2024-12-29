@@ -118,7 +118,29 @@ export const getOwnedReposByUsernameGL = async (username: string): Promise<GitLa
   const userAccount = await searchUserGL(username)
   const userId = userAccount[0].id
   const ownedRepositoriesRes = await axiosGL.get(`/users/${userId}/projects`)
-  return ownedRepositoriesRes.data
+  const repositories = ownedRepositoriesRes.data
+
+  const enrichedRepositories = await Promise.all(
+    repositories.map(async (repo: any) => {
+      try {
+        const languagesRes = await axiosGL.get(`/projects/${encodeURIComponent(repo.id)}/languages`)
+        return {
+          ...repo,
+          language: Object.keys(languagesRes.data).reduce((a, b) =>
+            languagesRes.data[a] > languagesRes.data[b] ? a : b
+          )
+        }
+      } catch (error) {
+        console.error(`Failed to fetch languages for project ${repo.id}:`, error)
+        return {
+          ...repo,
+          languages: {}
+        }
+      }
+    })
+  )
+
+  return enrichedRepositories
 }
 
 /**
@@ -184,13 +206,8 @@ const getAllReposByUsernameGL = async (username: string): Promise<GitLabReposito
 const getRepoLanguagesGL = async (repo: GitLabRepository): Promise<Record<string, number>> => {
   const resLanguages = await axiosGL.get(`/projects/${repo.id}/languages`)
   const languages = resLanguages.data
-  const adjustedLanguages: Record<string, number> = {}
 
-  for (const language in languages) {
-    adjustedLanguages[language] = languages[language] / 100
-  }
-
-  return adjustedLanguages
+  return languages
 }
 
 /**
@@ -219,6 +236,12 @@ export const getLanguagePortfolioGL = async (username: string): Promise<Record<s
     const contributors: GitLabContributor[] = await getRepoContributorStatsGL(repo)
     const languages: Record<string, number> = await getRepoLanguagesGL(repo)
 
+    const adjustedLanguages: Record<string, number> = {}
+
+    for (const language in languages) {
+      adjustedLanguages[language] = languages[language] / 100
+    }
+
     let totalCommits = 0
 
     if (contributors.length > 0) {
@@ -232,7 +255,7 @@ export const getLanguagePortfolioGL = async (username: string): Promise<Record<s
       const userCommits = userContributor ? userContributor.commits : 0
       const userShare = (userCommits * userCommits) / totalCommits
 
-      for (const [language, percentage] of Object.entries(languages)) {
+      for (const [language, percentage] of Object.entries(adjustedLanguages)) {
         if (!languagePortfolio[language]) {
           languagePortfolio[language] = 0
         }

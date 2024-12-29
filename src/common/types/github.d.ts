@@ -39,6 +39,8 @@ interface GitHubRepository {
   id: number
   name: string
   owner: GitHubUser
+  language: string
+  updated_at: Date
 }
 
 //
