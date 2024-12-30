@@ -35,16 +35,20 @@
         >
           <div class="mb-4 flex items-center justify-between">
             <span class="text-md font-bold">{{ repo.name }}</span>
-            <span
-              id="activity-indicator"
-              class="flex items-center"
-              :title="getLastActivityMessage(repo.lastActivity)"
-            >
-              <EyeIcon class="h-4 w-4" :class="getLastActivityColor(repo.lastActivity)" />
+            <span id="activity-indicator" class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 100 100">
+                <circle
+                  class="pulse-dot"
+                  :class="setColorFromLastActivity(repo.lastActivity)"
+                  cx="75"
+                  cy="50"
+                  r="20"
+                />
+              </svg>
             </span>
           </div>
           <div class="mt-auto flex items-center justify-between">
-            <span class="text-sm text-gray-600">{{ repo.language }}</span>
+            <span class="text-sm text-gray-600">{{ repo.mainLanguage }}</span>
             <span class="text-sm text-gray-600">Placeholder</span>
           </div>
         </div>
@@ -66,8 +70,6 @@
   import { ref } from 'vue'
   import { emptyAccount } from '~/common/helpers/utils'
 
-  import { EyeIcon } from '@heroicons/vue/24/outline'
-
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
   import Doughnut from '~/profile/components/Doughnut.vue'
@@ -75,15 +77,6 @@
   const props = defineProps({
     username: { type: String, required: true }
   })
-
-  const state = useStateStore()
-  const user = ref<Account>(emptyAccount())
-  const calendar = ref<GitDashboardCalendar>(emptyCalendar())
-  const languagePortfolio = ref<GitLanguagePortfolio>({})
-  const ownedReposList = ref<GitRepository[]>({})
-  const loading = ref(true)
-  const activeYearIdx = ref(0)
-  const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
 
   // Tesing only
   const userMap: { [username: string]: Account } = {
@@ -111,6 +104,16 @@
     }
   }
 
+  const state = useStateStore()
+  const user = ref<Account>(emptyAccount())
+  const calendar = ref<GitDashboardCalendar>(emptyCalendar())
+  const languagePortfolio = ref<GitLanguagePortfolio>({})
+  const ownedReposList = ref<GitRepository[]>({})
+  const loading = ref(true)
+
+  const activeYearIdx = ref(0)
+  const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
+
   const chooseYear = async (idx: number) => {
     loading.value = true
     activeYearIdx.value = idx
@@ -121,6 +124,18 @@
     )
     loading.value = false
     calendar.value = res
+  }
+
+  const setColorFromLastActivity = (lastActivity: string) => {
+    const diff = (new Date().getTime() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24)
+
+    if (diff < 7) {
+      return 'active'
+    } else if (diff < 30) {
+      return 'idle'
+    } else {
+      return 'inactive'
+    }
   }
 
   const init = async () => {
@@ -141,8 +156,10 @@
       languagePortfolio.value = resLanguagePortfolio
 
       const resOwnedReposList = await getFullOwnedReposList(user.value.platforms)
-      resOwnedReposList.sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity))
-      ownedReposList.value = resOwnedReposList //.slice(0, 3)
+      resOwnedReposList.sort(
+        (a, b) => new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime()
+      )
+      ownedReposList.value = resOwnedReposList.slice(0, 8)
 
       loading.value = false
     } catch (err) {
@@ -150,22 +167,40 @@
     }
   }
 
-  const getLastActivityMessage = (lastActivity: string) => {
-    const diff = (new Date().getTime() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24)
-    return 'last activity ' + Math.round(diff) + ' days ago'
+  init()
+</script>
+
+<style>
+  .pulse-dot {
+    animation: pulse 1.5s infinite ease-in-out;
   }
 
-  const getLastActivityColor = (lastActivity: string) => {
-    const diff = (new Date().getTime() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24)
-
-    if (diff < 100) {
-      return 'text-green'
-    } else if (diff < 300) {
-      return 'text-yellow-400'
-    } else {
-      return 'text-gray-400'
+  /* Pulse animation */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
     }
   }
 
-  init()
-</script>
+  /* Change color based on project activity status */
+  .active {
+    fill: rgb(24, 177, 24);
+  }
+
+  .inactive {
+    fill: rgb(170, 170, 170);
+  }
+
+  .idle {
+    fill: rgb(255, 237, 73);
+  }
+</style>

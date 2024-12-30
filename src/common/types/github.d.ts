@@ -39,7 +39,7 @@ interface GitHubRepository {
   id: number
   name: string
   owner: GitHubUser
-  language: string
+  languages: { [key: string]: number }
   updated_at: Date
 }
 

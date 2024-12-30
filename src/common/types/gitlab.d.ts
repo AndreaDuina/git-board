@@ -20,7 +20,7 @@ interface GitLabRepository {
   id: number
   name: string
   owner: GitLabUser
-  language: string
+  languages: { [key: string]: number }
   last_activity_at: Date
 }
 

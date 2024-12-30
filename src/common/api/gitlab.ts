@@ -126,7 +126,7 @@ export const getOwnedReposByUsernameGL = async (username: string): Promise<GitLa
         const languages = await getRepoLanguagesGL(repo) // Use the existing function here
         return {
           ...repo,
-          language: Object.keys(languages).reduce((a, b) => (languages[a] > languages[b] ? a : b))
+          languages: languages
         }
       } catch (error) {
         console.error(`Failed to fetch languages for project ${repo.id}:`, error)
