@@ -29,7 +29,7 @@
         class="nav-link"
         v-if="isDev"
       >
-        CalcProgrammer1
+        Heavy
       </RouterLink>
     </div>
 
