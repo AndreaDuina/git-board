@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
   import { PropType, ref, watch, onMounted, onUnmounted } from 'vue'
-  import { Chart, registerables } from 'chart.js'
+  import { Chart, ChartTypeRegistry, registerables } from 'chart.js'
   import ChartDataLabels from 'chartjs-plugin-datalabels'
   import { generateShades } from '~/common/helpers/utils'
 
@@ -18,7 +18,7 @@
   })
 
   const isLoading = ref(true)
-  let chartInstance: Chart<'doughnut', number[], string> | null = null
+  let chartInstance: Chart<keyof ChartTypeRegistry, number[], string> | null = null
 
   const initChart = () => {
     const ctx = document.getElementById(props.id) as HTMLCanvasElement
@@ -31,7 +31,8 @@
           backgroundColor: [...generateShades(props.mainColor, 5)].reverse(),
           borderWidth: 1.5,
           borderColor: '#9DD40',
-          borderRadius: 5
+          borderRadius: 5,
+          cutout: '80%'
         }
       ]
     }
@@ -65,12 +66,11 @@
             },
             clip: false,
             formatter: (value, context) =>
-              value > 20 ? context.chart.data.labels[context.dataIndex] : null
+              value > 20 ? context.chart.data.labels?.[context.dataIndex] : null
           }
         },
         responsive: true,
         maintainAspectRatio: true, // Allow the chart to grow beyond its aspect ratio
-        cutout: '80%',
         animation: {
           duration: 1000
         }
