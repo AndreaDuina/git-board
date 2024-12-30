@@ -76,7 +76,7 @@
   import { getFullOwnedReposList } from '~/profile/helpers/repositories'
   import { useStateStore } from '~/stores/state'
   import { ref } from 'vue'
-  import { emptyAccount } from '~/common/helpers/utils'
+  import { emptyAccount, emptyRepo } from '~/common/helpers/utils'
 
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
@@ -126,7 +126,7 @@
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const languagePortfolio = ref<GitLanguagePortfolio>({})
-  const ownedReposList = ref<GitRepository[]>([])
+  const ownedReposList = ref<GitRepository[]>([emptyRepo(), emptyRepo(), emptyRepo()])
   const loading = ref(true)
 
   const activeYearIdx = ref(0)
