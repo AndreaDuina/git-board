@@ -49,13 +49,15 @@
           </div>
           <div class="mt-auto flex items-center justify-between">
             <span class="text-sm text-gray-600">{{ repo.mainLanguage }}</span>
-            <span class="text-sm text-gray-600">Placeholder</span>
+            <span class="text-sm text-gray-600"
+              >{{ repo.isOwner ? 'Owner' : 'Contributor' }} {{ repo.isFork ? '(Fork)' : '' }}</span
+            >
           </div>
         </div>
       </div>
 
       <!-- Language Portfolio -->
-      <div class="col-span-2 flex h-[360px] flex-col items-center justify-center cardComponent">
+      <div class="col-span-2 flex h-[365px] flex-col items-center justify-center cardComponent">
         <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
       </div>
     </div>
@@ -99,6 +101,17 @@
       platforms: {
         github: ['francescozonaro'],
         gitlab: ['dimeilaz']
+      },
+      socials: {}
+    },
+    CalcProgrammer1: {
+      username: 'CalcProgrammer1',
+      name: 'Calc Programmer',
+      email: '',
+      imgUrl: '',
+      platforms: {
+        github: ['CalcProgrammer1'],
+        gitlab: ['CalcProgrammer1']
       },
       socials: {}
     }

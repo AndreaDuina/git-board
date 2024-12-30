@@ -43,6 +43,8 @@ interface GitRepository {
   owner: GitUser
   languages: { [key: string]: number }
   mainLanguage: string
+  isOwner: boolean
+  isFork: boolean
   lastActivity: string
 }
 

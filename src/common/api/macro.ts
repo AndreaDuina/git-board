@@ -20,28 +20,30 @@ export const parseUserGL = (user: GitLabUser): GitUser => {
   }
 }
 
-const parseMainLanguage = (languages: { [key: string]: number }): string => {
-  return Object.keys(languages).reduce((a, b) => (languages[a] > languages[b] ? a : b))
-}
-
 export const parseRepoGH = (repo: GitHubRepository): GitRepository => {
+  console.log(repo)
   return {
     id: repo.id,
     name: repo.name,
     owner: parseUserGH(repo.owner),
     languages: repo.languages,
-    mainLanguage: parseMainLanguage(repo.languages),
+    mainLanguage: repo.mainLanguage,
+    isOwner: repo.isOwner,
+    isFork: repo.isFork,
     lastActivity: repo.updated_at.toString()
   }
 }
 
 export const parseRepoGL = (repo: GitLabRepository): GitRepository => {
+  console.log(repo)
   return {
     id: repo.id,
     name: repo.name,
     owner: parseUserGL(repo.owner),
     languages: repo.languages,
-    mainLanguage: parseMainLanguage(repo.languages),
+    mainLanguage: repo.mainLanguage,
+    isOwner: repo.isOwner,
+    isFork: repo.isFork,
     lastActivity: repo.last_activity_at.toString()
   }
 }

@@ -24,6 +24,13 @@
       >
         Francesco Zonaro
       </RouterLink>
+      <RouterLink
+        :to="{ name: 'profile', params: { username: 'CalcProgrammer1' } }"
+        class="nav-link"
+        v-if="isDev"
+      >
+        CalcProgrammer1
+      </RouterLink>
     </div>
 
     <!-- Right Side -->

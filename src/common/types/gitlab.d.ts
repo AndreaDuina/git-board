@@ -21,6 +21,9 @@ interface GitLabRepository {
   name: string
   owner: GitLabUser
   languages: { [key: string]: number }
+  mainLanguage: string
+  isOwner: boolean
+  isFork: boolean
   last_activity_at: Date
 }
 

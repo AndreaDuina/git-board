@@ -40,6 +40,9 @@ interface GitHubRepository {
   name: string
   owner: GitHubUser
   languages: { [key: string]: number }
+  mainLanguage: string
+  isOwner: boolean
+  isFork: boolean
   updated_at: Date
 }
 

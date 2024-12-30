@@ -151,10 +151,14 @@ export const getOwnedReposByUsernameGH = async (username: string): Promise<GitHu
   const enrichedRepositories = await Promise.all(
     repositories.map(async (repo: any) => {
       try {
-        const languages = await getRepoLanguagesGH(repo) // Use the existing function here
+        const languages = await getRepoLanguagesGH(repo)
+        const mainLanguage = await getRepoMainLanguageGH(repo)
         return {
           ...repo,
-          languages: languages
+          languages: languages,
+          mainLanguage: mainLanguage,
+          isOwner: username == repo.owner.login,
+          isFork: repo.fork
         }
       } catch (error) {
         console.error(`Failed to fetch languages for project ${repo.id}:`, error)
@@ -193,6 +197,11 @@ const getRepoLanguagesGH = async (repo: GitHubRepository): Promise<Record<string
   }
 
   return adjustedLanguages
+}
+
+const getRepoMainLanguageGH = async (repo: GitHubRepository): Promise<string> => {
+  const languages = await getRepoLanguagesGH(repo)
+  return Object.keys(languages).reduce((a, b) => (languages[a] > languages[b] ? a : b))
 }
 
 /**
