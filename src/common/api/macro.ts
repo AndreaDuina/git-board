@@ -21,7 +21,6 @@ export const parseUserGL = (user: GitLabUser): GitUser => {
 }
 
 export const parseRepoGH = (repo: GitHubRepository): GitRepository => {
-  console.log(repo)
   return {
     id: repo.id,
     name: repo.name,
@@ -35,7 +34,6 @@ export const parseRepoGH = (repo: GitHubRepository): GitRepository => {
 }
 
 export const parseRepoGL = (repo: GitLabRepository): GitRepository => {
-  console.log(repo)
   return {
     id: repo.id,
     name: repo.name,

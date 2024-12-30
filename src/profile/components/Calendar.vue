@@ -3,66 +3,32 @@
     <div class="flex justify-center">
       <!-- Days of the week names -->
       <div class="mr-1 flex flex-col">
-        <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm" v-for="i of 8">
+        <div
+          class="m-[0.1rem] flex h-4 w-4 justify-center rounded-sm text-sm first:mt-2"
+          v-for="i of 8"
+        >
           {{ weekDaysAxis[i - 1] }}
         </div>
       </div>
 
-      <!-- Xl screens calendar-->
-      <div class="hidden flex-col xl:flex" v-for="(week, idx) of calendar.weeks">
-        <!-- Month names -->
-        <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
-          {{ monthTitles[week.firstDay] ?? '' }}
+      <div class="flex flex-col">
+        <div class="flex w-full flex-wrap justify-start xl:justify-between">
+          <div v-for="(week, idx) of calendar.weeks" :key="idx" class="flex flex-col">
+            <div class="m-[0.1rem] mt-2 mb-1 flex h-4 w-4 items-center rounded-sm text-sm">
+              {{ monthTitles[week.firstDay] ?? '' }}
+            </div>
+            <div
+              class="m-[0.1rem] h-4 w-4 rounded-sm"
+              :class="[{ 'animate-pulse': loading }]"
+              :style="{
+                background: getContributionColor(day.count),
+                animationDelay: `${20 * idx}ms`
+              }"
+              v-for="day of week.days"
+              :title="day.date"
+            />
+          </div>
         </div>
-        <!-- Data -->
-        <div
-          class="m-[0.1rem] h-4 w-4 rounded-sm"
-          :class="[{ 'animate-pulse': loading }]"
-          :style="{ background: getContributionColor(day.count), animationDelay: `${20 * idx}ms` }"
-          v-for="day of week.days"
-        />
-      </div>
-
-      <!-- Lg screens calendar-->
-      <div
-        class="hidden flex-col lg:flex xl:hidden"
-        v-for="(week, idx) of calendar.weeks.slice(
-          calendar.weeks.length - 41,
-          calendar.weeks.length
-        )"
-      >
-        <!-- Month names -->
-        <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
-          {{ monthTitles[week.firstDay] ?? '' }}
-        </div>
-        <!-- Data -->
-        <div
-          class="m-[0.1rem] h-4 w-4 rounded-sm"
-          :class="[{ 'animate-pulse': loading }]"
-          :style="{ background: getContributionColor(day.count), animationDelay: `${20 * idx}ms` }"
-          v-for="day of week.days"
-        />
-      </div>
-
-      <!-- Mid screens calendar-->
-      <div
-        class="flex flex-col lg:hidden"
-        v-for="(week, idx) of calendar.weeks.slice(
-          calendar.weeks.length - 29,
-          calendar.weeks.length
-        )"
-      >
-        <!-- Month names -->
-        <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
-          {{ monthTitles[week.firstDay] ?? '' }}
-        </div>
-        <!-- Data -->
-        <div
-          class="m-[0.1rem] h-4 w-4 rounded-sm"
-          :class="[{ 'animate-pulse': loading }]"
-          :style="{ background: getContributionColor(day.count), animationDelay: `${20 * idx}ms` }"
-          v-for="day of week.days"
-        />
       </div>
     </div>
 
@@ -129,6 +95,22 @@
       }
       result[firstDay] = ''
     }
+
+    const values = Object.values(result)
+
+    let left = 0
+    let right = values.length - 1
+    while (left < values.length && values[left] === '') {
+      left++
+    }
+    while (right >= 0 && values[right] === '') {
+      right--
+    }
+    if (values[left] === values[right]) {
+      result[Object.keys(result)[left]] = ''
+      // delete result[Object.keys(result)[left]]
+    }
+
     monthTitles.value = result
   }
 

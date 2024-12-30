@@ -8,11 +8,13 @@
       <h1 class="titleGradient">{{ user.name }}</h1>
     </div>
 
-    <div class="mx-12 grid grid-cols-4 gap-8">
+    <div class="mx-4 grid grid-cols-4 gap-8">
       <!-- Calendar -->
-      <div class="col-span-4 mt-8 flex w-full items-start justify-center p-6 cardComponent">
-        <Calendar :calendar="calendar" :loading="loading" mainColor="#3694f2" />
-        <div class="ml-4 hidden flex-col gap-1 xl:flex">
+      <div class="col-span-4 mt-8 flex w-full flex-row items-center justify-center py-4">
+        <div class="flex w-full items-start justify-center p-6 cardComponent">
+          <Calendar :calendar="calendar" :loading="loading" mainColor="#3694f2" />
+        </div>
+        <div class="ml-4 flex flex-col gap-1 p-4 cardComponent">
           <button
             class="rounded-[3px] px-4 py-[0.15rem] active:brightness-90"
             :class="
@@ -35,7 +37,11 @@
         >
           <div class="mb-4 flex items-center justify-between">
             <span class="text-md font-bold">{{ repo.name }}</span>
-            <span id="activity-indicator" class="flex items-center">
+            <span
+              id="activity-indicator"
+              class="flex items-center"
+              :title="setColorFromLastActivity(repo.lastActivity)"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 100 100">
                 <circle
                   class="pulse-dot"
@@ -80,7 +86,6 @@
     username: { type: String, required: true }
   })
 
-  // Tesing only
   const userMap: { [username: string]: Account } = {
     andreaduina: {
       username: 'andreaduina',
@@ -121,7 +126,7 @@
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
   const languagePortfolio = ref<GitLanguagePortfolio>({})
-  const ownedReposList = ref<GitRepository[]>({})
+  const ownedReposList = ref<GitRepository[]>([])
   const loading = ref(true)
 
   const activeYearIdx = ref(0)
@@ -183,6 +188,7 @@
   init()
 </script>
 
+<!-- Repo activity styling -->
 <style>
   .pulse-dot {
     animation: pulse 1.5s infinite ease-in-out;
