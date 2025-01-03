@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen w-full overflow-y-scroll bg-background text-base"
+    class="h-screen w-full min-w-[400px] overflow-y-scroll bg-background text-base"
     :class="{ 'no-scrollbar': router.currentRoute.value.name == 'home' }"
   >
     <div class="mx-auto my-4 block max-w-screen-xl">

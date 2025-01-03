@@ -7,7 +7,7 @@
     </RouterLink>
 
     <!-- Middle & Right Side (only visible on medium screens and up) -->
-    <div class="hidden items-center gap-4 md:flex">
+    <div class="hidden justify-start gap-4 md:block">
       <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
       <RouterLink :to="{ name: 'create' }" class="nav-link">Create</RouterLink>
       <RouterLink
@@ -15,14 +15,14 @@
         class="nav-link"
         v-if="isDev"
       >
-        Andrea Duina
+        AD
       </RouterLink>
       <RouterLink
         :to="{ name: 'profile', params: { username: 'francescozonaro' } }"
         class="nav-link"
         v-if="isDev"
       >
-        Francesco Zonaro
+        FZ
       </RouterLink>
       <RouterLink
         :to="{ name: 'profile', params: { username: 'CalcProgrammer1' } }"
@@ -34,50 +34,47 @@
     </div>
 
     <!-- Right Side -->
-    <div class="mr-8 hidden items-center md:flex">
-      <button v-if="!user" class="nav-link" @click="signInWithGitHub">Log in</button>
-      <button v-if="user" class="nav-link" @click="signOutFromGithub">Log out</button>
-    </div>
+    <div class="mr-4 flex items-center">
+      <!-- Burger Menu (visible on small screens) -->
+      <button class="mr-4 flex items-center md:hidden" @click="toggleMenu" aria-label="Toggle menu">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
 
-    <!-- Burger Menu (visible on small screens) -->
-    <button class="mr-8 flex items-center md:hidden" @click="toggleMenu" aria-label="Toggle menu">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+      <!-- Login and Profile -->
+      <button
+        v-if="!user"
+        class="mr-2 rounded-md border-[0.5px] border-gray-800 px-3 py-1 hover:bg-gray-700"
+        @click="signInWithGitHub"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M4 6h16M4 12h16M4 18h16"
-        />
-      </svg>
-    </button>
+        Login
+      </button>
+      <button
+        v-if="user"
+        class="mr-2 rounded-md border-[0.5px] border-gray-800 px-3 py-1 hover:bg-gray-700"
+        @click="signOutFromGithub"
+      >
+        Logout
+      </button>
+    </div>
   </nav>
 
   <!-- Mobile Menu (only visible on small screens) -->
-  <div v-show="isMenuOpen" class="flex flex-col items-center gap-4 md:hidden">
+  <div v-show="isMenuOpen" class="flex flex-col items-center gap-4 text-sm md:hidden">
     <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
     <RouterLink :to="{ name: 'create' }" class="nav-link">Create</RouterLink>
-    <RouterLink
-      :to="{ name: 'profile', params: { username: 'andreaduina' } }"
-      class="nav-link"
-      v-if="isDev"
-    >
-      Andrea Duina
-    </RouterLink>
-    <RouterLink
-      :to="{ name: 'profile', params: { username: 'francescozonaro' } }"
-      class="nav-link"
-      v-if="isDev"
-    >
-      Francesco Zonaro
-    </RouterLink>
-    <button v-if="!user" class="nav-link" @click="signInWithGitHub">Log in</button>
-    <button v-if="user" class="nav-link" @click="signOutFromGithub">Log out</button>
   </div>
 
   <div class="border-gradient mt-4 h-[1px] w-full" />
