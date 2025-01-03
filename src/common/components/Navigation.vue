@@ -35,7 +35,8 @@
 
     <!-- Right Side -->
     <div class="mr-8 hidden items-center md:flex">
-      <button class="nav-link" @click="signInWithGitHub">Log in</button>
+      <button v-if="!user" class="nav-link" @click="signInWithGitHub">Log in</button>
+      <button v-if="user" class="nav-link" @click="signOutFromGithub">Log out</button>
     </div>
 
     <!-- Burger Menu (visible on small screens) -->
@@ -75,31 +76,43 @@
     >
       Francesco Zonaro
     </RouterLink>
-    <button class="nav-link" @click="signInWithGitHub">Log in</button>
+    <button v-if="!user" class="nav-link" @click="signInWithGitHub">Log in</button>
+    <button v-if="user" class="nav-link" @click="signOutFromGithub">Log out</button>
   </div>
 
   <div class="border-gradient mt-4 h-[1px] w-full" />
 </template>
 
-<style scoped>
-  /* Scoped CSS selector to target RouterLink component */
-  nav .nav-link {
-    @apply mx-2 hover:text-gray-400;
-  }
-</style>
-
 <script setup lang="ts">
-  import { signInWithGitHub } from '../firebase/auth'
+  import { onAuthStateChanged } from 'firebase/auth'
+  import { ref, onMounted } from 'vue'
+  import { auth } from '../firebase/firebase'
+  import { signInWithGitHub, signOutFromGithub } from '../firebase/auth'
 
   const isMenuOpen = ref(false)
+  const user = ref<any>(null)
   const isDev = import.meta.env.DEV
 
   const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value
   }
+
+  onMounted(() => {
+    onAuthStateChanged(auth, currentUser => {
+      if (currentUser) {
+        user.value = currentUser
+      } else {
+        user.value = null
+      }
+    })
+  })
 </script>
 
 <style scoped>
+  nav .nav-link {
+    @apply mx-2 hover:text-gray-400;
+  }
+
   .border-gradient {
     background: linear-gradient(to right, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0));
   }
