@@ -1,19 +1,20 @@
-import { firestore, auth } from '~/common/firebase/firebase'
+import { db } from '~/common/firebase/firebase'
 import { GithubAuthProvider, signInWithPopup, User, getAuth, signOut } from 'firebase/auth'
 import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 
 const githubProvider = new GithubAuthProvider()
-const usersRef = collection(firestore, 'users')
+const usersRef = collection(db, 'users')
 
 export const signInWithGitHub = async () => {
   try {
+    const auth = getAuth()
     const res = await signInWithPopup(auth, githubProvider)
     const credential = GithubAuthProvider.credentialFromResult(res)
     const token = credential?.accessToken
     const user = res.user
 
-    //FIXME: Error permission-denied during GitHub auth
-    // await onSignIn(user, token)
+    //FIXME: Firestore db rules
+    await onSignIn(user, token)
   } catch (err: any) {
     const errorCode = err.code
     const credential = GithubAuthProvider.credentialFromError(err)
@@ -22,29 +23,25 @@ export const signInWithGitHub = async () => {
 }
 
 export const signOutFromGithub = async () => {
+  const auth = getAuth()
   signOut(auth)
-    .then(() => {
-      console.log('User signed out successfully.')
-    })
-    .catch(error => {
-      console.error('Error signing out: ', error)
-    })
 }
 
-// const onSignIn = async (user: User, token: string | undefined = undefined) => {
-//   // Get user data from db
-//   console.log('Here', user)
-//   const docSnap = await getDoc(doc(usersRef, user.uid))
-//   console.log(docSnap)
-
-//   if (docSnap.exists()) {
-//     const data = docSnap.data()
-//     console.log(data)
-//   } else {
-//     console.log(`Data for user ${user.uid} not found`)
-//     await setDoc(doc(usersRef, user.uid), {
-//       name: user.displayName,
-//       email: user.email
-//     })
-//   }
-// }
+const onSignIn = async (user: User, token: string | undefined = undefined) => {
+  // Get user data from db
+  const docSnap = await getDoc(doc(usersRef, user.uid))
+  if (docSnap.exists()) {
+    const data = docSnap.data()
+    // console.log(data)
+  } else {
+    console.log(`Data for user ${user.uid} not found. Creating new user.`)
+    await setDoc(doc(usersRef, user.uid), {
+      name: user.displayName,
+      email: user.email,
+      photoUrl: user.photoURL,
+      platforms: {
+        github: [user.reloadUserInfo.screenName]
+      }
+    })
+  }
+}

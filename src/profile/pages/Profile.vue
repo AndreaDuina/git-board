@@ -74,6 +74,7 @@
   import { emptyCalendar, getFullCalendar } from '~/profile/helpers/calendar'
   import { getFullLanguagePortfolio } from '~/profile/helpers/langPortfolio'
   import { getFullOwnedReposList } from '~/profile/helpers/repositories'
+  import { fetchUserData } from '~/profile/helpers/users'
   import { useStateStore } from '~/stores/state'
   import { ref } from 'vue'
   import { emptyAccount, emptyRepo } from '~/common/helpers/utils'
@@ -85,42 +86,6 @@
   const props = defineProps({
     username: { type: String, required: true }
   })
-
-  const userMap: { [username: string]: Account } = {
-    andreaduina: {
-      username: 'andreaduina',
-      name: 'Andrea Duina',
-      email: '',
-      imgUrl: '',
-      platforms: {
-        github: ['AndreaDuina'],
-        gitlab: ['muwave']
-      },
-      socials: {}
-    },
-    francescozonaro: {
-      username: 'francescozonaro',
-      name: 'Francesco Zonaro',
-      email: '',
-      imgUrl: '',
-      platforms: {
-        github: ['francescozonaro'],
-        gitlab: ['dimeilaz']
-      },
-      socials: {}
-    },
-    CalcProgrammer1: {
-      username: 'CalcProgrammer1',
-      name: 'Calc Programmer',
-      email: '',
-      imgUrl: '',
-      platforms: {
-        github: ['CalcProgrammer1'],
-        gitlab: ['CalcProgrammer1']
-      },
-      socials: {}
-    }
-  }
 
   const state = useStateStore()
   const user = ref<Account>(emptyAccount())
@@ -160,8 +125,7 @@
     if (props.username == '@local') {
       user.value = state.localUser
     } else {
-      // TODO: Get from server
-      user.value = userMap[props.username]
+      user.value = await fetchUserData(props.username)
     }
 
     try {
@@ -169,16 +133,13 @@
 
       const res = await getFullCalendar(user.value.platforms)
       calendar.value = res
-
       const resLanguagePortfolio = await getFullLanguagePortfolio(user.value.platforms)
       languagePortfolio.value = resLanguagePortfolio
-
       const resOwnedReposList = await getFullOwnedReposList(user.value.platforms)
       resOwnedReposList.sort(
         (a, b) => new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime()
       )
       ownedReposList.value = resOwnedReposList.slice(0, 8)
-
       loading.value = false
     } catch (err) {
       console.error(`Error loading profile`, err)

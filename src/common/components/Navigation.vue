@@ -11,21 +11,28 @@
       <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
       <RouterLink :to="{ name: 'create' }" class="nav-link">Create</RouterLink>
       <RouterLink
-        :to="{ name: 'profile', params: { username: 'andreaduina' } }"
+        v-if="user"
+        :to="{ name: 'profile', params: { username: user.uid } }"
+        class="nav-link"
+      >
+        Profile
+      </RouterLink>
+      <RouterLink
+        :to="{ name: 'profile', params: { username: 'wM2NZZFyqwPWIzEw7f2NATCclou1' } }"
         class="nav-link"
         v-if="isDev"
       >
         AD
       </RouterLink>
       <RouterLink
-        :to="{ name: 'profile', params: { username: 'francescozonaro' } }"
+        :to="{ name: 'profile', params: { username: 'XtvlqL7syFT6Dk8nCcYpvdKOsMf2' } }"
         class="nav-link"
         v-if="isDev"
       >
         FZ
       </RouterLink>
       <RouterLink
-        :to="{ name: 'profile', params: { username: 'CalcProgrammer1' } }"
+        :to="{ name: 'profile', params: { username: 'tfJrDSnOKARg9GFsvxbD1nT73K33' } }"
         class="nav-link"
         v-if="isDev"
       >
@@ -75,6 +82,13 @@
   <div v-show="isMenuOpen" class="flex flex-col items-center gap-4 text-sm md:hidden">
     <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
     <RouterLink :to="{ name: 'create' }" class="nav-link">Create</RouterLink>
+    <RouterLink
+      v-if="user"
+      :to="{ name: 'profile', params: { username: user.uid } }"
+      class="nav-link"
+    >
+      Profile
+    </RouterLink>
   </div>
 
   <div class="border-gradient mt-4 h-[1px] w-full" />
@@ -101,6 +115,7 @@
       } else {
         user.value = null
       }
+      console.log(user)
     })
   })
 </script>
