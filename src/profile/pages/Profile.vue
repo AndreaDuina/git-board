@@ -74,7 +74,7 @@
   import { emptyCalendar, getFullCalendar } from '~/profile/helpers/calendar'
   import { getFullLanguagePortfolio } from '~/profile/helpers/langPortfolio'
   import { getFullOwnedReposList } from '~/profile/helpers/repositories'
-  import { fetchUserData } from '~/profile/helpers/users'
+  import { getUserData } from '~/profile/helpers/users'
   import { useStateStore } from '~/stores/state'
   import { ref } from 'vue'
   import { emptyAccount, emptyRepo } from '~/common/helpers/utils'
@@ -125,7 +125,7 @@
     if (props.username == '@local') {
       user.value = state.localUser
     } else {
-      user.value = await fetchUserData(props.username)
+      user.value = await getUserData(props.username)
     }
 
     try {
