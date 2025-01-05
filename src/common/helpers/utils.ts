@@ -98,7 +98,7 @@ export function getPreviousSunday(dateStr: string): string {
 export const emptyAccount = (): Account => {
   return {
     username: '',
-    name: '',
+    name: 'Fetching..',
     email: '',
     imgUrl: '',
     platforms: {
