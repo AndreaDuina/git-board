@@ -1,31 +1,24 @@
 <template>
-  <!-- Header -->
   <div class="mt-4 flex items-center justify-center">
     <h1 class="titleGradient">Settings</h1>
   </div>
-  <!-- Profile Settings Page -->
   <div class="flex items-center justify-center rounded-lg p-6 shadow-md">
-    <!-- User Form -->
     <form @submit.prevent="saveUserData" class="w-[70%] space-y-6">
-      <!-- Username -->
       <div>
         <label class="block font-medium">Username</label>
         <input v-model="user.username" type="text" class="inputFieldComponent mt-1 w-full p-2" />
       </div>
 
-      <!-- Name -->
       <div>
         <label class="block font-medium">Name</label>
         <input v-model="user.name" type="text" class="inputFieldComponent mt-1 w-full p-2" />
       </div>
 
-      <!-- Email -->
       <div>
         <label class="block font-medium">Email</label>
         <input v-model="user.email" type="email" class="inputFieldComponent mt-1 w-full p-2" />
       </div>
 
-      <!-- Image URL -->
       <div>
         <label class="block font-medium">Image URL</label>
         <input v-model="user.imgUrl" type="text" class="inputFieldComponent mt-1 w-full p-2" />
@@ -33,9 +26,9 @@
 
       <!-- Platforms -->
       <div>
-        <label class="block font-medium">Platforms</label>
+        <label class="mb-2 block font-medium">Platforms</label>
         <div v-for="(accounts, platform) in user.platforms" :key="platform" class="space-y-2">
-          <div class="flex items-center">
+          <div class="flex flex-wrap items-center">
             <img v-if="platform === 'github'" :src="logoGH" class="mr-2 h-6 w-6 rounded-full" />
             <img v-if="platform === 'gitlab'" :src="logoGL" class="mr-2 h-6 w-6 rounded-full" />
             <!-- Existing Usernames -->
@@ -45,23 +38,24 @@
               class="flex items-center justify-center rounded-md p-2"
             >
               <div class="relative inline-block">
-                <div
-                  class="inputFieldComponent mt-1 flex flex-row items-center justify-center p-2 focus:outline-none"
-                >
+                <div class="inputFieldComponent mt-1 flex flex-row items-center justify-center p-2">
                   <input
                     v-model="user.platforms[platform][index]"
                     type="text"
-                    class="mr-2 rounded-md bg-secondary"
+                    class="mr-2 rounded-md bg-secondary focus:outline-none"
                   />
                   <MinusCircleIcon
-                    @click="removePlatformUsername(platform, index)"
-                    class="h-5 w-5"
+                    @click="removePlatformUsername(String(platform), index)"
+                    class="h-5 w-5 transition-transform duration-200 hover:scale-110"
                   ></MinusCircleIcon>
                 </div>
               </div>
             </div>
-
-            <PlusCircleIcon class="mt-1 h-5 w-5" @click="addPlatformUsername(platform)">
+            <!-- Add username -->
+            <PlusCircleIcon
+              class="mt-1 h-5 w-5 transition-transform duration-200 hover:scale-110"
+              @click="addPlatformUsername(String(platform))"
+            >
             </PlusCircleIcon>
           </div>
         </div>
@@ -70,22 +64,10 @@
       <!-- Socials -->
       <div>
         <label class="block font-medium">Socials</label>
-        <div v-for="(url, social) in user.socials" :key="social" class="space-y-2">
-          <div class="flex items-center">
-            <span class="mr-4 font-medium">{{ social }}</span>
-            <input
-              v-model="user.socials[social]"
-              type="text"
-              class="w-full rounded border p-2"
-              placeholder="URL"
-            />
-          </div>
-        </div>
       </div>
 
-      <!-- Submit Button -->
       <div class="mt-4 text-center">
-        <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+        <button type="submit" class="rounded px-4 py-2 text-white cardComponent hover:bg-gray-800">
           Save Changes
         </button>
       </div>
@@ -122,10 +104,9 @@
 
   const addPlatformUsername = (platform: string) => {
     user.value.platforms[platform] = user.value.platforms[platform] || []
-    user.value.platforms[platform].push('') // Add a new empty username
+    user.value.platforms[platform].push('')
   }
 
-  // Remove a username from a platform
   const removePlatformUsername = (platform: string, index: number) => {
     user.value.platforms[platform].splice(index, 1)
   }

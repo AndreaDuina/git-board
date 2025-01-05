@@ -45,7 +45,7 @@ module.exports = {
           '@apply rounded-xl border-[0.5px] border-neutral-700 bg-secondary': {}
         },
         '.inputFieldComponent': {
-          '@apply border-[0.5px] rounded-md border-neutral-700 bg-secondary': {}
+          '@apply border-[0.5px] rounded-md border-neutral-700 bg-secondary focus:outline-none': {}
         },
         '.titleGradient': {
           '@apply bg-gradient-to-t from-zinc-100/50 to-white bg-clip-text py-4 text-center font-bold tracking-tight text-transparent text-7xl':
