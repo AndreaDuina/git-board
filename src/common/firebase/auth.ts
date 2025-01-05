@@ -28,20 +28,18 @@ export const signOutFromGithub = async () => {
 }
 
 const onSignIn = async (user: User, token: string | undefined = undefined) => {
-  // Get user data from db
   const docSnap = await getDoc(doc(usersRef, user.uid))
-  if (docSnap.exists()) {
-    const data = docSnap.data()
-    // console.log(data)
-  } else {
-    console.log(`Data for user ${user.uid} not found. Creating new user.`)
-    await setDoc(doc(usersRef, user.uid), {
-      name: user.displayName,
-      email: user.email,
-      photoUrl: user.photoURL,
+  if (!docSnap.exists()) {
+    const accountData: Account = {
+      username: (user as any).reloadUserInfo.screenName,
+      name: user.displayName || '',
+      email: user.email || '',
+      imgUrl: user.photoURL || '',
       platforms: {
-        github: [user.reloadUserInfo.screenName]
-      }
-    })
+        github: [(user as any).reloadUserInfo.screenName]
+      },
+      socials: {}
+    }
+    await setDoc(doc(usersRef, user.uid), accountData)
   }
 }

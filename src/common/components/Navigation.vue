@@ -17,27 +17,6 @@
       >
         Profile
       </RouterLink>
-      <RouterLink
-        :to="{ name: 'profile', params: { username: 'wM2NZZFyqwPWIzEw7f2NATCclou1' } }"
-        class="nav-link"
-        v-if="isDev"
-      >
-        AD
-      </RouterLink>
-      <RouterLink
-        :to="{ name: 'profile', params: { username: 'XtvlqL7syFT6Dk8nCcYpvdKOsMf2' } }"
-        class="nav-link"
-        v-if="isDev"
-      >
-        FZ
-      </RouterLink>
-      <RouterLink
-        :to="{ name: 'profile', params: { username: 'tfJrDSnOKARg9GFsvxbD1nT73K33' } }"
-        class="nav-link"
-        v-if="isDev"
-      >
-        Heavy
-      </RouterLink>
     </div>
 
     <!-- Right Side -->

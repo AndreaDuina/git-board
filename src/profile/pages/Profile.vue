@@ -74,7 +74,7 @@
   import { emptyCalendar, getFullCalendar } from '~/profile/helpers/calendar'
   import { getFullLanguagePortfolio } from '~/profile/helpers/langPortfolio'
   import { getFullOwnedReposList } from '~/profile/helpers/repositories'
-  import { getUserData } from '~/profile/helpers/users'
+  import { getUserData } from '~/common/api/users'
   import { useStateStore } from '~/stores/state'
   import { ref } from 'vue'
   import { emptyAccount, emptyRepo } from '~/common/helpers/utils'
