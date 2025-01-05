@@ -10,26 +10,18 @@
     </div>
 
     <div class="mt-4 flex items-center justify-center">
-      <div class="flex items-center justify-center">
-        <img v-if="user.platforms.github" :src="logoGH" class="h-4 w-4 rounded-full" />
-        <a
-          v-if="user.platforms.github"
-          class="ml-1"
-          :href="'https://github.com/' + user.platforms.github[0]"
-          target="_blank"
-          >{{ user.platforms.github[0] }}</a
-        >
+      <div v-if="user.platforms.github" class="flex items-center justify-center">
+        <img :src="logoGH" class="h-4 w-4 rounded-full" />
+        <a class="ml-2" :href="'https://github.com/' + user.platforms.github[0]" target="_blank">{{
+          user.platforms.github[0]
+        }}</a>
       </div>
       <span class="mx-4"></span>
-      <div class="flex items-center justify-center">
-        <img v-if="user.platforms.gitlab" :src="logoGL" class="h-4 w-4 rounded-full" />
-        <a
-          v-if="user.platforms.gitlab"
-          class="ml-1"
-          :href="'https://gitlab.com/' + user.platforms.github[0]"
-          target="_blank"
-          >{{ user.platforms.gitlab?.[0] }}</a
-        >
+      <div v-if="user.platforms.gitlab" class="flex items-center justify-center">
+        <img :src="logoGL" class="h-4 w-4 rounded-full" />
+        <a class="ml-2" :href="'https://gitlab.com/' + user.platforms.github[0]" target="_blank">{{
+          user.platforms.gitlab?.[0]
+        }}</a>
       </div>
     </div>
 

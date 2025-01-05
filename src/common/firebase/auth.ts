@@ -36,7 +36,8 @@ const onSignIn = async (user: User, token: string | undefined = undefined) => {
       email: user.email || '',
       imgUrl: user.photoURL || '',
       platforms: {
-        github: [(user as any).reloadUserInfo.screenName]
+        github: [(user as any).reloadUserInfo.screenName],
+        gitlab: []
       },
       socials: {}
     }

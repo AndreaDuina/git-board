@@ -17,6 +17,13 @@
       >
         Profile
       </RouterLink>
+      <RouterLink
+        v-if="user"
+        :to="{ name: 'settings', params: { username: user.uid } }"
+        class="nav-link"
+      >
+        Settings
+      </RouterLink>
     </div>
 
     <!-- Right Side -->
@@ -67,6 +74,13 @@
       class="nav-link"
     >
       Profile
+    </RouterLink>
+    <RouterLink
+      v-if="user"
+      :to="{ name: 'settings', params: { username: user.uid } }"
+      class="nav-link"
+    >
+      Settings
     </RouterLink>
   </div>
 
