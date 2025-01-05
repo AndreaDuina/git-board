@@ -1,11 +1,36 @@
 <template>
   <!-- Profile -->
   <div class="min-w-[700px]">
+    <!-- Name -->
     <div class="mt-4 flex items-center justify-center">
       <!-- <div class="mr-6 h-32 w-32">
-      <AccountAvatar :account="username" :imageSrc="user.imgUrl" size="large" />
-    </div> -->
+        <AccountAvatar :account="username" :imageSrc="user.imgUrl" size="large" />
+      </div> -->
       <h1 class="titleGradient">{{ user.name }}</h1>
+    </div>
+
+    <div class="mt-4 flex items-center justify-center">
+      <div class="flex items-center justify-center">
+        <img v-if="user.platforms.github" :src="logoGH" class="h-4 w-4 rounded-full" />
+        <a
+          v-if="user.platforms.github"
+          class="ml-1"
+          :href="'https://github.com/' + user.platforms.github[0]"
+          target="_blank"
+          >{{ user.platforms.github[0] }}</a
+        >
+      </div>
+      <span class="mx-4"></span>
+      <div class="flex items-center justify-center">
+        <img v-if="user.platforms.gitlab" :src="logoGL" class="h-4 w-4 rounded-full" />
+        <a
+          v-if="user.platforms.gitlab"
+          class="ml-1"
+          :href="'https://gitlab.com/' + user.platforms.github[0]"
+          target="_blank"
+          >{{ user.platforms.gitlab?.[0] }}</a
+        >
+      </div>
     </div>
 
     <div class="mx-4 grid grid-cols-4 gap-8">
@@ -78,6 +103,8 @@
   import { useStateStore } from '~/stores/state'
   import { ref } from 'vue'
   import { emptyAccount, emptyRepo } from '~/common/helpers/utils'
+  import logoGH from '~/assets/github-mark-white.svg'
+  import logoGL from '~/assets/gitlab-logo.svg'
 
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
