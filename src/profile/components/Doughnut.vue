@@ -1,79 +1,123 @@
 <template>
-  <div v-if="data">
-    <canvas :id="id"></canvas>
+  <div>
+    <div v-if="isLoading" class="loading-placeholder animate-pulse"></div>
+    <canvas :id="id" v-show="!isLoading"></canvas>
   </div>
 </template>
 
 <script setup lang="ts">
   import { PropType, ref, watch, onMounted, onUnmounted } from 'vue'
-  import { Chart, registerables } from 'chart.js'
+  import { Chart, ChartTypeRegistry, registerables } from 'chart.js'
+  import ChartDataLabels from 'chartjs-plugin-datalabels'
+  import { generateShades } from '~/common/helpers/utils'
 
   const props = defineProps({
-    data: { type: Object as PropType<GitDashboardLanguageProficiency>, required: true },
-    id: { type: String, required: true }
+    data: { type: Object as PropType<GitLanguagePortfolio>, required: true },
+    id: { type: String, required: true },
+    mainColor: { type: String, default: '#3694F2' }
   })
 
-  let chartInstance: Chart<'doughnut', number[], string> | null = null
+  const isLoading = ref(true)
+  let chartInstance: Chart<keyof ChartTypeRegistry, number[], string> | null = null
 
-  const init = () => {
-    Chart.register(...registerables)
-    Chart.defaults.color = '#fff'
-  }
-
-  // TODO: remove dummy
-  const renderChart = (dummy = false) => {
+  const initChart = () => {
     const ctx = document.getElementById(props.id) as HTMLCanvasElement
 
-    if (chartInstance) {
-      chartInstance.destroy()
+    const chartData = {
+      labels: Object.keys(props.data),
+      datasets: [
+        {
+          data: Object.values(props.data),
+          backgroundColor: [...generateShades(props.mainColor, 5)].reverse(),
+          borderWidth: 1.5,
+          borderColor: '#9DD40',
+          borderRadius: 5,
+          cutout: '80%'
+        }
+      ]
     }
-
-    const chartData = dummy
-      ? {
-          labels: ['Loading'],
-          datasets: [{ data: [1], backgroundColor: ['#333'], borderWidth: 0 }]
-        }
-      : {
-          labels: Object.keys(props.data),
-          datasets: [
-            {
-              data: Object.values(props.data),
-              backgroundColor: ['#0077b6', '#48cae4', '#caf0f8'],
-              borderWidth: 2,
-              borderColor: '',
-              borderRadius: 5
-            }
-          ]
-        }
 
     chartInstance = new Chart(ctx, {
       type: 'doughnut',
       data: chartData,
+      plugins: [ChartDataLabels],
       options: {
+        layout: {
+          padding: 10
+        },
         plugins: {
           legend: {
             display: false
+          },
+          datalabels: {
+            anchor: 'start',
+            align: 'start',
+            offset: 20,
+            font: {
+              weight: 'bold',
+              size: 14
+            },
+            color: '#fff',
+            padding: {
+              top: 4,
+              bottom: 4,
+              left: 4,
+              right: 4
+            },
+            clip: false,
+            formatter: (value, context) =>
+              value > 20 ? context.chart.data.labels?.[context.dataIndex] : null
           }
         },
-        responsive: false,
-        cutout: '80%',
+        responsive: true,
+        maintainAspectRatio: true, // Allow the chart to grow beyond its aspect ratio
         animation: {
-          duration: dummy ? 0 : 1000
+          duration: 1000
         }
       }
     })
   }
 
   onMounted(() => {
-    renderChart(true)
+    Chart.register(...registerables, ChartDataLabels)
+    Chart.defaults.color = '#fff'
+
+    watch(
+      () => props.data,
+      newData => {
+        if (newData && Object.keys(newData).length) {
+          isLoading.value = false
+          initChart()
+        }
+      },
+      { immediate: true }
+    )
   })
 
-  watch(
-    () => props.data,
-    () => {
-      renderChart()
+  onUnmounted(() => {
+    if (chartInstance) {
+      chartInstance.destroy()
     }
-  )
-
-  init()
+  })
 </script>
+
+<style scoped>
+  .loading-placeholder {
+    width: 250px;
+    height: 250px;
+    border-radius: 100%;
+    background-color: transparent;
+    border: 20px solid #2b2f36;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: 15px;
+  }
+
+  canvas {
+    width: 250px;
+    height: 250px;
+  }
+</style>

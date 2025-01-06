@@ -50,16 +50,16 @@
   import SearchBar from '~/common/components/SearchBar.vue'
   import UserSearchItem from '~/create/components/UserSearchItem.vue'
   import UserSearchItemSkeleton from '~/create/components/UserSearchItemSkeleton.vue'
-  import { searchUser } from '~/common/api/macro'
   import levenshtein from 'fast-levenshtein'
+  import { searchUser } from '../helpers/search'
   import { useStateStore } from '~/stores/state'
   import { useRouter } from 'vue-router'
 
   const state = useStateStore()
   const router = useRouter()
 
-  const searchResults = ref<UserMacroAPI[]>([])
-  const selectedUsers = reactive<{ [hash: string]: UserMacroAPI }>({})
+  const searchResults = ref<GitUser[]>([])
+  const selectedUsers = reactive<{ [hash: string]: GitUser }>({})
   const loading = ref(false)
   let lastSearchText = ''
 
@@ -78,9 +78,7 @@
       loading.value = true
       const res = await searchUser(platforms, username)
       // Sort by levenshtein distance
-      searchResults.value = res.sort((a: UserMacroAPI, b: UserMacroAPI) =>
-        sortLogic(a, b, username)
-      )
+      searchResults.value = res.sort((a: GitUser, b: GitUser) => sortLogic(a, b, username))
       lastSearchText = username
       loading.value = false
     } catch (err) {
@@ -88,26 +86,26 @@
     }
   }
 
-  const sortLogic = (a: UserMacroAPI, b: UserMacroAPI, reference: string) => {
+  const sortLogic = (a: GitUser, b: GitUser, reference: string) => {
     const distanceA = levenshtein.get(a.username, reference)
     const distanceB = levenshtein.get(b.username, reference)
     return distanceA - distanceB
   }
 
-  const getHash = (user: UserMacroAPI) => `${user.username}@${user.platform}`
+  const getHash = (user: GitUser) => `${user.username}@${user.platform}`
   const reverseHash = (hash: string) => {
     const [username, platform] = hash.split('@')
     return { username, platform }
   }
 
-  const addToDashboard = (clickedUser: UserMacroAPI) => {
+  const addToDashboard = (clickedUser: GitUser) => {
     const hash = getHash(clickedUser)
     if (!selectedUsers[hash]) {
       selectedUsers[hash] = clickedUser
     }
   }
 
-  const removeFromDashboard = (clickedUser: UserMacroAPI) => {
+  const removeFromDashboard = (clickedUser: GitUser) => {
     const hash = getHash(clickedUser)
     delete selectedUsers[hash]
   }

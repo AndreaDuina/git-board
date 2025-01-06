@@ -3,24 +3,35 @@
     <div class="flex justify-center">
       <!-- Days of the week names -->
       <div class="mr-1 flex flex-col">
-        <div class="m-[0.1rem] flex h-4 w-4 items-center justify-center rounded-sm" v-for="i of 8">
+        <div
+          class="m-[0.1rem] flex h-4 w-4 justify-center rounded-sm text-sm first:mt-2"
+          v-for="i of 8"
+        >
           {{ weekDaysAxis[i - 1] }}
         </div>
       </div>
-      <div class="flex flex-col" v-for="(week, idx) of calendar.weeks">
-        <!-- Month names -->
-        <div class="m-[0.1rem] mb-1 flex h-4 w-4 items-center justify-center rounded-sm">
-          {{ monthTitles[week.firstDay] ?? '' }}
+
+      <div class="flex flex-col">
+        <div class="flex w-full flex-wrap justify-start xl:justify-between">
+          <div v-for="(week, idx) of calendar.weeks" :key="idx" class="flex flex-col">
+            <div class="m-[0.1rem] mt-2 mb-1 flex h-4 w-4 items-center rounded-sm text-sm">
+              {{ monthTitles[week.firstDay] ?? '' }}
+            </div>
+            <div
+              class="m-[0.1rem] h-4 w-4 rounded-sm"
+              :class="[{ 'animate-pulse': loading }]"
+              :style="{
+                background: getContributionColor(day.count),
+                animationDelay: `${20 * idx}ms`
+              }"
+              v-for="day of week.days"
+              :title="day.date"
+            />
+          </div>
         </div>
-        <!-- Data -->
-        <div
-          class="m-[0.1rem] h-4 w-4 rounded-sm"
-          :class="[{ 'animate-pulse': loading }]"
-          :style="{ background: getContributionColor(day.count), animationDelay: `${20 * idx}ms` }"
-          v-for="day of week.days"
-        />
       </div>
     </div>
+
     <!-- Legend -->
     <div class="mt-2 flex w-full items-center justify-center">
       <span class="mr-2">Low</span>
@@ -36,7 +47,6 @@
 
 <script setup lang="ts">
   import { PropType, computed, onMounted, onUnmounted, ref, watch } from 'vue'
-  import { emptyCalendar } from '~/profile/helpers/helpers'
   import { generateShades } from '~/common/helpers/utils'
 
   const props = defineProps({
@@ -85,6 +95,22 @@
       }
       result[firstDay] = ''
     }
+
+    const values = Object.values(result)
+
+    let left = 0
+    let right = values.length - 1
+    while (left < values.length && values[left] === '') {
+      left++
+    }
+    while (right >= 0 && values[right] === '') {
+      right--
+    }
+    if (values[left] === values[right]) {
+      result[Object.keys(result)[left]] = ''
+      // delete result[Object.keys(result)[left]]
+    }
+
     monthTitles.value = result
   }
 

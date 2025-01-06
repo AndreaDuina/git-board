@@ -98,7 +98,7 @@ export function getPreviousSunday(dateStr: string): string {
 export const emptyAccount = (): Account => {
   return {
     username: '',
-    name: '',
+    name: 'Fetching..',
     email: '',
     imgUrl: '',
     platforms: {
@@ -106,5 +106,25 @@ export const emptyAccount = (): Account => {
       gitlab: []
     },
     socials: {}
+  }
+}
+
+export const emptyRepo = (): GitRepository => {
+  return {
+    id: -1,
+    name: 'Fetching repository data..',
+    owner: {
+      platform: '',
+      imgUrl: '',
+      username: '',
+      id: -1,
+      name: '',
+      pageUrl: ''
+    },
+    languages: { Unknown: 100 },
+    mainLanguage: 'Unknown',
+    isOwner: true,
+    isFork: false,
+    lastActivity: ''
   }
 }

@@ -1,48 +1,108 @@
 <template>
   <!-- Profile -->
-  <div class="mt-4 flex items-center">
-    <div class="mr-6 h-32 w-32">
-      <AccountAvatar :account="username" :imageSrc="user.imgUrl" size="large" />
+  <div class="min-w-[700px]">
+    <!-- Name -->
+    <div class="mt-4 flex items-center justify-center">
+      <!-- <div class="mr-6 h-32 w-32">
+        <AccountAvatar :account="username" :imageSrc="user.imgUrl" size="large" />
+      </div> -->
+      <h1 class="titleGradient">{{ user.name }}</h1>
     </div>
-    <h1 class="text-4xl font-semibold tracking-wider">{{ user.name }}</h1>
-  </div>
 
-  <!-- Calendar -->
-  <div class="mt-8 flex w-full items-start justify-center">
-    <Calendar :calendar="calendar" :loading="loading" mainColor="#3694f2" />
-    <div class="ml-4 flex flex-col gap-1">
-      <button
-        class="rounded-[3px] px-4 py-[0.15rem] active:brightness-90"
-        :class="
-          activeYearIdx == idx ? 'bg-primary hover:brightness-110' : 'hover:bg-background-light'
-        "
-        @click="chooseYear(idx)"
-        v-for="(year, idx) of years"
-      >
-        {{ year }}
-      </button>
+    <div class="mt-4 flex items-center justify-center">
+      <div v-if="user.platforms.github" class="flex items-center justify-center">
+        <img :src="logoGH" class="h-4 w-4 rounded-full" />
+        <a class="ml-2" :href="'https://github.com/' + user.platforms.github[0]" target="_blank">{{
+          user.platforms.github[0]
+        }}</a>
+      </div>
+      <span class="mx-4"></span>
+      <div v-if="user.platforms.gitlab" class="flex items-center justify-center">
+        <img :src="logoGL" class="h-4 w-4 rounded-full" />
+        <a
+          class="ml-2"
+          :href="'https://gitlab.com/' + user.platforms.gitlab?.[0]"
+          target="_blank"
+          >{{ user.platforms.gitlab?.[0] }}</a
+        >
+      </div>
     </div>
-  </div>
 
-  <div class="mt-8">
-    <h3 class="text-3xl font-medium">Language proficiency</h3>
-    <div class="mt-4">
-      <Doughnut :data="langProf" :id="'d1'" />
+    <div class="mx-4 grid grid-cols-4 gap-8">
+      <!-- Calendar -->
+      <div class="col-span-4 mt-8 flex w-full flex-row items-center justify-center py-4">
+        <div class="flex w-full items-start justify-center p-6 cardComponent">
+          <Calendar :calendar="calendar" :loading="loading" mainColor="#3694f2" />
+        </div>
+        <div class="ml-4 flex flex-col gap-1 p-4 cardComponent">
+          <button
+            class="rounded-[3px] px-4 py-[0.15rem] active:brightness-90"
+            :class="
+              activeYearIdx == idx ? 'bg-primary hover:brightness-110' : 'hover:bg-background-light'
+            "
+            @click="chooseYear(idx)"
+            v-for="(year, idx) of years"
+          >
+            {{ year }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Repos -->
+      <div class="col-span-2 flex flex-col items-center md:col-span-2">
+        <div
+          v-for="repo in ownedReposList"
+          :key="repo.id"
+          class="mb-4 h-full w-[100%] p-6 cardComponent last:mb-0"
+        >
+          <div class="mb-4 flex items-center justify-between">
+            <span class="text-md font-bold">{{ repo.name }}</span>
+            <span
+              id="activity-indicator"
+              class="flex items-center"
+              :title="setTitleFromLastActivity(repo.lastActivity)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 100 100">
+                <circle
+                  class="pulse-dot"
+                  :class="setColorFromLastActivity(repo.lastActivity)"
+                  cx="75"
+                  cy="50"
+                  r="20"
+                />
+              </svg>
+            </span>
+          </div>
+          <div class="mt-auto flex items-center justify-between">
+            <span class="text-sm text-gray-400">{{ repo.mainLanguage }}</span>
+            <span class="text-sm text-gray-400"
+              >{{ repo.isOwner ? 'Owner' : 'Contributor' }} {{ repo.isFork ? '(Fork)' : '' }}</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Language Portfolio -->
+      <div class="col-span-2 flex h-[365px] flex-col items-center justify-center cardComponent">
+        <Doughnut :data="languagePortfolio" :id="'doughnut-language-portfolio'" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, watch, ref } from 'vue'
-  import {
-    emptyCalendar,
-    getFullCalendar,
-    getFullLanguageProficiency
-  } from '~/profile/helpers/helpers'
+  import { emptyCalendar, getFullCalendar } from '~/profile/helpers/calendar'
+  import { getFullLanguagePortfolio } from '~/profile/helpers/langPortfolio'
+  import { getFullOwnedReposList } from '~/profile/helpers/repositories'
+  import { getUserData } from '~/common/api/users'
+  import { useStateStore } from '~/stores/state'
+  import { ref } from 'vue'
+  import { emptyAccount, emptyRepo } from '~/common/helpers/utils'
+  import logoGH from '~/assets/github-mark-white.svg'
+  import logoGL from '~/assets/gitlab-logo.svg'
+
   import AccountAvatar from '~/common/components/AccountAvatar.vue'
   import Calendar from '~/profile/components/Calendar.vue'
-  import { useStateStore } from '~/stores/state'
-  import { emptyAccount } from '~/common/helpers/utils'
   import Doughnut from '~/profile/components/Doughnut.vue'
 
   const props = defineProps({
@@ -50,38 +110,14 @@
   })
 
   const state = useStateStore()
-
   const user = ref<Account>(emptyAccount())
   const calendar = ref<GitDashboardCalendar>(emptyCalendar())
-  const langProf = ref<GitDashboardLanguageProficiency>({})
+  const languagePortfolio = ref<GitLanguagePortfolio>({})
+  const ownedReposList = ref<GitRepository[]>([emptyRepo(), emptyRepo(), emptyRepo()])
   const loading = ref(true)
+
   const activeYearIdx = ref(0)
   const years = [0, 1, 2, 3, 4].map(i => new Date().getFullYear() - i)
-
-  // Tesing only
-  const userMap: { [username: string]: Account } = {
-    andreaduina: {
-      username: 'andreaduina',
-      name: 'Andrea Duina',
-      email: '',
-      imgUrl: '',
-      platforms: {
-        github: ['AndreaDuina'],
-        gitlab: ['muwave']
-      },
-      socials: {}
-    },
-    francescozonaro: {
-      username: 'francescozonaro',
-      name: 'Francesco Zonaro',
-      email: '',
-      imgUrl: '',
-      platforms: {
-        github: ['francescozonaro']
-      },
-      socials: {}
-    }
-  }
 
   const chooseYear = async (idx: number) => {
     loading.value = true
@@ -95,22 +131,49 @@
     calendar.value = res
   }
 
+  const setTitleFromLastActivity = (lastActivity: string) => {
+    const diff = (new Date().getTime() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24)
+
+    if (diff < 7) {
+      return 'Within last week'
+    } else if (diff < 30) {
+      return 'Within last month'
+    } else {
+      return "It's been a while.."
+    }
+  }
+
+  const setColorFromLastActivity = (lastActivity: string) => {
+    const diff = (new Date().getTime() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24)
+
+    if (diff < 7) {
+      return 'active'
+    } else if (diff < 30) {
+      return 'idle'
+    } else {
+      return 'inactive'
+    }
+  }
+
   const init = async () => {
     if (props.username == '@local') {
       user.value = state.localUser
     } else {
-      // TODO: Get from server
-      user.value = userMap[props.username]
+      user.value = await getUserData(props.username)
     }
 
     try {
       loading.value = true
+
       const res = await getFullCalendar(user.value.platforms)
       calendar.value = res
-
-      const resLangProf = await getFullLanguageProficiency(user.value.platforms)
-      langProf.value = resLangProf
-
+      const resLanguagePortfolio = await getFullLanguagePortfolio(user.value.platforms)
+      languagePortfolio.value = resLanguagePortfolio
+      const resOwnedReposList = await getFullOwnedReposList(user.value.platforms)
+      resOwnedReposList.sort(
+        (a, b) => new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime()
+      )
+      ownedReposList.value = resOwnedReposList.slice(0, 8)
       loading.value = false
     } catch (err) {
       console.error(`Error loading profile`, err)
@@ -119,3 +182,39 @@
 
   init()
 </script>
+
+<!-- Repo activity styling -->
+<style>
+  .pulse-dot {
+    animation: pulse 1.5s infinite ease-in-out;
+  }
+
+  /* Pulse animation */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Change color based on project activity status */
+  .active {
+    fill: rgb(24, 177, 24);
+  }
+
+  .inactive {
+    fill: rgb(170, 170, 170);
+  }
+
+  .idle {
+    fill: rgb(255, 237, 73);
+  }
+</style>
