@@ -19,9 +19,12 @@
       <span class="mx-4"></span>
       <div v-if="user.platforms.gitlab" class="flex items-center justify-center">
         <img :src="logoGL" class="h-4 w-4 rounded-full" />
-        <a class="ml-2" :href="'https://gitlab.com/' + user.platforms.github[0]" target="_blank">{{
-          user.platforms.gitlab?.[0]
-        }}</a>
+        <a
+          class="ml-2"
+          :href="'https://gitlab.com/' + user.platforms.gitlab?.[0]"
+          target="_blank"
+          >{{ user.platforms.gitlab?.[0] }}</a
+        >
       </div>
     </div>
 
@@ -57,7 +60,7 @@
             <span
               id="activity-indicator"
               class="flex items-center"
-              :title="setColorFromLastActivity(repo.lastActivity)"
+              :title="setTitleFromLastActivity(repo.lastActivity)"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 100 100">
                 <circle
@@ -71,8 +74,8 @@
             </span>
           </div>
           <div class="mt-auto flex items-center justify-between">
-            <span class="text-sm text-gray-600">{{ repo.mainLanguage }}</span>
-            <span class="text-sm text-gray-600"
+            <span class="text-sm text-gray-400">{{ repo.mainLanguage }}</span>
+            <span class="text-sm text-gray-400"
               >{{ repo.isOwner ? 'Owner' : 'Contributor' }} {{ repo.isFork ? '(Fork)' : '' }}</span
             >
           </div>
@@ -126,6 +129,18 @@
     )
     loading.value = false
     calendar.value = res
+  }
+
+  const setTitleFromLastActivity = (lastActivity: string) => {
+    const diff = (new Date().getTime() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24)
+
+    if (diff < 7) {
+      return 'Within last week'
+    } else if (diff < 30) {
+      return 'Within last month'
+    } else {
+      return "It's been a while.."
+    }
   }
 
   const setColorFromLastActivity = (lastActivity: string) => {

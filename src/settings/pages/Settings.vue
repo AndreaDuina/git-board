@@ -6,27 +6,27 @@
     <form @submit.prevent="saveUserData" class="w-[70%] space-y-6">
       <div>
         <label class="block font-medium">Username</label>
-        <input v-model="user.username" type="text" class="inputFieldComponent mt-1 w-full p-2" />
+        <input v-model="user.username" type="text" class="mt-1 w-full p-2 inputFieldComponent" />
       </div>
 
       <div>
         <label class="block font-medium">Name</label>
-        <input v-model="user.name" type="text" class="inputFieldComponent mt-1 w-full p-2" />
+        <input v-model="user.name" type="text" class="mt-1 w-full p-2 inputFieldComponent" />
       </div>
 
       <div>
         <label class="block font-medium">Email</label>
-        <input v-model="user.email" type="email" class="inputFieldComponent mt-1 w-full p-2" />
+        <input v-model="user.email" type="email" class="mt-1 w-full p-2 inputFieldComponent" />
       </div>
 
       <div>
         <label class="block font-medium">Image URL</label>
-        <input v-model="user.imgUrl" type="text" class="inputFieldComponent mt-1 w-full p-2" />
+        <input v-model="user.imgUrl" type="text" class="mt-1 w-full p-2 inputFieldComponent" />
       </div>
 
       <!-- Platforms -->
       <div>
-        <label class="mb-2 block font-medium">Platforms</label>
+        <label class="mb-2 block font-medium">Accounts</label>
         <div v-for="(accounts, platform) in user.platforms" :key="platform" class="space-y-2">
           <div class="flex flex-wrap items-center">
             <img v-if="platform === 'github'" :src="logoGH" class="mr-2 h-6 w-6 rounded-full" />
@@ -38,7 +38,7 @@
               class="flex items-center justify-center rounded-md p-2"
             >
               <div class="relative inline-block">
-                <div class="inputFieldComponent mt-1 flex flex-row items-center justify-center p-2">
+                <div class="mt-1 flex flex-row items-center justify-center p-2 inputFieldComponent">
                   <input
                     v-model="user.platforms[platform][index]"
                     type="text"
@@ -92,6 +92,13 @@
   const saveUserData = async () => {
     try {
       loading.value = true
+
+      Object.keys(user.value.platforms).forEach(platform => {
+        user.value.platforms[platform] = user.value.platforms[platform].filter(
+          username => username !== ''
+        )
+      })
+
       await setUserData(props.username, user.value)
       alert('User data updated successfully!')
     } catch (err) {
@@ -104,7 +111,9 @@
 
   const addPlatformUsername = (platform: string) => {
     user.value.platforms[platform] = user.value.platforms[platform] || []
-    user.value.platforms[platform].push('')
+    if (!user.value.platforms[platform].includes('')) {
+      user.value.platforms[platform].push('')
+    }
   }
 
   const removePlatformUsername = (platform: string, index: number) => {
