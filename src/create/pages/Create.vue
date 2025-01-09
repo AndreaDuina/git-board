@@ -1,9 +1,18 @@
 <template>
-  <SearchBar @search="search" />
+  <div class="mt-4 flex items-center justify-center">
+    <h1 class="titleGradient">Create</h1>
+  </div>
+  <SearchBar @search="search" class="my-4 w-[70%]" />
 
-  <div class="mt-8 flex h-[37rem] justify-around gap-8">
-    <div class="flex w-1/2 flex-col items-start overflow-y-auto p-6">
-      <!--span class="mb-2 text-xl">Search results</span-->
+  <div class="mx-8 mt-8 grid min-w-[420px] grid-cols-2 justify-around gap-8">
+    <!-- Search results -->
+    <div
+      class="flex min-w-[200px] flex-col items-start overflow-y-auto rounded-xl bg-background-dark p-6"
+    >
+      <div class="mb-6 flex w-full flex-col items-center justify-center">
+        <div class="subtitleGradient mb-2">Search results</div>
+        <span class="text-center text-sm">Click items to add them to your dashboard</span>
+      </div>
       <div class="flex w-full justify-center">
         <div class="flex w-full flex-col items-center justify-center gap-4" v-if="!loading">
           <UserSearchItem :user="user" v-for="user of searchResults" @onClick="addToDashboard" />
@@ -13,12 +22,17 @@
         </div>
       </div>
     </div>
+    <!-- Dashboard -->
     <div
-      class="flex w-1/2 flex-col items-start overflow-y-auto rounded-xl bg-background-bright p-6"
+      class="flex min-w-[200px] flex-col items-start overflow-y-auto rounded-xl bg-background-bright p-6"
     >
-      <!--span class="mb-2 text-xl">Dashboard</span-->
+      <div class="mb-6 flex w-full flex-col items-center justify-center">
+        <div class="subtitleGradient mb-2">Dashboard</div>
+        <span class="text-center text-sm">Click items to remove them from your dashboard</span>
+      </div>
       <div class="flex w-full justify-center">
-        <div class="w-full" v-if="Object.keys(selectedUsers).length > 0">
+        <!-- <div class="w-full" v-if="Object.keys(selectedUsers).length > 0"> -->
+        <div class="w-full">
           <div class="flex flex-col items-center justify-center gap-4">
             <UserSearchItem
               :user="user"
@@ -28,15 +42,11 @@
             />
           </div>
         </div>
-        <div class="flex h-[33rem] w-full flex-col items-center justify-center" v-else>
-          <div class="text-3xl font-medium">Dashboard</div>
-          <span class="text-lg">Click items to add them to your dashboard</span>
-        </div>
       </div>
     </div>
   </div>
 
-  <div class="mt-4 flex justify-end">
+  <div class="mt-4 mr-8 flex min-w-[458px] justify-end">
     <button
       class="rounded-xl bg-primary px-4 py-2 text-lg hover:brightness-110 active:brightness-90"
       @click="createDashboard"

@@ -48,7 +48,11 @@ module.exports = {
           '@apply border-[0.5px] rounded-md border-neutral-700 bg-secondary focus:outline-none': {}
         },
         '.titleGradient': {
-          '@apply bg-gradient-to-t from-zinc-100/50 to-white bg-clip-text py-4 text-center font-bold tracking-tight text-transparent text-7xl':
+          '@apply bg-gradient-to-t from-zinc-100/50 to-white bg-clip-text text-center py-4 font-bold tracking-tight text-transparent text-7xl':
+            {}
+        },
+        '.subtitleGradient': {
+          '@apply bg-gradient-to-t from-zinc-100/50 to-white bg-clip-text text-center font-bold tracking-tight text-transparent text-3xl':
             {}
         }
       })
