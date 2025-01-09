@@ -2,22 +2,25 @@
   <div class="mx-24 mt-12 flex flex-col items-center justify-center">
     <h1 class="mb-12 titleGradient">Your whole git history, all in one place</h1>
 
-    <div class="mb-12 text-center">
+    <!-- <div class="mb-12 text-center">
       <p class="text-gray-400">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        <span class="text-gray-50">Soluta explicabo consectetur obcaecati ab</span>, provident sequi
-        fugiat cum similique a ad delectus optio amet. Dolore recusandae laboriosam, assumenda velit
-        qui perferendis!
+        Effortlessly manage your repositories across multiple platforms.
+        <span class="text-gray-50">Login with your GitHub credentials</span>, link your GitLab
+        account, fetch repository data, and view your commit calendar all in one place. Easily
+        create and aggregate multiple users on a single dashboard for streamlined project
+        management! 
       </p>
-    </div>
+    </div> -->
 
-    <div class="grid grid-cols-2 gap-x-4">
+    <div class="grid grid-cols-1 gap-x-4">
       <button @click="toggleTerminal" class="rounded-lg bg-white p-3 text-black hover:bg-gray-50">
         Get Started
       </button>
-      <button class="rounded-lg border-[0.5px] border-gray-600 p-3 text-white hover:bg-opacity-95">
-        Docs
-      </button>
+      <!-- <RouterLink
+        :to="{ name: 'create' }"
+        class="rounded-lg border-[0.5px] border-gray-800 bg-background-dark p-3 text-white hover:bg-opacity-75"
+        >Create a new dashboard</RouterLink
+      > -->
     </div>
 
     <div v-if="isTerminalVisible" class="mt-12 flex justify-center align-middle">
