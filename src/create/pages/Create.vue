@@ -10,7 +10,7 @@
       class="flex min-w-[200px] flex-col items-start overflow-y-auto rounded-xl bg-background-dark p-6"
     >
       <div class="mb-6 flex w-full flex-col items-center justify-center">
-        <div class="subtitleGradient mb-2">Search results</div>
+        <div class="subtitleGradient mb-4">Search results</div>
         <span class="text-center text-sm">Click items to add them to your dashboard</span>
       </div>
       <div class="flex w-full justify-center">
@@ -27,7 +27,7 @@
       class="flex min-w-[200px] flex-col items-start overflow-y-auto rounded-xl bg-background-bright p-6"
     >
       <div class="mb-6 flex w-full flex-col items-center justify-center">
-        <div class="subtitleGradient mb-2">Dashboard</div>
+        <div class="subtitleGradient mb-4">Dashboard</div>
         <span class="text-center text-sm">Click items to remove them from your dashboard</span>
       </div>
       <div class="flex w-full justify-center">
